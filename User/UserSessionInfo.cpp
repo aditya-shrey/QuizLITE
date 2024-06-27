@@ -3,7 +3,6 @@
 //
 
 #include "UserSessionInfo.h"
-
 #include <utility>
 
 UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
