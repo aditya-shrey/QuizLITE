@@ -27,6 +27,10 @@ void UserSessionInfo::setValues(std::string setName, int sessionNum) {
     this->setSessionType(sessionNum);
 }
 
-void UserSessionInfo::getValues() const {
-    std::cout << this->studySet << ", " << this->sessionType << std::endl;
+[[nodiscard]] std::string UserSessionInfo::getStudySet() const {
+    return this->studySet;
+}
+
+[[nodiscard]] int UserSessionInfo::getSessionType() const {
+    return this->sessionType;
 }

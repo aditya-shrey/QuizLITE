@@ -52,9 +52,14 @@ public:
     void setValues(std::string setName, int sessionNum);
 
     /**
-     * @brief Prints the values of the study set name and session type.
+     * @brief Returns the name of the study set.
      */
-    void getValues() const;
+    [[nodiscard]] std::string getStudySet() const;
+
+    /**
+     * @brief Returns the type of study set.
+     */
+    [[nodiscard]] int getSessionType() const;
 
 };
 
