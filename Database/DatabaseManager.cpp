@@ -47,7 +47,28 @@ bool DatabaseManager::executeQuery(const std::string& query) {
     return true;
 }
 
-static int callback(void* data, int argc, char** argv, char** azColName) {
+static int callbackStore(void* data, int argc, char** argv, char** azColName) {
+    auto* rows = static_cast<std::vector<std::map<std::string, std::string>>*>(data);
+    std::map<std::string, std::string> row;
+    for (int i = 0; i < argc; i++) {
+        row[azColName[i]] = argv[i] ? argv[i] : "NULL";
+    }
+    rows->push_back(row);
+    return 0;
+}
+
+std::vector<std::map<std::string, std::string>> DatabaseManager::executeQueryWithResults(const std::string& query) {
+    std::vector<std::map<std::string, std::string>> rows;
+    char* errorMessage = nullptr;
+    int result = sqlite3_exec(db, query.c_str(), callbackStore, &rows, &errorMessage);
+    if (result != SQLITE_OK) {
+        std::cerr << "SQL error: " << errorMessage << std::endl;
+        sqlite3_free(errorMessage);
+    }
+    return rows;
+}
+
+static int callbackPrint(void* data, int argc, char** argv, char** azColName) {
     for (int i = 0; i < argc; i++) {
         std::cout << (azColName[i] ? azColName[i] : "NULL") << ": "
                   << (argv[i] ? argv[i] : "NULL") << "\n";
@@ -56,10 +77,10 @@ static int callback(void* data, int argc, char** argv, char** azColName) {
     return 0;
 }
 
-void DatabaseManager::printDatabase(const std::string& tableName) {
+void DatabaseManager::printDatabaseTable(const std::string& tableName) {
     std::string query = "SELECT * FROM " + tableName;
     char* errorMessage = nullptr;
-    int result = sqlite3_exec(db, query.c_str(), callback, nullptr, &errorMessage);
+    int result = sqlite3_exec(db, query.c_str(), callbackPrint, nullptr, &errorMessage);
     if (result != SQLITE_OK) {
         std::cerr << "SQL error: " << errorMessage << std::endl;
         sqlite3_free(errorMessage);

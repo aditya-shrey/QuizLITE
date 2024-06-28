@@ -2,25 +2,43 @@
 #include <utility>
 
 #include "User/UserSessionInfo.h"
-#include "Database/DatabaseManager.h"
-
 
 int main() {
     std::cout << "Starting QuizLITE session.\n" << std::endl;
 
     UserSessionInfo* userSession = UserSessionInfo::getUserSessionInfo();
 
-    userSession->setValues("AnimalsStudySet", 0);
-    std::cout << "Study session is " << userSession->getStudySet() << std::endl;
+    std::cout << "before adding sets" << std::endl;
+    userSession->printDatabaseTable("set_names");
 
-    // Access the database
-    DatabaseManager* dbManager = DatabaseManager::getDatabaseManager("example.db");
-    if (dbManager->openDatabase()) {
-        dbManager->executeQuery("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name TEXT);");
-        dbManager->executeQuery("INSERT INTO test (name) VALUES ('Sample Name');");
-        dbManager->printDatabase("test");
-        dbManager->closeDatabase();
+    if (!userSession->existsStudySet("Math101")) {
+        userSession->createStudySet("Math101");
     }
+    if (!userSession->existsStudySet("Math201")) {
+        userSession->createStudySet("Math201");
+    }
+
+    std::cout << "before adding sets" << std::endl;
+    userSession->printDatabaseTable("set_names");
+
+    userSession->deleteStudySet("Math201");
+
+    std::cout << "before adding sets" << std::endl;
+    userSession->printDatabaseTable("set_names");
+
+    std::cout << "before adding math101" << std::endl;
+    userSession->printDatabaseTable("Math101");
+
+    userSession->addToStudySet("Math101", "Plus", "+");
+
+    std::cout << "after adding math101" << std::endl;
+    userSession->printDatabaseTable("Math101");
+
+    userSession->deleteFromStudySet("Math101", "Plus");
+
+    std::cout << "after deleting plys math101" << std::endl;
+    userSession->printDatabaseTable("Math101");
+
 
     return 0;
 }

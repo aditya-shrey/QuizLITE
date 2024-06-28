@@ -8,13 +8,15 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <string>
+#include <vector>
+#include <map>
 
 /**
  * @class DatabaseManager
  * @brief Manages a SQLite database connection using the singleton pattern.
  */
 class DatabaseManager {
-private:
+public:
     sqlite3* db;                    // Pointer to the SQLite database connection
     std::string dbName;             // Name of the database
 
@@ -26,14 +28,10 @@ private:
      */
     explicit DatabaseManager(std::string databaseName);
 
-public:
     /**
      * @brief Destructor to ensure the database connection is closed when the DatabaseManager object is destroyed.
      */
     ~DatabaseManager();
-
-    DatabaseManager(const DatabaseManager&) = delete;
-    DatabaseManager& operator=(const DatabaseManager&) = delete;
 
     /**
      * @brief Static method to get the single instance of DatabaseManager, creating it if it doesn't exist.
@@ -61,10 +59,23 @@ public:
     bool executeQuery(const std::string& query);
 
     /**
+     * @brief Executes an SQL query on the database.
+     * @param query The SQL query to execute.
+     * @return  A vector of maps where each map represents a row in the result set,
+     *         with column names as keys and column values as values.
+     */
+    std::vector<std::map<std::string, std::string>> executeQueryWithResults(const std::string& query);
+
+    /**
      * @brief Prints all rows from the specified table.
      * @param tableName The name of the table to print.
      */
-    void printDatabase(const std::string& tableName);
+    void printDatabaseTable(const std::string& tableName);
+
+    friend class UserSessionInfo;
+public:
+    DatabaseManager(const DatabaseManager&) = delete;
+    DatabaseManager& operator=(const DatabaseManager&) = delete;
 };
 
 #endif //QUIZLITE_DATABASEMANAGER_H
