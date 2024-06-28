@@ -108,7 +108,6 @@ public:
      */
     bool deleteFromStudySet(const std::string& setName, const std::string& Key);
 
-    bool tableExists();
 };
 
 #endif //QUIZLITE_USERSESSIONINFO_H

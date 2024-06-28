@@ -36,16 +36,26 @@ void DatabaseManager::closeDatabase() {
     }
 }
 
-bool DatabaseManager::executeQuery(const std::string& query) {
+bool DatabaseManager::executeQuery(const std::string& query) const {
+    if (!db) {
+        std::cerr << "Database not open or not initialized" << std::endl;
+        return false;
+    }
+
+    std::cerr << "Executing query: " << query << std::endl;  // Log the query being executed
     char* errorMessage = nullptr;
     int result = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errorMessage);
     if (result != SQLITE_OK) {
-        std::cerr << "SQL error: " << errorMessage << std::endl;
-        sqlite3_free(errorMessage);
+        std::cerr << "SQL error: " << (errorMessage ? errorMessage : "Unknown error") << std::endl;
+        if (errorMessage) {
+            sqlite3_free(errorMessage);
+        }
         return false;
     }
     return true;
 }
+
+
 
 static int callbackStore(void* data, int argc, char** argv, char** azColName) {
     auto* rows = static_cast<std::vector<std::map<std::string, std::string>>*>(data);
@@ -77,7 +87,7 @@ static int callbackPrint(void* data, int argc, char** argv, char** azColName) {
     return 0;
 }
 
-void DatabaseManager::printDatabaseTable(const std::string& tableName) {
+void DatabaseManager::printDatabaseTable(const std::string& tableName) const {
     std::string query = "SELECT * FROM " + tableName;
     char* errorMessage = nullptr;
     int result = sqlite3_exec(db, query.c_str(), callbackPrint, nullptr, &errorMessage);
