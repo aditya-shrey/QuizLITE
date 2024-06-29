@@ -173,3 +173,18 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName,
     }
     return success;
 }
+
+// bool UserSessionInfo::updateScore(const std::string& setName, int score) {
+//     bool updated = false;
+//
+//
+// }
+//
+//
+// bool getTable(const std::string& tableName) {
+//
+// }
+//
+// bool retrieveBadAccuracy() {
+//
+// }

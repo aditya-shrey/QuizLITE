@@ -52,5 +52,8 @@ int main() {
     std::cout << "after deleting plys math101" << std::endl;
     userSession->printDatabaseTable("Math101");
 
+
+
+
     return 0;
 }

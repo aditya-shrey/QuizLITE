@@ -110,10 +110,15 @@ public:
      */
     bool deleteFromStudySet(const std::string& setName, const std::string& Key);
 
-    // Update Score
-    // Get Table
-    // Update Scoree
-    // Retrieve top 10 of scores that are below 95% accuracy, if none, lower all
-    // accuracy by 10%
+    //    // Update Score
+    //    bool updateScore(const std::string& setName, int score);
+    //
+    //
+    //    // Get Table
+    //    bool getTable(const std::string& tableName);
+    //
+    //    // Retrieve top 10 of scores that are below 95% accuracy, if none, lower all
+    //    // accuracy by 10%
+    //    bool retrieveBadAccuracy();
 };
 #endif // QUIZLITE_USERSESSIONINFO_H
