@@ -6,12 +6,14 @@ jobs:
   linter:
     name: Linter
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Clang Format
-        run: sudo apt-get install clang-format-16
-
-      - name: Run Clang Format Check
-        run: clang-format-16 --style=file --dry-run --Werror $(find . -name "*.cpp" -or -name "*.h")
+      - name: Clone repository
+        uses: actions/checkout@master
+      - name: Run linter
+        uses: DoozyX/clang-format-lint-action@v0.8
+        with:
+          source: 'Database User tests'
+          extensions: 'cpp,h'
+          style: webkit
