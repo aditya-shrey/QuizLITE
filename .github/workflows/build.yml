@@ -80,3 +80,18 @@ jobs:
         run: |
           cd bin
           ./tests
+
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@master
+      - name: Run linter
+        uses: DoozyX/clang-format-lint-action@v0.8
+        with:
+          source: 'src include'
+          extensions: 'cpp,h'
+          style: webkit
