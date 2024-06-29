@@ -3,18 +3,24 @@ name: QuizLITE Automated Tests
 on: [push, pull_request]
 
 jobs:
-  linter:
+  clang-format-lint:
     name: Linter
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run Clang-Format Linter
-        uses: DoozyX/clang-format-lint-action@v0.8
-        with:
-          source: 'Database User tests'
-          extensions: 'cpp,h'
-          style: webkit
+      - name: Setup Clang-Format
+        run: sudo apt-get install -y clang-format
+
+      - name: Check formatting
+        run: |
+          git diff --name-only HEAD^ | grep -E '\.(cpp|h)$' | xargs -n 1 clang-format -output-replacements-xml | grep -c '<replacement ' > format_result.txt
+          FORMAT_RESULT=$(cat format_result.txt)
+          if [ "$FORMAT_RESULT" -ne "0" ]; then
+            echo "Code is not formatted correctly. Please run clang-format on your changes."
+            exit 1
+          else
+            echo "Code formatting check passed!"
+          fi
