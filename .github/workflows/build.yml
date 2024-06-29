@@ -16,4 +16,4 @@ jobs:
         with:
           source: 'Database User tests'
           extensions: 'cpp,h'
-          style: webkit
+          style: chromium
