@@ -6,22 +6,23 @@
 #include <iostream>
 #include <utility>
 
-UserSessionInfo *UserSessionInfo::instancePtr = nullptr;
+UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo() {
   dbManager = DatabaseManager::getDatabaseManager("StudySet.db");
 
   if (dbManager->openDatabase()) {
     std::cout << "Database opened successfully" << std::endl;
-    dbManager->executeQuery("CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
-                            "PRIMARY KEY, name TEXT UNIQUE);");
+    dbManager->executeQuery(
+        "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
+        "PRIMARY KEY, name TEXT UNIQUE);");
     dbManager->closeDatabase();
   } else {
     std::cerr << "Failed to open database in constructor" << std::endl;
   }
 }
 
-UserSessionInfo *UserSessionInfo::getUserSessionInfo() {
+UserSessionInfo* UserSessionInfo::getUserSessionInfo() {
   if (instancePtr == nullptr) {
     instancePtr = new UserSessionInfo();
   }
@@ -49,7 +50,7 @@ void UserSessionInfo::setValues(std::string setName, int sessionNum) {
   return sessionType;
 }
 
-void UserSessionInfo::printDatabaseTable(const std::string &tableName) {
+void UserSessionInfo::printDatabaseTable(const std::string& tableName) {
   if (dbManager->openDatabase()) {
     std::cout << "Printing table: " << tableName << std::endl;
     dbManager->printDatabaseTable(tableName);
@@ -60,7 +61,7 @@ void UserSessionInfo::printDatabaseTable(const std::string &tableName) {
   }
 }
 
-bool UserSessionInfo::existsStudySet(const std::string &setName) {
+bool UserSessionInfo::existsStudySet(const std::string& setName) {
   bool exists = false;
   if (dbManager->openDatabase()) {
     std::string query =
@@ -76,11 +77,11 @@ bool UserSessionInfo::existsStudySet(const std::string &setName) {
   return exists;
 }
 
-bool UserSessionInfo::createStudySet(const std::string &setName) {
+bool UserSessionInfo::createStudySet(const std::string& setName) {
   bool success = false;
   if (dbManager->openDatabase()) {
     std::string query = "INSERT INTO set_names (name) VALUES (?);";
-    sqlite3_stmt *stmt;
+    sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(dbManager->db, query.c_str(), -1, &stmt, nullptr) ==
         SQLITE_OK) {
       sqlite3_bind_text(stmt, 1, setName.c_str(), -1, SQLITE_STATIC);
@@ -112,7 +113,7 @@ bool UserSessionInfo::createStudySet(const std::string &setName) {
   return success;
 }
 
-bool UserSessionInfo::deleteStudySet(const std::string &setName) {
+bool UserSessionInfo::deleteStudySet(const std::string& setName) {
   bool success = false;
   if (dbManager->openDatabase()) {
     std::string query = "DELETE FROM set_names WHERE name = '" + setName + "';";
@@ -134,9 +135,9 @@ bool UserSessionInfo::deleteStudySet(const std::string &setName) {
   return success;
 }
 
-bool UserSessionInfo::addToStudySet(const std::string &setName,
-                                    const std::string &key,
-                                    const std::string &value) {
+bool UserSessionInfo::addToStudySet(const std::string& setName,
+                                    const std::string& key,
+                                    const std::string& value) {
   bool success = false;
   if (dbManager->openDatabase()) {
     std::string query = "INSERT INTO \"" + setName +
@@ -153,8 +154,8 @@ bool UserSessionInfo::addToStudySet(const std::string &setName,
   return success;
 }
 
-bool UserSessionInfo::deleteFromStudySet(const std::string &setName,
-                                         const std::string &key) {
+bool UserSessionInfo::deleteFromStudySet(const std::string& setName,
+                                         const std::string& key) {
   bool success = false;
   if (dbManager->openDatabase()) {
     std::string query =

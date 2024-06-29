@@ -5,15 +5,17 @@
 #include "DatabaseManager.h"
 #include <utility>
 
-DatabaseManager *DatabaseManager::instancePtr = nullptr;
+DatabaseManager* DatabaseManager::instancePtr = nullptr;
 
 DatabaseManager::DatabaseManager(std::string databaseName)
     : db(nullptr), dbName(std::move(databaseName)) {}
 
-DatabaseManager::~DatabaseManager() { closeDatabase(); }
+DatabaseManager::~DatabaseManager() {
+  closeDatabase();
+}
 
-DatabaseManager *
-DatabaseManager::getDatabaseManager(const std::string &databaseName) {
+DatabaseManager* DatabaseManager::getDatabaseManager(
+    const std::string& databaseName) {
   if (instancePtr == nullptr) {
     instancePtr = new DatabaseManager(databaseName);
   }
@@ -36,13 +38,13 @@ void DatabaseManager::closeDatabase() {
   }
 }
 
-bool DatabaseManager::executeQuery(const std::string &query) const {
+bool DatabaseManager::executeQuery(const std::string& query) const {
   if (!db) {
     std::cerr << "Database not open or not initialized" << std::endl;
     return false;
   }
 
-  char *errorMessage = nullptr;
+  char* errorMessage = nullptr;
   int result = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errorMessage);
   if (result != SQLITE_OK) {
     std::cerr << "SQL error: "
@@ -55,9 +57,9 @@ bool DatabaseManager::executeQuery(const std::string &query) const {
   return true;
 }
 
-static int callbackStore(void *data, int argc, char **argv, char **azColName) {
-  auto *rows =
-      static_cast<std::vector<std::map<std::string, std::string>> *>(data);
+static int callbackStore(void* data, int argc, char** argv, char** azColName) {
+  auto* rows =
+      static_cast<std::vector<std::map<std::string, std::string>>*>(data);
   std::map<std::string, std::string> row;
   for (int i = 0; i < argc; i++) {
     row[azColName[i]] = argv[i] ? argv[i] : "NULL";
@@ -67,9 +69,9 @@ static int callbackStore(void *data, int argc, char **argv, char **azColName) {
 }
 
 std::vector<std::map<std::string, std::string>>
-DatabaseManager::executeQueryWithResults(const std::string &query) {
+DatabaseManager::executeQueryWithResults(const std::string& query) const {
   std::vector<std::map<std::string, std::string>> rows;
-  char *errorMessage = nullptr;
+  char* errorMessage = nullptr;
   int result =
       sqlite3_exec(db, query.c_str(), callbackStore, &rows, &errorMessage);
   if (result != SQLITE_OK) {
@@ -79,8 +81,8 @@ DatabaseManager::executeQueryWithResults(const std::string &query) {
   return rows;
 }
 
-static int callbackPrint(void *data, int argc, char **argv, char **azColName) {
-  (void)data; // Suppress warning about unused variable
+static int callbackPrint(void* data, int argc, char** argv, char** azColName) {
+  (void)data;  // Suppress warning about unused variable
 
   for (int i = 0; i < argc; i++) {
     std::cout << (azColName[i] ? azColName[i] : "NULL") << ": "
@@ -90,9 +92,9 @@ static int callbackPrint(void *data, int argc, char **argv, char **azColName) {
   return 0;
 }
 
-void DatabaseManager::printDatabaseTable(const std::string &tableName) const {
+void DatabaseManager::printDatabaseTable(const std::string& tableName) const {
   std::string query = "SELECT * FROM " + tableName;
-  char *errorMessage = nullptr;
+  char* errorMessage = nullptr;
   int result =
       sqlite3_exec(db, query.c_str(), callbackPrint, nullptr, &errorMessage);
   if (result != SQLITE_OK) {
