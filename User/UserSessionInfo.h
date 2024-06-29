@@ -1,7 +1,6 @@
 //
 // Created by Aditya Shrey on 6/26/24.
 //
-
 #ifndef QUIZLITE_USERSESSIONINFO_H
 #define QUIZLITE_USERSESSIONINFO_H
 
@@ -18,7 +17,6 @@ class UserSessionInfo {
   int sessionType = 0;   // Type of study set.
 
   DatabaseManager* dbManager;
-
   static UserSessionInfo* instancePtr;  // Pointer to singleton instance.
 
   /**
@@ -118,5 +116,4 @@ class UserSessionInfo {
   // Retrieve top 10 of scores that are below 95% accuracy, if none, lower all
   // accuracy by 10%
 };
-
 #endif  // QUIZLITE_USERSESSIONINFO_H

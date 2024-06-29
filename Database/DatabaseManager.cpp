@@ -1,12 +1,10 @@
 //
 // Created by Aditya Shrey on 6/27/24.
 //
-
 #include "DatabaseManager.h"
 #include <utility>
 
 DatabaseManager* DatabaseManager::instancePtr = nullptr;
-
 DatabaseManager::DatabaseManager(std::string databaseName)
     : db(nullptr), dbName(std::move(databaseName)) {}
 
@@ -43,7 +41,6 @@ bool DatabaseManager::executeQuery(const std::string& query) const {
     std::cerr << "Database not open or not initialized" << std::endl;
     return false;
   }
-
   char* errorMessage = nullptr;
   int result = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errorMessage);
   if (result != SQLITE_OK) {
@@ -83,7 +80,6 @@ DatabaseManager::executeQueryWithResults(const std::string& query) const {
 
 static int callbackPrint(void* data, int argc, char** argv, char** azColName) {
   (void)data;  // Suppress warning about unused variable
-
   for (int i = 0; i < argc; i++) {
     std::cout << (azColName[i] ? azColName[i] : "NULL") << ": "
               << (argv[i] ? argv[i] : "NULL") << "\n";

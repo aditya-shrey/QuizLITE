@@ -1,7 +1,6 @@
 //
 // Created by Aditya Shrey on 6/26/24.
 //
-
 #include "UserSessionInfo.h"
 #include <iostream>
 #include <utility>
@@ -10,7 +9,6 @@ UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo() {
   dbManager = DatabaseManager::getDatabaseManager("StudySet.db");
-
   if (dbManager->openDatabase()) {
     std::cout << "Database opened successfully" << std::endl;
     dbManager->executeQuery(
@@ -87,7 +85,6 @@ bool UserSessionInfo::createStudySet(const std::string& setName) {
       sqlite3_bind_text(stmt, 1, setName.c_str(), -1, SQLITE_STATIC);
       int result = sqlite3_step(stmt);
       sqlite3_finalize(stmt);
-
       if (result == SQLITE_DONE) {
         std::string createTableQuery =
             "CREATE TABLE IF NOT EXISTS \"" + setName +

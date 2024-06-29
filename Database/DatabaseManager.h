@@ -19,7 +19,6 @@ class DatabaseManager {
  public:
   sqlite3* db;         // Pointer to the SQLite database connection
   std::string dbName;  // Name of the database
-
   static DatabaseManager* instancePtr;
 
   /**
@@ -69,18 +68,15 @@ class DatabaseManager {
    */
   std::vector<std::map<std::string, std::string>> executeQueryWithResults(
       const std::string& query) const;
-
   /**
    * @brief Prints all rows from the specified table.
    * @param tableName The name of the table to print.
    */
   void printDatabaseTable(const std::string& tableName) const;
-
   friend class UserSessionInfo;
 
  public:
   DatabaseManager(const DatabaseManager&) = delete;
   DatabaseManager& operator=(const DatabaseManager&) = delete;
 };
-
 #endif  // QUIZLITE_DATABASEMANAGER_H
