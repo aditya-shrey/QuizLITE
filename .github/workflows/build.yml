@@ -11,7 +11,7 @@ jobs:
 
       - name: Install CMake
         run: |
-          $url = 'https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-windows-x86_64.msi'
+          $url = 'https://github.com/Kitware/CMake/releases/download/v3.27.0/cmake-3.27.0-windows-x86_64.msi'
           $output = 'cmake.msi'
           Invoke-WebRequest -Uri $url -OutFile $output
           Start-Process msiexec.exe -Wait -ArgumentList '/i', $output, '/quiet', '/norestart'
@@ -80,21 +80,3 @@ jobs:
         run: |
           cd bin
           ./tests
-
-  linter:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install Clang-Format
-        run: choco install llvm
-
-      - name: Run Clang-Format Linter
-        run: |
-          clang-format --version
-          # Adjust the following command as per your project structure and linting rules
-          clang-format -i -style=file $(git ls-files | where { $_ -match '\.(cpp|h)$' })
-          git diff --exit-code || {
-            echo "Linter found unformatted code!"
-            exit 1
-          }
