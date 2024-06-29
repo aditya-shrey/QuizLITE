@@ -42,7 +42,6 @@ bool DatabaseManager::executeQuery(const std::string& query) const {
         return false;
     }
 
-    std::cerr << "Executing query: " << query << std::endl;  // Log the query being executed
     char* errorMessage = nullptr;
     int result = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errorMessage);
     if (result != SQLITE_OK) {
@@ -54,8 +53,6 @@ bool DatabaseManager::executeQuery(const std::string& query) const {
     }
     return true;
 }
-
-
 
 static int callbackStore(void* data, int argc, char** argv, char** azColName) {
     auto* rows = static_cast<std::vector<std::map<std::string, std::string>>*>(data);

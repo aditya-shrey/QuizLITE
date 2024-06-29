@@ -108,6 +108,12 @@ public:
      */
     bool deleteFromStudySet(const std::string& setName, const std::string& Key);
 
+    // Update Score
+    // Get Table
+    // Update Scoree
+    // Retrieve top 10 of scores that are below 95% accuracy, if none, lower all accuracy by 10%
+
+
 };
 
 #endif //QUIZLITE_USERSESSIONINFO_H

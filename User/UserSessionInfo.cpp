@@ -85,7 +85,6 @@ bool UserSessionInfo::createStudySet(const std::string& setName) {
 
             if (result == SQLITE_DONE) {
                 std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT);";
-                std::cerr << "Creating table with query: " << createTableQuery << std::endl;  // Log the table creation query
                 if (dbManager->executeQuery(createTableQuery)) {
                     success = true;
                 } else {
@@ -110,7 +109,6 @@ bool UserSessionInfo::deleteStudySet(const std::string& setName) {
     if (dbManager->openDatabase()) {
         std::string query = "DELETE FROM set_names WHERE name = '" + setName + "';";
         int result = dbManager->executeQuery(query);
-        std::cerr << "Executing the query " << query << std::endl;
         if (result == SQLITE_OK) {
             std::string dropTableQuery = "DROP TABLE IF EXISTS \"" + setName + "\";";
             int dropResult = dbManager->executeQuery(dropTableQuery);
@@ -131,12 +129,9 @@ bool UserSessionInfo::addToStudySet(const std::string& setName, const std::strin
     bool success = false;
     if (dbManager->openDatabase()) {
         std::string query = "INSERT INTO \"" + setName + "\" (Key, Value) VALUES ('" + key + "', '" + value + "');";
-        std::cerr << "Executing the query " << query << std::endl;
         int result = dbManager->executeQuery(query);
         if (result == SQLITE_OK) {
             success = true;
-        } else {
-            std::cerr << "SQL error: could not insert into " << setName << ". Error: " << sqlite3_errmsg(dbManager->db) << std::endl;
         }
         dbManager->closeDatabase();
     } else {
@@ -152,8 +147,6 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::
         int result = dbManager->executeQuery(query);
         if (result == SQLITE_OK) {
             success = true;
-        } else {
-            std::cerr << "SQL error: could not delete from " << setName << ". Error: " << sqlite3_errmsg(dbManager->db) << std::endl;
         }
         dbManager->closeDatabase();
     } else {
