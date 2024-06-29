@@ -1,0 +1,100 @@
+name: QuizLITE Automated Tests
+
+on: [push, pull_request]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install CMake
+        run: |
+          $url = 'https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-windows-x86_64.msi'
+          $output = 'cmake.msi'
+          Invoke-WebRequest -Uri $url -OutFile $output
+          Start-Process msiexec.exe -Wait -ArgumentList '/i', $output, '/quiet', '/norestart'
+          echo "C:\Program Files\CMake\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install vcpkg and SQLite3
+        run: |
+          git clone https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg install sqlite3:x64-windows
+
+      - name: List installed vcpkg packages
+        run: .\vcpkg\vcpkg list
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: bin\Debug\tests
+
+      - name: Clear CMake Cache
+        run: Remove-Item -Path build -Recurse -Force
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsqlite3-dev libx11-dev
+
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run Tests
+        run: |
+          cd bin
+          ./tests
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install cmake sqlite3
+
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run Tests
+        run: |
+          cd bin
+          ./tests
+
+  linter:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Clang-Format
+        run: choco install llvm
+
+      - name: Run Clang-Format Linter
+        run: |
+          clang-format --version
+          # Adjust the following command as per your project structure and linting rules
+          clang-format -i -style=file $(git ls-files | where { $_ -match '\.(cpp|h)$' })
+          git diff --exit-code || {
+            echo "Linter found unformatted code!"
+            exit 1
+          }
