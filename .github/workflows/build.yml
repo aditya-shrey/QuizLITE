@@ -16,5 +16,5 @@ jobs:
         with:
           source: 'src include'
           extensions: 'cpp,h'
-          clangFormatVersion: 16
+          clangFormatVersion: 16.0.3
           style: webkit
