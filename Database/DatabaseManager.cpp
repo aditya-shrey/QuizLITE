@@ -76,6 +76,8 @@ std::vector<std::map<std::string, std::string>> DatabaseManager::executeQueryWit
 }
 
 static int callbackPrint(void* data, int argc, char** argv, char** azColName) {
+    (void)data; // Suppress warning about unused variable
+
     for (int i = 0; i < argc; i++) {
         std::cout << (azColName[i] ? azColName[i] : "NULL") << ": "
                   << (argv[i] ? argv[i] : "NULL") << "\n";
