@@ -3,6 +3,7 @@
 //
 #include <gtest/gtest.h>
 
-TEST(DatabaseTest, DummyTest) {
-  EXPECT_EQ(1, 1);
+TEST(DatabaseTest, DummyTest)
+{
+    EXPECT_EQ(1, 1);
 }
