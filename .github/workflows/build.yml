@@ -7,7 +7,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Install CMake
         run: |
@@ -33,7 +34,7 @@ jobs:
         run: cmake --build build
 
       - name: Test
-        run: bin\Debug\tests
+        run: .\build\tests\Debug\tests.exe
 
       - name: Clear CMake Cache
         run: Remove-Item -Path build -Recurse -Force
@@ -41,7 +42,8 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Install dependencies
         run: |
@@ -55,20 +57,19 @@ jobs:
         run: cmake --build build
 
       - name: Run Tests
-        run: |
-          cd bin
-          ./tests
+        run: ./build/tests/tests
 
   build-macos:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Install dependencies
         run: |
           brew update
-          brew install cmake sqlite3
+          brew install cmake sqlite
 
       - name: Configure CMake
         run: cmake -S . -B build
@@ -77,9 +78,7 @@ jobs:
         run: cmake --build build
 
       - name: Run Tests
-        run: |
-          cd bin
-          ./tests
+        run: ./build/tests/tests
 
   linter:
     name: Linter
@@ -87,9 +86,10 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Clone repository
-        uses: actions/checkout@master
-      - name: Run linter
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run Clang-Format Linter
         uses: DoozyX/clang-format-lint-action@v0.8
         with:
           source: 'src include'
