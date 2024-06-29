@@ -1,6 +1,6 @@
 .idea/
 *.db
-cmake-build-debug
+cmake-build-debug/
 
 bin/
 build/
