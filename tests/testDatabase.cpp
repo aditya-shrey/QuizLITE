@@ -7,3 +7,8 @@ TEST(DatabaseTest, DummyTest)
 {
     EXPECT_EQ(1, 1);
 }
+
+TEST(DatabaseTest, DummyTest2)
+{
+    EXPECT_EQ(2, 2);
+}
