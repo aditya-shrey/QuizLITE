@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.18)
-cmake_minimum_required(VERSION 3.27)
 project(QuizLITE)
 
 # Set compiler flags.
@@ -51,4 +50,13 @@ target_link_libraries(TestExecutables
         GTest::GTest
         GTest::Main
         SQLite::SQLite3
+)
+
+# Add tests to CTest
+add_test(NAME TestExecutables COMMAND TestExecutables)
+
+# Custom target to run tests with verbose output
+add_custom_target(run_tests
+        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+        DEPENDS TestExecutables
 )

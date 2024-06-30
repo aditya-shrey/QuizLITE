@@ -50,7 +50,7 @@ jobs:
       - name: Run test cases
         run: |
           cd build
-          ctest
+          ctest --output-on-failure
 
   build-macos:
     name: macOS
@@ -74,7 +74,7 @@ jobs:
       - name: Run Tests
         run: |
           cd build
-          ctest
+          ctest --output-on-failure
 
   linter:
     name: Linter
