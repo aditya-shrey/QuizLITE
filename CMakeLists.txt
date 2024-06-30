@@ -57,6 +57,9 @@ target_link_libraries(TestExecutables
         SQLite::SQLite3
 )
 
+# Define TESTING macro for test build
+target_compile_definitions(TestExecutables PRIVATE TESTING)
+
 # Add tests to CTest
 add_test(NAME TestExecutables COMMAND TestExecutables)
 

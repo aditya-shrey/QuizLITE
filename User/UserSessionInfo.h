@@ -149,10 +149,12 @@ private:
      */
     UserSessionInfo();
 
+#ifdef TESTING
     /**
      * @brief Resets the singleton instance of UserSessionInfo.
      */
     static void resetInstance();
+#endif
 
     friend class UserSessionInfoTest;
 };
