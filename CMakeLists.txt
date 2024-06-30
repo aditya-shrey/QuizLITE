@@ -45,6 +45,8 @@ target_link_libraries(QuizLITE SQLite::SQLite3)
 add_executable(TestExecutables
         tests/main.cpp
         tests/testDatabase.cpp
+        Database/DatabaseManager.cpp
+        Database/DatabaseManager.h
 )
 target_link_libraries(TestExecutables
         GTest::GTest

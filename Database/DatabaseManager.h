@@ -66,7 +66,7 @@ public:
      * @return  A vector of maps where each map represents a row in the result
      * set, with column names as keys and column values as values.
      */
-    std::vector<std::map<std::string, std::string>> executeQueryWithResults(
+    [[nodiscard]] std::vector<std::map<std::string, std::string>> executeQueryWithResults(
         const std::string& query) const;
     /**
      * @brief Prints all rows from the specified table.
