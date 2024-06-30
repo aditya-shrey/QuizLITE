@@ -126,6 +126,7 @@ bool DatabaseManager::isTableEmpty(const std::string& tableName) const
     return isEmpty;
 }
 
+#ifdef TESTING
 void DatabaseManager::resetInstance()
 {
     if (instancePtr) {
@@ -133,3 +134,4 @@ void DatabaseManager::resetInstance()
         instancePtr = nullptr;
     }
 }
+#endif

@@ -321,6 +321,7 @@ bool UserSessionInfo::emptyAllSets()
     return success;
 }
 
+#ifdef TESTING
 void UserSessionInfo::resetInstance()
 {
     if (instancePtr) {
@@ -328,3 +329,4 @@ void UserSessionInfo::resetInstance()
         instancePtr = nullptr;
     }
 }
+#endif

@@ -5,15 +5,19 @@ class DatabaseManagerTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
+#ifdef TESTING
         DatabaseManager::resetInstance();
         dbManager = DatabaseManager::getDatabaseManager(":memory:");
         dbManager->openDatabase();
+#endif
     }
-
     void TearDown() override
     {
+#ifdef TESTING
         dbManager->closeDatabase();
         DatabaseManager::resetInstance();
+        unsetenv("TEST_ENV");
+#endif
     }
 
     DatabaseManager* dbManager {};

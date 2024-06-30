@@ -70,8 +70,6 @@ public:
      */
     bool isTableEmpty(const std::string& tableName) const;
 
-    static void resetInstance();
-
 private:
     sqlite3* db; // Pointer to the SQLite database connection
     std::string dbName; // Name of the database
@@ -86,6 +84,13 @@ private:
 
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
+
+#ifdef TESTING
+    /**
+     * @brief Resets the singleton instance for testing purposes.
+     */
+    static void resetInstance();
+#endif
 
     friend class UserSessionInfo;
     friend class DatabaseManagerTest;

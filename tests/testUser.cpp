@@ -5,13 +5,18 @@ class UserSessionInfoTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
+#ifdef TESTING
         UserSessionInfo::resetInstance();
         userSessionInfo = UserSessionInfo::getUserSessionInfo();
+#endif
     }
 
     void TearDown() override
     {
+#ifdef TESTING
         UserSessionInfo::resetInstance();
+        unsetenv("TEST_ENV");
+#endif
     }
 
     UserSessionInfo* userSessionInfo {};
