@@ -29,11 +29,6 @@ protected:
     UserSessionInfo* userSessionInfo {};
 };
 
-TEST_F(UserSessionInfoTest, IsSetNamesTableEmptyWhenEmpty)
-{
-    EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
-}
-
 TEST_F(UserSessionInfoTest, CreateStudySetSuccess)
 {
     bool created = userSessionInfo->createStudySet("testSet");

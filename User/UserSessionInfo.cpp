@@ -9,7 +9,7 @@ UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo()
 {
-    dbManager = DatabaseManager::getDatabaseManager("A00000003.db");
+    dbManager = DatabaseManager::getDatabaseManager("A0000001.db");
     if (dbManager->openDatabase()) {
         if (dbManager->executeQuery(
                 "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
