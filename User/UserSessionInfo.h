@@ -12,22 +12,7 @@
  * @brief Singleton class to manage user session information.
  */
 class UserSessionInfo {
-private:
-    std::string studySet; // Name of study set.
-    int sessionType = 0; // Type of study set.
-
-    DatabaseManager* dbManager;
-    static UserSessionInfo* instancePtr; // Pointer to singleton instance.
-
-    /**
-     * @brief Private constructor to prevent instantiation.
-     */
-    UserSessionInfo();
-
 public:
-    UserSessionInfo(const UserSessionInfo& obj) = delete;
-    UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
-
     /**
      * @brief Gets the singleton instance of UserSessionInfo.
      * @return Pointer to the singleton instance.
@@ -110,15 +95,66 @@ public:
      */
     bool deleteFromStudySet(const std::string& setName, const std::string& Key);
 
-    //    // Update Score
-    //    bool updateScore(const std::string& setName, int score);
-    //
-    //
-    //    // Get Table
-    //    bool getTable(const std::string& tableName);
-    //
-    //    // Retrieve top 10 of scores that are below 95% accuracy, if none, lower all
-    //    // accuracy by 10%
-    //    bool retrieveBadAccuracy();
+    /**
+     * @brief Checks if the set_names table is empty.
+     * @return True if the set_names table is empty, false otherwise.
+     */
+    bool isSetNamesTableEmpty();
+
+    /**
+     * @brief Updates the score for a given setName and key.
+     * @param setName The name of the study set.
+     * @param key The key to update.
+     * @param isCorrect True if the answer is correct, false otherwise.
+     * @return True if the score was updated successfully, false otherwise.
+     */
+    bool updateScore(const std::string& setName, const std::string& key, bool isCorrect);
+
+    std::vector<std::pair<std::string, std::string>> getTableKeyValues(const std::string& setName);
+
+    /**
+     * @brief Retrieves x number of entries with the lowest accuracies given a set.
+     * @param setName The name of the study set.
+     * @param x The number of lowest accuracy entries to retrieve.
+     * @return A vector of tuples representing key, value, and accuracy.
+     */
+    std::vector<std::tuple<std::string, std::string, float>> getLowestAccuracies(const std::string& setName, int x);
+
+    /**
+     * @brief Retrieves x number of random values from the set.
+     * @param setName The name of the study set.
+     * @param x The number of random values to retrieve.
+     * @return A vector of pairs representing key-value pairs.
+     */
+    std::vector<std::pair<std::string, std::string>> getRandomEntries(const std::string& setName, int x);
+
+    /**
+     * @brief Drops all study sets in the database.
+     * @return True if all sets were dropped successfully, false otherwise.
+     */
+    bool emptyAllSets();
+
+    UserSessionInfo(const UserSessionInfo& obj) = delete;
+    UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
+
+private:
+    std::string studySet; // Name of study set.
+    int sessionType = 0; // Type of study set.
+
+    DatabaseManager* dbManager;
+    static UserSessionInfo* instancePtr; // Pointer to singleton instance.
+
+    /**
+     * @brief Private constructor to prevent instantiation.
+     */
+    UserSessionInfo();
+
+    /**
+     * @brief Resets the singleton instance of UserSessionInfo.
+     */
+    static void resetInstance();
+
+    friend class UserSessionInfoTest;
 };
+
 #endif // QUIZLITE_USERSESSIONINFO_H

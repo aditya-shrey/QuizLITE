@@ -47,6 +47,9 @@ add_executable(TestExecutables
         tests/testDatabase.cpp
         Database/DatabaseManager.cpp
         Database/DatabaseManager.h
+        tests/testUser.cpp
+        User/UserSessionInfo.h
+        User/UserSessionInfo.cpp
 )
 target_link_libraries(TestExecutables
         GTest::GTest

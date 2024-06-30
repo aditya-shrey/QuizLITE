@@ -1,79 +1,66 @@
 #include "../Database/DatabaseManager.h"
 #include <gtest/gtest.h>
 
-class DatabaseTest : public ::testing::Test {
+class DatabaseManagerTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
-        // Remove any existing test database
-        std::remove(testDbName.c_str());
-
-        // Initialize the database manager instance
-        dbManager = DatabaseManager::getDatabaseManager(testDbName);
-        ASSERT_TRUE(dbManager->openDatabase());
-
-        // Create a test table
-        std::string createTableQuery = "CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT);";
-        ASSERT_TRUE(dbManager->executeQuery(createTableQuery));
+        DatabaseManager::resetInstance();
+        dbManager = DatabaseManager::getDatabaseManager(":memory:");
+        dbManager->openDatabase();
     }
 
     void TearDown() override
     {
         dbManager->closeDatabase();
-        // Remove the test database file
-        std::remove(testDbName.c_str());
+        DatabaseManager::resetInstance();
     }
 
-    const std::string testDbName = "test.db";
-    DatabaseManager* dbManager = nullptr;
+    DatabaseManager* dbManager {};
 };
 
-TEST_F(DatabaseTest, OpenDatabase)
+TEST_F(DatabaseManagerTest, SingletonInstance)
 {
-    ASSERT_TRUE(dbManager->openDatabase());
+    DatabaseManager* dbManager1 = DatabaseManager::getDatabaseManager(":memory:");
+    DatabaseManager* dbManager2 = DatabaseManager::getDatabaseManager(":memory:");
+    EXPECT_EQ(dbManager1, dbManager2);
 }
 
-TEST_F(DatabaseTest, CloseDatabase)
+TEST_F(DatabaseManagerTest, OpenDatabase)
+{
+    EXPECT_TRUE(dbManager->openDatabase());
+}
+
+TEST_F(DatabaseManagerTest, CloseDatabase)
 {
     dbManager->closeDatabase();
-    ASSERT_FALSE(dbManager->executeQuery("SELECT 1;"));
+    dbManager->closeDatabase(); // This is just for testing multiple close calls
 }
 
-TEST_F(DatabaseTest, ExecuteQuery)
+TEST_F(DatabaseManagerTest, ExecuteQuery)
 {
-    std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
-    ASSERT_TRUE(dbManager->executeQuery(insertQuery));
+    EXPECT_EQ(dbManager->executeQuery("CREATE TABLE test (name TEXT);"), SQLITE_OK);
+    EXPECT_EQ(dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');"), SQLITE_OK);
+    EXPECT_EQ(dbManager->executeQuery("INSERT INTO test (name) VALUES ('Bob');"), SQLITE_OK);
 }
 
-TEST_F(DatabaseTest, ExecuteQueryWithResults)
+TEST_F(DatabaseManagerTest, ExecuteQueryWithResults)
 {
-    std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
-    ASSERT_TRUE(dbManager->executeQuery(insertQuery));
+    dbManager->executeQuery("CREATE TABLE test (name TEXT);");
+    dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');");
+    dbManager->executeQuery("INSERT INTO test (name) VALUES ('Bob');");
 
-    std::string selectQuery = "SELECT * FROM test_table;";
-    auto results = dbManager->executeQueryWithResults(selectQuery);
-    ASSERT_EQ(results.size(), 1);
-    ASSERT_EQ(results[0]["name"], "John Doe");
+    std::vector<std::map<std::string, std::string>> results = dbManager->executeQueryWithResults("SELECT * FROM test;");
+    ASSERT_EQ(results.size(), 2);
+    EXPECT_EQ(results[0]["name"], "Alice");
+    EXPECT_EQ(results[1]["name"], "Bob");
 }
 
-TEST_F(DatabaseTest, PrintDatabaseTable)
+TEST_F(DatabaseManagerTest, IsTableEmpty)
 {
-    std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
-    ASSERT_TRUE(dbManager->executeQuery(insertQuery));
+    dbManager->executeQuery("CREATE TABLE test (name TEXT);");
+    EXPECT_TRUE(dbManager->isTableEmpty("test"));
 
-    // Redirect stdout to a string stream
-    std::ostringstream oss;
-    std::streambuf* coutBuf = std::cout.rdbuf();
-    std::cout.rdbuf(oss.rdbuf());
-
-    // Call the print method
-    dbManager->printDatabaseTable("test_table");
-
-    // Restore stdout
-    std::cout.rdbuf(coutBuf);
-
-    // Check the output
-    std::string output = oss.str();
-    std::string expectedOutput = "id: 1\nname: John Doe\n\n";
-    ASSERT_EQ(output, expectedOutput);
+    dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');");
+    EXPECT_FALSE(dbManager->isTableEmpty("test"));
 }

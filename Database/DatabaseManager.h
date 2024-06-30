@@ -17,17 +17,6 @@
  */
 class DatabaseManager {
 public:
-    sqlite3* db; // Pointer to the SQLite database connection
-    std::string dbName; // Name of the database
-    static DatabaseManager* instancePtr;
-
-    /**
-     * @brief Private constructor to initialize the database name and set the
-     * database pointer to nullptr.
-     * @param databaseName The name of the database to manage.
-     */
-    explicit DatabaseManager(std::string databaseName);
-
     /**
      * @brief Destructor to ensure the database connection is closed when the
      * DatabaseManager object is destroyed.
@@ -58,7 +47,7 @@ public:
      * @param query The SQL query to execute.
      * @return True if the query was successfully executed, false otherwise.
      */
-    bool executeQuery(const std::string& query) const;
+    int executeQuery(const std::string& query) const;
 
     /**
      * @brief Executes an SQL query on the database.
@@ -73,10 +62,33 @@ public:
      * @param tableName The name of the table to print.
      */
     void printDatabaseTable(const std::string& tableName) const;
-    friend class UserSessionInfo;
 
-public:
+    /**
+     * @brief Checks if the specified table is empty.
+     * @param tableName The name of the table to check.
+     * @return True if the table is empty, false otherwise.
+     */
+    bool isTableEmpty(const std::string& tableName) const;
+
+    static void resetInstance();
+
+private:
+    sqlite3* db; // Pointer to the SQLite database connection
+    std::string dbName; // Name of the database
+    static DatabaseManager* instancePtr;
+
+    /**
+     * @brief Private constructor to initialize the database name and set the
+     * database pointer to nullptr.
+     * @param databaseName The name of the database to manage.
+     */
+    explicit DatabaseManager(std::string databaseName);
+
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
+
+    friend class UserSessionInfo;
+    friend class DatabaseManagerTest;
+    friend class UserSessionInfoTest;
 };
 #endif // QUIZLITE_DATABASEMANAGER_H
