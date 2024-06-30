@@ -17,11 +17,11 @@ jobs:
           Start-Process msiexec.exe -Wait -ArgumentList '/i', $output, '/quiet', '/norestart'
           echo "C:\Program Files\CMake\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Install vcpkg and SQLite3
+      - name: Install vcpkg and dependencies
         run: |
           git clone https://github.com/microsoft/vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg\vcpkg install sqlite3:x64-windows
+          .\vcpkg\vcpkg install sqlite3:x64-windows gtest:x64-windows
 
       - name: List installed vcpkg packages
         run: .\vcpkg\vcpkg list
@@ -36,7 +36,7 @@ jobs:
         run: cmake --build build
 
       - name: Test
-        run: bin\Debug\tests
+        run: .\build\Debug\tests.exe
 
       - name: Clear CMake Cache
         run: Remove-Item -Path build -Recurse -Force
@@ -49,7 +49,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake g++ libsqlite3-dev libx11-dev
+          sudo apt-get install -y cmake g++ libsqlite3-dev libgtest-dev
+          sudo apt-get install -y cmake libgtest-dev
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          sudo make
+          sudo cp *.a /usr/lib
 
       - name: Configure CMake
         run: cmake -S . -B build
@@ -59,8 +64,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd bin
-          ./tests
+          cd build
+          ctest
 
   build-macos:
     runs-on: macos-latest
@@ -72,6 +77,7 @@ jobs:
         run: |
           brew update
           brew install cmake sqlite3
+          brew install googletest
 
       - name: Configure CMake
         run: cmake -S . -B build
@@ -81,8 +87,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd bin
-          ./tests
+          cd build
+          ctest
 
   linter:
     name: Linter
