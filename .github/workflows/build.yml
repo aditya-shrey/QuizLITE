@@ -24,17 +24,33 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@master
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libsqlite3-dev
+          git clone https://github.com/google/googletest.git
+          cd googletest
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+          cd ../..
+
       - name: Configure
         run: |
           mkdir build
           cd build
           cmake -DCMAKE_C_COMPILER=${{ matrix.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} ..
+
       - name: Build
         run: cmake --build build
+
       - name: Run test cases
         run: |
-          cd bin
-          ./testing
+          cd build
+          ctest
 
   build-macos:
     name: macOS
