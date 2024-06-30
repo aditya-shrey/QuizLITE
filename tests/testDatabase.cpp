@@ -3,7 +3,8 @@
 
 class DatabaseTest : public ::testing::Test {
 protected:
-    void SetUp() override {
+    void SetUp() override
+    {
         // Remove any existing test database
         std::remove(testDbName.c_str());
 
@@ -16,7 +17,8 @@ protected:
         ASSERT_TRUE(dbManager->executeQuery(createTableQuery));
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         dbManager->closeDatabase();
         // Remove the test database file
         std::remove(testDbName.c_str());
@@ -26,21 +28,25 @@ protected:
     DatabaseManager* dbManager = nullptr;
 };
 
-TEST_F(DatabaseTest, OpenDatabase) {
+TEST_F(DatabaseTest, OpenDatabase)
+{
     ASSERT_TRUE(dbManager->openDatabase());
 }
 
-TEST_F(DatabaseTest, CloseDatabase) {
+TEST_F(DatabaseTest, CloseDatabase)
+{
     dbManager->closeDatabase();
     ASSERT_FALSE(dbManager->executeQuery("SELECT 1;"));
 }
 
-TEST_F(DatabaseTest, ExecuteQuery) {
+TEST_F(DatabaseTest, ExecuteQuery)
+{
     std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
     ASSERT_TRUE(dbManager->executeQuery(insertQuery));
 }
 
-TEST_F(DatabaseTest, ExecuteQueryWithResults) {
+TEST_F(DatabaseTest, ExecuteQueryWithResults)
+{
     std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
     ASSERT_TRUE(dbManager->executeQuery(insertQuery));
 
@@ -50,7 +56,8 @@ TEST_F(DatabaseTest, ExecuteQueryWithResults) {
     ASSERT_EQ(results[0]["name"], "John Doe");
 }
 
-TEST_F(DatabaseTest, PrintDatabaseTable) {
+TEST_F(DatabaseTest, PrintDatabaseTable)
+{
     std::string insertQuery = "INSERT INTO test_table (name) VALUES ('John Doe');";
     ASSERT_TRUE(dbManager->executeQuery(insertQuery));
 
