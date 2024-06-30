@@ -41,50 +41,48 @@ jobs:
       - name: Clear CMake Cache
         run: Remove-Item -Path build -Recurse -Force
 
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsqlite3-dev libx11-dev
 
-    build-linux:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
+      - name: Configure CMake
+        run: cmake -S . -B build
 
-        - name: Install dependencies
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y cmake g++ libsqlite3-dev libx11-dev
+      - name: Build
+        run: cmake --build build
 
-        - name: Configure CMake
-          run: cmake -S . -B build
+      - name: Run Tests
+        run: |
+          cd bin
+          ./tests
 
-        - name: Build
-          run: cmake --build build
+  build-macos:
+    runs-on: macos-latest
 
-        - name: Run Tests
-          run: |
-            cd bin
-            ./tests
+    steps:
+      - uses: actions/checkout@v2
 
-    build-macos:
-      runs-on: macos-latest
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install cmake sqlite3
 
-      steps:
-        - uses: actions/checkout@v2
+      - name: Configure CMake
+        run: cmake -S . -B build
 
-        - name: Install dependencies
-          run: |
-            brew update
-            brew install cmake sqlite3
+      - name: Build
+        run: cmake --build build
 
-        - name: Configure CMake
-          run: cmake -S . -B build
-
-        - name: Build
-          run: cmake --build build
-
-        - name: Run Tests
-          run: |
-            cd bin
-            ./tests
+      - name: Run Tests
+        run: |
+          cd bin
+          ./tests
 
   linter:
     name: Linter
