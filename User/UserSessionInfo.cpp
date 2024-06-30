@@ -9,12 +9,14 @@ UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo()
 {
-    dbManager = DatabaseManager::getDatabaseManager("StudySet.db");
+    dbManager = DatabaseManager::getDatabaseManager("A00000003.db");
     if (dbManager->openDatabase()) {
-        std::cout << "Database opened successfully" << std::endl;
-        dbManager->executeQuery(
-            "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
-            "PRIMARY KEY, name TEXT UNIQUE);");
+        if (dbManager->executeQuery(
+                "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
+                "PRIMARY KEY, name TEXT UNIQUE);")
+            != SQLITE_OK) {
+            std::cerr << "Failed to create table set_names" << std::endl;
+        }
         dbManager->closeDatabase();
     } else {
         std::cerr << "Failed to open database in constructor" << std::endl;
@@ -94,15 +96,15 @@ bool UserSessionInfo::createStudySet(const std::string& setName)
             int result = sqlite3_step(stmt);
             sqlite3_finalize(stmt);
             if (result == SQLITE_DONE) {
-                std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT);";
-                if (dbManager->executeQuery(createTableQuery)) {
+                std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT, TotalCorrect INTEGER, TimesAsked INTEGER);";
+                if (dbManager->executeQuery(createTableQuery) == SQLITE_OK) {
                     success = true;
                 } else {
                     std::cerr << "SQL error: could not create table for " << setName
                               << std::endl;
                 }
             } else {
-                std::cout << setName << " already exists or insertion failed. Error: "
+                std::cerr << setName << " already exists or insertion failed. Error: "
                           << sqlite3_errmsg(dbManager->db) << std::endl;
             }
         } else {
@@ -131,6 +133,9 @@ bool UserSessionInfo::deleteStudySet(const std::string& setName)
                 std::cerr << "SQL error: could not drop table for " << setName
                           << ". Error: " << sqlite3_errmsg(dbManager->db) << std::endl;
             }
+        } else {
+            std::cerr << "SQL error: could not delete from set_names for " << setName
+                      << ". Error: " << sqlite3_errmsg(dbManager->db) << std::endl;
         }
         dbManager->closeDatabase();
     } else {
@@ -139,13 +144,11 @@ bool UserSessionInfo::deleteStudySet(const std::string& setName)
     return success;
 }
 
-bool UserSessionInfo::addToStudySet(const std::string& setName,
-    const std::string& key,
-    const std::string& value)
+bool UserSessionInfo::addToStudySet(const std::string& setName, const std::string& key, const std::string& value)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
-        std::string query = "INSERT INTO \"" + setName + "\" (Key, Value) VALUES ('" + key + "', '" + value + "');";
+        std::string query = "INSERT INTO \"" + setName + "\" (Key, Value, TotalCorrect, TimesAsked) VALUES ('" + key + "', '" + value + "', 0, 1);";
         int result = dbManager->executeQuery(query);
         if (result == SQLITE_OK) {
             success = true;
@@ -157,8 +160,7 @@ bool UserSessionInfo::addToStudySet(const std::string& setName,
     return success;
 }
 
-bool UserSessionInfo::deleteFromStudySet(const std::string& setName,
-    const std::string& key)
+bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::string& key)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
@@ -174,17 +176,104 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName,
     return success;
 }
 
-// bool UserSessionInfo::updateScore(const std::string& setName, int score) {
-//     bool updated = false;
-//
-//
-// }
-//
-//
-// bool getTable(const std::string& tableName) {
-//
-// }
-//
-// bool retrieveBadAccuracy() {
-//
-// }
+bool UserSessionInfo::isSetNamesTableEmpty()
+{
+    if (dbManager->openDatabase())
+        return dbManager->isTableEmpty("set_names");
+    return false;
+}
+
+bool UserSessionInfo::updateScore(const std::string& setName, const std::string& key, bool isCorrect)
+{
+    if (!existsStudySet(setName)) {
+        std::cerr << "Study set " << setName << " does not exist." << std::endl;
+        return false;
+    }
+
+    bool success = false;
+    if (dbManager->openDatabase()) {
+        std::string query = "UPDATE \"" + setName + "\" SET TimesAsked = TimesAsked + 1";
+        if (isCorrect) {
+            query += ", TotalCorrect = TotalCorrect + 1";
+        }
+        query += " WHERE Key = '" + key + "';";
+        int result = dbManager->executeQuery(query);
+        if (result == SQLITE_OK) {
+            success = true;
+        } else {
+            std::cerr << "SQL error: could not update score for " << key << " in " << setName << ". Error: "
+                      << sqlite3_errmsg(dbManager->db) << std::endl;
+        }
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for updateScore" << std::endl;
+    }
+    return success;
+}
+
+std::vector<std::pair<std::string, std::string>> UserSessionInfo::getTableKeyValues(const std::string& setName)
+{
+    std::vector<std::pair<std::string, std::string>> keyValues;
+    if (!existsStudySet(setName)) {
+        std::cerr << "Study set " << setName << " does not exist." << std::endl;
+        return keyValues;
+    }
+
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT Key, Value FROM \"" + setName + "\";";
+        auto results = dbManager->executeQueryWithResults(query);
+        for (const auto& row : results) {
+            keyValues.emplace_back(row.at("Key"), row.at("Value"));
+        }
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getTableKeyValues" << std::endl;
+    }
+    return keyValues;
+}
+
+std::vector<std::tuple<std::string, std::string, float>> UserSessionInfo::getLowestAccuracies(const std::string& setName, int x)
+{
+    std::vector<std::tuple<std::string, std::string, float>> lowestAccuracies;
+    if (!existsStudySet(setName)) {
+        std::cerr << "Study set " << setName << " does not exist." << std::endl;
+        return lowestAccuracies;
+    }
+
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT Key, Value, (TotalCorrect * 1.0 / TimesAsked) as Accuracy "
+                            "FROM \""
+            + setName + "\" "
+                        "ORDER BY Accuracy ASC LIMIT "
+            + std::to_string(x) + ";";
+        auto results = dbManager->executeQueryWithResults(query);
+        for (const auto& row : results) {
+            lowestAccuracies.emplace_back(row.at("Key"), row.at("Value"), std::stof(row.at("Accuracy")));
+        }
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getLowestAccuracies" << std::endl;
+    }
+    return lowestAccuracies;
+}
+
+std::vector<std::pair<std::string, std::string>> UserSessionInfo::getRandomEntries(const std::string& setName, int x)
+{
+    std::vector<std::pair<std::string, std::string>> randomEntries;
+    if (!existsStudySet(setName)) {
+        std::cerr << "Study set " << setName << " does not exist." << std::endl;
+        return randomEntries;
+    }
+
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT Key, Value FROM \"" + setName + "\" ORDER BY RANDOM() LIMIT " + std::to_string(x) + ";";
+        auto results = dbManager->executeQueryWithResults(query);
+        for (const auto& row : results) {
+            randomEntries.emplace_back(row.at("Key"), row.at("Value"));
+        }
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getRandomEntries" << std::endl;
+    }
+    return randomEntries;
+}

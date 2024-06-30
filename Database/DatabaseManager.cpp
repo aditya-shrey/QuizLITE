@@ -43,23 +43,15 @@ void DatabaseManager::closeDatabase()
     }
 }
 
-bool DatabaseManager::executeQuery(const std::string& query) const
+int DatabaseManager::executeQuery(const std::string& query) const
 {
-    if (!db) {
-        std::cerr << "Database not open or not initialized" << std::endl;
-        return false;
+    char* errMsg = nullptr;
+    int rc = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL error: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
     }
-    char* errorMessage = nullptr;
-    int result = sqlite3_exec(db, query.c_str(), nullptr, nullptr, &errorMessage);
-    if (result != SQLITE_OK) {
-        std::cerr << "SQL error: "
-                  << (errorMessage ? errorMessage : "Unknown error") << std::endl;
-        if (errorMessage) {
-            sqlite3_free(errorMessage);
-        }
-        return false;
-    }
-    return true;
+    return rc;
 }
 
 static int callbackStore(void* data, int argc, char** argv, char** azColName)
@@ -106,4 +98,30 @@ void DatabaseManager::printDatabaseTable(const std::string& tableName) const
         std::cerr << "SQL error: " << errorMessage << std::endl;
         sqlite3_free(errorMessage);
     }
+}
+
+bool DatabaseManager::isTableEmpty(const std::string& tableName) const
+{
+    std::string query = "SELECT COUNT(*) FROM " + tableName;
+    sqlite3_stmt* stmt;
+    bool isEmpty = false;
+
+    int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW) {
+        int count = sqlite3_column_int(stmt, 0);
+        printDatabaseTable("set_names");
+        isEmpty = (count == 0);
+    } else {
+        std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+        isEmpty = false;
+    }
+
+    sqlite3_finalize(stmt);
+    return isEmpty;
 }

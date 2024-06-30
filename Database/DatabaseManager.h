@@ -58,7 +58,7 @@ public:
      * @param query The SQL query to execute.
      * @return True if the query was successfully executed, false otherwise.
      */
-    bool executeQuery(const std::string& query) const;
+    int executeQuery(const std::string& query) const;
 
     /**
      * @brief Executes an SQL query on the database.
@@ -73,6 +73,14 @@ public:
      * @param tableName The name of the table to print.
      */
     void printDatabaseTable(const std::string& tableName) const;
+
+    /**
+     * @brief Checks if the specified table is empty.
+     * @param tableName The name of the table to check.
+     * @return True if the table is empty, false otherwise.
+     */
+    bool isTableEmpty(const std::string& tableName) const;
+
     friend class UserSessionInfo;
 
 public:
