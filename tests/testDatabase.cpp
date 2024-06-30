@@ -32,7 +32,7 @@ TEST_F(DatabaseTest, OpenDatabase) {
 
 TEST_F(DatabaseTest, CloseDatabase) {
     dbManager->closeDatabase();
-    ASSERT_FALSE(dbManager->executeQuery("SELECT 1;")); // Should fail because the database is closed
+    ASSERT_FALSE(dbManager->executeQuery("SELECT 1;"));
 }
 
 TEST_F(DatabaseTest, ExecuteQuery) {
@@ -67,6 +67,6 @@ TEST_F(DatabaseTest, PrintDatabaseTable) {
 
     // Check the output
     std::string output = oss.str();
-    std::string expectedOutput = "id: 1\nname: John Doe\n\n"; // Adjust this to match your actual print format
+    std::string expectedOutput = "id: 1\nname: John Doe\n\n";
     ASSERT_EQ(output, expectedOutput);
 }
