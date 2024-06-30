@@ -12,24 +12,7 @@
  * @brief Singleton class to manage user session information.
  */
 class UserSessionInfo {
-private:
-    std::string studySet; // Name of study set.
-    int sessionType = 0; // Type of study set.
-
-    DatabaseManager* dbManager;
-    static UserSessionInfo* instancePtr; // Pointer to singleton instance.
-
-    /**
-     * @brief Private constructor to prevent instantiation.
-     */
-    UserSessionInfo();
-
-    friend class UserSessionInfoTest;
-
 public:
-    UserSessionInfo(const UserSessionInfo& obj) = delete;
-    UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
-
     /**
      * @brief Gets the singleton instance of UserSessionInfo.
      * @return Pointer to the singleton instance.
@@ -144,6 +127,21 @@ public:
      * @return A vector of pairs representing key-value pairs.
      */
     std::vector<std::pair<std::string, std::string>> getRandomEntries(const std::string& setName, int x);
+
+    UserSessionInfo(const UserSessionInfo& obj) = delete;
+    UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
+
+private:
+    std::string studySet; // Name of study set.
+    int sessionType = 0; // Type of study set.
+
+    DatabaseManager* dbManager;
+    static UserSessionInfo* instancePtr; // Pointer to singleton instance.
+
+    /**
+     * @brief Private constructor to prevent instantiation.
+     */
+    UserSessionInfo();
 };
 
 #endif // QUIZLITE_USERSESSIONINFO_H

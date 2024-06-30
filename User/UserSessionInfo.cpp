@@ -9,7 +9,7 @@ UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo()
 {
-    dbManager = DatabaseManager::getDatabaseManager("A0000001.db");
+    dbManager = DatabaseManager::getDatabaseManager("studying.db");
     if (dbManager->openDatabase()) {
         if (dbManager->executeQuery(
                 "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
@@ -178,8 +178,10 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::
 
 bool UserSessionInfo::isSetNamesTableEmpty()
 {
-    if (dbManager->openDatabase())
+    if (dbManager->openDatabase()) {
         return dbManager->isTableEmpty("set_names");
+        dbManager->closeDatabase();
+    }
     return false;
 }
 

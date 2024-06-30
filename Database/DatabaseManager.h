@@ -17,17 +17,6 @@
  */
 class DatabaseManager {
 public:
-    sqlite3* db; // Pointer to the SQLite database connection
-    std::string dbName; // Name of the database
-    static DatabaseManager* instancePtr;
-
-    /**
-     * @brief Private constructor to initialize the database name and set the
-     * database pointer to nullptr.
-     * @param databaseName The name of the database to manage.
-     */
-    explicit DatabaseManager(std::string databaseName);
-
     /**
      * @brief Destructor to ensure the database connection is closed when the
      * DatabaseManager object is destroyed.
@@ -80,10 +69,20 @@ public:
      * @return True if the table is empty, false otherwise.
      */
     bool isTableEmpty(const std::string& tableName) const;
-
     friend class UserSessionInfo;
 
-public:
+private:
+    sqlite3* db; // Pointer to the SQLite database connection
+    std::string dbName; // Name of the database
+    static DatabaseManager* instancePtr;
+
+    /**
+     * @brief Private constructor to initialize the database name and set the
+     * database pointer to nullptr.
+     * @param databaseName The name of the database to manage.
+     */
+    explicit DatabaseManager(std::string databaseName);
+
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
 };
