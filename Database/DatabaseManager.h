@@ -69,7 +69,8 @@ public:
      * @return True if the table is empty, false otherwise.
      */
     bool isTableEmpty(const std::string& tableName) const;
-    friend class UserSessionInfo;
+
+    static void resetInstance();
 
 private:
     sqlite3* db; // Pointer to the SQLite database connection
@@ -85,5 +86,9 @@ private:
 
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
+
+    friend class UserSessionInfo;
+    friend class DatabaseManagerTest;
+    friend class UserSessionInfoTest;
 };
 #endif // QUIZLITE_DATABASEMANAGER_H

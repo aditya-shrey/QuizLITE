@@ -9,7 +9,7 @@ UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
 
 UserSessionInfo::UserSessionInfo()
 {
-    dbManager = DatabaseManager::getDatabaseManager("studying.db");
+    dbManager = DatabaseManager::getDatabaseManager("StudySets.db");
     if (dbManager->openDatabase()) {
         if (dbManager->executeQuery(
                 "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
@@ -179,8 +179,9 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::
 bool UserSessionInfo::isSetNamesTableEmpty()
 {
     if (dbManager->openDatabase()) {
-        return dbManager->isTableEmpty("set_names");
+        bool res = dbManager->isTableEmpty("set_names");
         dbManager->closeDatabase();
+        return res;
     }
     return false;
 }
@@ -278,4 +279,52 @@ std::vector<std::pair<std::string, std::string>> UserSessionInfo::getRandomEntri
         std::cerr << "Failed to open database for getRandomEntries" << std::endl;
     }
     return randomEntries;
+}
+
+bool UserSessionInfo::emptyAllSets()
+{
+    bool success = true;
+
+    if (dbManager->openDatabase()) {
+        // Get all study set names
+        std::string query = "SELECT name FROM set_names;";
+        auto results = dbManager->executeQueryWithResults(query);
+
+        for (const auto& row : results) {
+            std::string setName = row.at("name");
+
+            // Drop each table corresponding to the study set name
+            std::string dropTableQuery = "DROP TABLE IF EXISTS \"" + setName + "\";";
+            int dropResult = dbManager->executeQuery(dropTableQuery);
+            if (dropResult != SQLITE_OK) {
+                std::cerr << "SQL error: could not drop table for " << setName
+                          << ". Error: " << sqlite3_errmsg(dbManager->db) << std::endl;
+                success = false;
+            }
+        }
+
+        // Clear the set_names table
+        std::string clearSetNamesQuery = "DELETE FROM set_names;";
+        int clearResult = dbManager->executeQuery(clearSetNamesQuery);
+        if (clearResult != SQLITE_OK) {
+            std::cerr << "SQL error: could not clear set_names table. Error: "
+                      << sqlite3_errmsg(dbManager->db) << std::endl;
+            success = false;
+        }
+
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for emptyAllSets" << std::endl;
+        success = false;
+    }
+
+    return success;
+}
+
+void UserSessionInfo::resetInstance()
+{
+    if (instancePtr) {
+        delete instancePtr;
+        instancePtr = nullptr;
+    }
 }

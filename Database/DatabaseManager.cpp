@@ -125,3 +125,11 @@ bool DatabaseManager::isTableEmpty(const std::string& tableName) const
     sqlite3_finalize(stmt);
     return isEmpty;
 }
+
+void DatabaseManager::resetInstance()
+{
+    if (instancePtr) {
+        delete instancePtr;
+        instancePtr = nullptr;
+    }
+}

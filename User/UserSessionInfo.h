@@ -128,6 +128,12 @@ public:
      */
     std::vector<std::pair<std::string, std::string>> getRandomEntries(const std::string& setName, int x);
 
+    /**
+     * @brief Drops all study sets in the database.
+     * @return True if all sets were dropped successfully, false otherwise.
+     */
+    bool emptyAllSets();
+
     UserSessionInfo(const UserSessionInfo& obj) = delete;
     UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
 
@@ -142,6 +148,13 @@ private:
      * @brief Private constructor to prevent instantiation.
      */
     UserSessionInfo();
+
+    /**
+     * @brief Resets the singleton instance of UserSessionInfo.
+     */
+    static void resetInstance();
+
+    friend class UserSessionInfoTest;
 };
 
 #endif // QUIZLITE_USERSESSIONINFO_H

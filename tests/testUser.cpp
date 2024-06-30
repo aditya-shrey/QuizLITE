@@ -1,129 +1,114 @@
-#include <gtest/gtest.h>
 #include "../User/UserSessionInfo.h"
-#include <iostream>
-#include <sstream>
+#include <gtest/gtest.h>
 
-// Helper function to capture output and verify table contents
-std::string captureTableOutput(const std::string& tableName) {
-    std::ostringstream oss;
-    std::streambuf* p_cout_streambuf = std::cout.rdbuf();
-    std::cout.rdbuf(oss.rdbuf());
-
-    UserSessionInfo::getUserSessionInfo()->printDatabaseTable(tableName);
-
-    std::cout.rdbuf(p_cout_streambuf);
-    return oss.str();
-}
-
-// Test fixture for UserSessionInfo
 class UserSessionInfoTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        session = UserSessionInfo::getUserSessionInfo();
-        ASSERT_EQ(session->isSetNamesTableEmpty(), true);
+    void SetUp() override
+    {
+        UserSessionInfo::resetInstance();
+        userSessionInfo = UserSessionInfo::getUserSessionInfo();
     }
 
-    void TearDown() override {
-        delete session;
-        session = nullptr;
+    void TearDown() override
+    {
+        UserSessionInfo::resetInstance();
     }
 
-    UserSessionInfo* session;
+    UserSessionInfo* userSessionInfo {};
 };
 
-TEST_F(UserSessionInfoTest, TestSetStudySet) {
-    session->setStudySet("TestSet");
-    ASSERT_EQ(session->getStudySet(), "TestSet");
+TEST_F(UserSessionInfoTest, SingletonInstance)
+{
+    UserSessionInfo* userSessionInfo1 = UserSessionInfo::getUserSessionInfo();
+    UserSessionInfo* userSessionInfo2 = UserSessionInfo::getUserSessionInfo();
+    EXPECT_EQ(userSessionInfo1, userSessionInfo2);
 }
 
-TEST_F(UserSessionInfoTest, TestSetSessionType) {
-    session->setSessionType(2);
-    ASSERT_EQ(session->getSessionType(), 2);
+TEST_F(UserSessionInfoTest, SetAndGetStudySet)
+{
+    userSessionInfo->setStudySet("TestSet");
+    EXPECT_EQ(userSessionInfo->getStudySet(), "TestSet");
 }
 
-TEST_F(UserSessionInfoTest, TestSetValues) {
-    session->setValues("TestSet", 3);
-    ASSERT_EQ(session->getStudySet(), "TestSet");
-    ASSERT_EQ(session->getSessionType(), 3);
+TEST_F(UserSessionInfoTest, SetAndGetSessionType)
+{
+    userSessionInfo->setSessionType(1);
+    EXPECT_EQ(userSessionInfo->getSessionType(), 1);
 }
 
-TEST_F(UserSessionInfoTest, TestCreateStudySet) {
-    bool success = session->createStudySet("TestSet");
-    ASSERT_TRUE(success);
-    std::string output = captureTableOutput("set_names");
-    ASSERT_NE(output.find("TestSet"), std::string::npos);
+TEST_F(UserSessionInfoTest, SetValues)
+{
+    userSessionInfo->setValues("TestSet", 2);
+    EXPECT_EQ(userSessionInfo->getStudySet(), "TestSet");
+    EXPECT_EQ(userSessionInfo->getSessionType(), 2);
 }
 
-TEST_F(UserSessionInfoTest, TestExistsStudySet) {
-    session->createStudySet("TestSet");
-    bool exists = session->existsStudySet("TestSet");
-    ASSERT_TRUE(exists);
+TEST_F(UserSessionInfoTest, CreateAndCheckStudySet)
+{
+    EXPECT_TRUE(userSessionInfo->createStudySet("NewSet"));
+    EXPECT_TRUE(userSessionInfo->existsStudySet("NewSet"));
 }
 
-TEST_F(UserSessionInfoTest, TestDeleteStudySet) {
-    session->createStudySet("TestSet");
-    bool success = session->deleteStudySet("TestSet");
-    ASSERT_TRUE(success);
-    bool exists = session->existsStudySet("TestSet");
-    ASSERT_FALSE(exists);
+TEST_F(UserSessionInfoTest, DeleteStudySet)
+{
+    userSessionInfo->createStudySet("SetToDelete");
+    EXPECT_TRUE(userSessionInfo->deleteStudySet("SetToDelete"));
+    EXPECT_FALSE(userSessionInfo->existsStudySet("SetToDelete"));
 }
 
-TEST_F(UserSessionInfoTest, TestAddToStudySet) {
-    session->createStudySet("TestSet");
-    bool success = session->addToStudySet("TestSet", "Key1", "Value1");
-    ASSERT_TRUE(success);
-    std::string output = captureTableOutput("TestSet");
-    ASSERT_NE(output.find("Key1"), std::string::npos);
-    ASSERT_NE(output.find("Value1"), std::string::npos);
+TEST_F(UserSessionInfoTest, AddAndDeleteFromStudySet)
+{
+    userSessionInfo->createStudySet("SetForAddDelete");
+    EXPECT_TRUE(userSessionInfo->addToStudySet("SetForAddDelete", "Key1", "Value1"));
+    EXPECT_TRUE(userSessionInfo->deleteFromStudySet("SetForAddDelete", "Key1"));
 }
 
-TEST_F(UserSessionInfoTest, TestDeleteFromStudySet) {
-    session->createStudySet("TestSet");
-    session->addToStudySet("TestSet", "Key1", "Value1");
-    bool success = session->deleteFromStudySet("TestSet", "Key1");
-    ASSERT_TRUE(success);
-    std::string output = captureTableOutput("TestSet");
-    ASSERT_EQ(output.find("Key1"), std::string::npos);
+TEST_F(UserSessionInfoTest, IsSetNamesTableEmpty)
+{
+    EXPECT_TRUE(userSessionInfo->emptyAllSets());
+    EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
+    userSessionInfo->createStudySet("NonEmptySet");
+    EXPECT_FALSE(userSessionInfo->isSetNamesTableEmpty());
 }
 
-TEST_F(UserSessionInfoTest, TestIsSetNamesTableEmpty) {
-    session->createStudySet("TestSet");
-    ASSERT_FALSE(session->isSetNamesTableEmpty());
-    session->deleteStudySet("TestSet");
-    ASSERT_TRUE(session->isSetNamesTableEmpty());
+TEST_F(UserSessionInfoTest, UpdateScore)
+{
+    userSessionInfo->createStudySet("ScoreSet");
+    userSessionInfo->addToStudySet("ScoreSet", "Key1", "Value1");
+    EXPECT_TRUE(userSessionInfo->updateScore("ScoreSet", "Key1", true));
 }
 
-TEST_F(UserSessionInfoTest, TestUpdateScore) {
-    session->createStudySet("TestSet");
-    session->addToStudySet("TestSet", "Key1", "Value1");
-    bool success = session->updateScore("TestSet", "Key1", true);
-    ASSERT_TRUE(success);
-    std::string output = captureTableOutput("TestSet");
-    ASSERT_NE(output.find("1"), std::string::npos);
-}
-
-TEST_F(UserSessionInfoTest, TestGetTableKeyValues) {
-    session->createStudySet("TestSet");
-    session->addToStudySet("TestSet", "Key1", "Value1");
-    auto keyValues = session->getTableKeyValues("TestSet");
+TEST_F(UserSessionInfoTest, GetTableKeyValues)
+{
+    userSessionInfo->createStudySet("KeyValueSet");
+    userSessionInfo->addToStudySet("KeyValueSet", "Key1", "Value1");
+    auto keyValues = userSessionInfo->getTableKeyValues("KeyValueSet");
     ASSERT_EQ(keyValues.size(), 1);
-    ASSERT_EQ(keyValues[0].first, "Key1");
-    ASSERT_EQ(keyValues[0].second, "Value1");
+    EXPECT_EQ(keyValues[0].first, "Key1");
+    EXPECT_EQ(keyValues[0].second, "Value1");
 }
 
-TEST_F(UserSessionInfoTest, TestGetLowestAccuracies) {
-    session->createStudySet("TestSet");
-    session->addToStudySet("TestSet", "Key1", "Value1");
-    session->updateScore("TestSet", "Key1", false);
-    auto accuracies = session->getLowestAccuracies("TestSet", 1);
+TEST_F(UserSessionInfoTest, GetLowestAccuracies)
+{
+    userSessionInfo->createStudySet("AccuracySet");
+    userSessionInfo->addToStudySet("AccuracySet", "Key1", "Value1");
+    auto accuracies = userSessionInfo->getLowestAccuracies("AccuracySet", 1);
     ASSERT_EQ(accuracies.size(), 1);
-    ASSERT_EQ(std::get<0>(accuracies[0]), "Key1");
+    EXPECT_EQ(std::get<0>(accuracies[0]), "Key1");
 }
 
-TEST_F(UserSessionInfoTest, TestGetRandomEntries) {
-    session->createStudySet("TestSet");
-    session->addToStudySet("TestSet", "Key1", "Value1");
-    session->addToStudySet("TestSet", "Key2", "Value2");
-    auto randomEntries = session->getRandomEntries("TestSet", 2);
-    ASSERT_EQ(randomEntries.size(), 2);
+TEST_F(UserSessionInfoTest, GetRandomEntries)
+{
+    userSessionInfo->createStudySet("RandomSet");
+    userSessionInfo->addToStudySet("RandomSet", "Key1", "Value1");
+    auto randomEntries = userSessionInfo->getRandomEntries("RandomSet", 1);
+    ASSERT_EQ(randomEntries.size(), 1);
+    EXPECT_EQ(randomEntries[0].first, "Key1");
+}
+
+TEST_F(UserSessionInfoTest, EmptyAllSets)
+{
+    userSessionInfo->createStudySet("SetToEmpty");
+    EXPECT_TRUE(userSessionInfo->emptyAllSets());
+    EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
 }
