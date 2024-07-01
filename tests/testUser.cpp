@@ -117,3 +117,9 @@ TEST_F(UserSessionInfoTest, EmptyAllSets)
     EXPECT_TRUE(userSessionInfo->emptyAllSets());
     EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
 }
+
+/**
+* Tests remaining
+ *
+ *
+*/

@@ -1,9 +1,11 @@
 #include <iostream>
-#include <utility>
+#include <QApplication>
+#include <QPushButton>
+
 
 #include "User/UserSessionInfo.h"
 
-int main() {
+int main(int argc, char **argv) {
     std::cout << "Starting QuizLITE session.\n" << std::endl;
 
     UserSessionInfo* userSession = UserSessionInfo::getUserSessionInfo();
@@ -51,6 +53,13 @@ int main() {
 
     std::cout << "after deleting plys math101" << std::endl;
     userSession->printDatabaseTable("Math101");
+
+
+    // QApplication app (argc, argv);
+    // QPushButton button (" + Add a Flashcard");
+    // button.show();
+    // return app.exec();
+
 
     return 0;
 }

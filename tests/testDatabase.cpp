@@ -67,4 +67,10 @@ TEST_F(DatabaseManagerTest, IsTableEmpty)
 
     dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');");
     EXPECT_FALSE(dbManager->isTableEmpty("test"));
+
+
 }
+
+/**
+* Tests remaining
+*/
