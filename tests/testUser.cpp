@@ -119,7 +119,7 @@ TEST_F(UserSessionInfoTest, EmptyAllSets)
 }
 
 /**
-* Tests remaining
+ * Tests remaining
  *
  *
-*/
+ */

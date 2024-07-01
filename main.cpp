@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     std::cout << "Starting QuizLITE session.\n" << std::endl;
 
     UserSessionInfo* userSession = UserSessionInfo::getUserSessionInfo();
-//
+
 //    std::cout << "Attempting to create table: " << setName << std::endl;
 //    std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT);";
 //    int tableResult = dbManager->executeQuery(createTableQuery);
@@ -55,11 +55,9 @@ int main(int argc, char **argv) {
     userSession->printDatabaseTable("Math101");
 
 
-    // QApplication app (argc, argv);
-    // QPushButton button (" + Add a Flashcard");
-    // button.show();
-    // return app.exec();
-
-
-    return 0;
+    // Qt Interface
+     QApplication app (argc, argv);
+     QPushButton button (" + Add a Flashcard");
+     button.show();
+     return app.exec();
 }
