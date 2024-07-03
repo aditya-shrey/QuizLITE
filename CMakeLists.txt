@@ -36,7 +36,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 qt_standard_project_setup()
 
 
-
 add_executable(QuizLITE
         main.cpp
         User/UserSessionInfo.h
@@ -52,8 +51,6 @@ target_link_libraries(QuizLITE
         Qt6::Core
         Qt6::Gui
 )
-
-
 
 
 # Test executables
