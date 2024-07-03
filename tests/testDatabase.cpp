@@ -43,13 +43,9 @@ TEST_F(DatabaseManagerTest, CloseDatabase)
 
 TEST_F(DatabaseManagerTest, ExecuteQuery)
 {
-    EXPECT_EQ(dbManager->executeQuery("CREATE TABLE test (name TEXT);"),
-        SQLITE_OK);
-    EXPECT_EQ(
-        dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');"),
-        SQLITE_OK);
-    EXPECT_EQ(dbManager->executeQuery("INSERT INTO test (name) VALUES ('Bob');"),
-        SQLITE_OK);
+    EXPECT_EQ(dbManager->executeQuery("CREATE TABLE test (name TEXT);"), SQLITE_OK);
+    EXPECT_EQ(dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');"), SQLITE_OK);
+    EXPECT_EQ(dbManager->executeQuery("INSERT INTO test (name) VALUES ('Bob');"), SQLITE_OK);
 }
 
 TEST_F(DatabaseManagerTest, ExecuteQueryWithResults)
@@ -72,7 +68,3 @@ TEST_F(DatabaseManagerTest, IsTableEmpty)
     dbManager->executeQuery("INSERT INTO test (name) VALUES ('Alice');");
     EXPECT_FALSE(dbManager->isTableEmpty("test"));
 }
-
-/**
- * Tests remaining
- */
