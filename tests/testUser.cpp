@@ -64,7 +64,8 @@ TEST_F(UserSessionInfoTest, DeleteStudySet)
 TEST_F(UserSessionInfoTest, AddAndDeleteFromStudySet)
 {
     userSessionInfo->createStudySet("SetForAddDelete");
-    EXPECT_TRUE(userSessionInfo->addToStudySet("SetForAddDelete", "Key1", "Value1"));
+    EXPECT_TRUE(
+        userSessionInfo->addToStudySet("SetForAddDelete", "Key1", "Value1"));
     EXPECT_TRUE(userSessionInfo->deleteFromStudySet("SetForAddDelete", "Key1"));
 }
 
@@ -117,3 +118,9 @@ TEST_F(UserSessionInfoTest, EmptyAllSets)
     EXPECT_TRUE(userSessionInfo->emptyAllSets());
     EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
 }
+
+/**
+ * Tests remaining
+ *
+ *
+ */

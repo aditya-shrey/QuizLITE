@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors -g")
 
+
 # Make sure we have cloned googletest.
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     execute_process(COMMAND ${GIT_EXECUTABLE} -C ${PROJECT_SOURCE_DIR} submodule update --init --recursive)
@@ -31,15 +32,29 @@ include_directories(${googletest_SOURCE_DIR}/googletest/include)
 
 find_package(SQLite3 REQUIRED)
 find_package(GTest REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+qt_standard_project_setup()
+
+
 
 add_executable(QuizLITE
         main.cpp
         User/UserSessionInfo.h
         User/UserSessionInfo.cpp
-        Database/DatabaseManager.cpp
         Database/DatabaseManager.h
+        Database/DatabaseManager.cpp
+        Menu/MainWindow.h
+        Menu/MainWindow.cpp
 )
 target_link_libraries(QuizLITE SQLite::SQLite3)
+target_link_libraries(QuizLITE
+        Qt6::Widgets
+        Qt6::Core
+        Qt6::Gui
+)
+
+
+
 
 # Test executables
 add_executable(TestExecutables

@@ -1,13 +1,14 @@
 #include <iostream>
-#include <utility>
-
 #include "User/UserSessionInfo.h"
+#include "Menu/MainWindow.h"
+#include <QApplication>
+#include <QPushButton>
 
-int main() {
+int main(int argc, char **argv) {
     std::cout << "Starting QuizLITE session.\n" << std::endl;
 
     UserSessionInfo* userSession = UserSessionInfo::getUserSessionInfo();
-//
+
 //    std::cout << "Attempting to create table: " << setName << std::endl;
 //    std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT);";
 //    int tableResult = dbManager->executeQuery(createTableQuery);
@@ -52,5 +53,11 @@ int main() {
     std::cout << "after deleting plys math101" << std::endl;
     userSession->printDatabaseTable("Math101");
 
-    return 0;
+
+    // Qt Interface
+     QApplication app (argc, argv);
+     MainWindow window;
+     window.show();
+
+     return app.exec();
 }
