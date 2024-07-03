@@ -1,9 +1,8 @@
 #include <iostream>
+#include "User/UserSessionInfo.h"
+#include "Menu/MainWindow.h"
 #include <QApplication>
 #include <QPushButton>
-
-
-#include "User/UserSessionInfo.h"
 
 int main(int argc, char **argv) {
     std::cout << "Starting QuizLITE session.\n" << std::endl;
@@ -55,12 +54,10 @@ int main(int argc, char **argv) {
     userSession->printDatabaseTable("Math101");
 
 
-    //Testing branch fix so I only need to do PRs for main
-
-
     // Qt Interface
      QApplication app (argc, argv);
-     QPushButton button (" + Add a Flashcard");
-     button.show();
+     MainWindow window;
+     window.show();
+
      return app.exec();
 }
