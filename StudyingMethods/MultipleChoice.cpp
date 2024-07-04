@@ -1,29 +1,36 @@
 #include "MultipleChoice.h"
 
-MultipleChoice::MultipleChoice(const std::string& setName) : currentIndex(0), setName(setName) {
+MultipleChoice::MultipleChoice(const std::string& setName)
+    : currentIndex(0)
+    , setName(setName)
+{
     keyValues = UserSessionInfo::getUserSessionInfo()->getTableKeyValues(setName);
 }
 
-void MultipleChoice::startStudying() {
+void MultipleChoice::startStudying()
+{
     currentIndex = 0;
     std::cout << "Started studying multiple choice." << std::endl;
 }
 
-void MultipleChoice::endStudying() {
+void MultipleChoice::endStudying()
+{
     std::cout << "Finished studying multiple choice." << std::endl;
 }
 
-void MultipleChoice::generateOptions() {
+void MultipleChoice::generateOptions()
+{
     options.clear();
     std::sample(keyValues.begin(), keyValues.end(), std::back_inserter(options),
-                4, std::mt19937{std::random_device{}()});
+        4, std::mt19937 { std::random_device {}() });
     if (std::find(options.begin(), options.end(), keyValues[currentIndex]) == options.end()) {
         options[0] = keyValues[currentIndex]; // Ensure the correct answer is one of the options
     }
-    std::shuffle(options.begin(), options.end(), std::mt19937{std::random_device{}()});
+    std::shuffle(options.begin(), options.end(), std::mt19937 { std::random_device {}() });
 }
 
-void MultipleChoice::displayQuestion() {
+void MultipleChoice::displayQuestion()
+{
     if (currentIndex < keyValues.size()) {
         generateOptions();
         std::cout << "Question: " << keyValues[currentIndex].first << std::endl;
@@ -35,7 +42,8 @@ void MultipleChoice::displayQuestion() {
     }
 }
 
-std::string MultipleChoice::revealAnswer() {
+std::string MultipleChoice::revealAnswer()
+{
     if (currentIndex < keyValues.size()) {
         std::string correctAnswer = keyValues[currentIndex].second;
 
@@ -58,7 +66,8 @@ std::string MultipleChoice::revealAnswer() {
     return "question=&correctAnswer=";
 }
 
-void MultipleChoice::goToNextQuestion() {
+void MultipleChoice::goToNextQuestion()
+{
     if (currentIndex < keyValues.size()) {
         currentIndex++;
     } else {
@@ -66,7 +75,8 @@ void MultipleChoice::goToNextQuestion() {
     }
 }
 
-void MultipleChoice::updateScoresInTable(bool isCorrect) {
+void MultipleChoice::updateScoresInTable(bool isCorrect)
+{
     if (currentIndex < keyValues.size()) {
         UserSessionInfo::getUserSessionInfo()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
     }

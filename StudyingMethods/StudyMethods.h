@@ -5,10 +5,10 @@
 #ifndef QUIZLITE_STUDYMETHODS_H
 #define QUIZLITE_STUDYMETHODS_H
 
-#include <vector>
+#include <iostream>
 #include <string>
 #include <utility>
-#include <iostream>
+#include <vector>
 
 class StudyMethods {
 public:
@@ -20,4 +20,4 @@ public:
     virtual ~StudyMethods() = default;
 };
 
-#endif //QUIZLITE_STUDYMETHODS_H
+#endif // QUIZLITE_STUDYMETHODS_H

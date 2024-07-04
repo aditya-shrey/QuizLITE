@@ -5,11 +5,11 @@
 #ifndef QUIZLITE_MULTIPLECHOICE_H
 #define QUIZLITE_MULTIPLECHOICE_H
 
-#include "StudyMethods.h"
 #include "../User/UserSessionInfo.h"
-#include <vector>
-#include <random>
+#include "StudyMethods.h"
 #include <algorithm>
+#include <random>
+#include <vector>
 
 class MultipleChoice : public StudyMethods {
 private:
@@ -29,4 +29,4 @@ public:
     void generateOptions();
 };
 
-#endif //QUIZLITE_MULTIPLECHOICE_H
+#endif // QUIZLITE_MULTIPLECHOICE_H

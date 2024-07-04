@@ -1,29 +1,36 @@
 #include "InverseMultipleChoice.h"
 
-InverseMultipleChoice::InverseMultipleChoice(const std::string& setName) : currentIndex(0), setName(setName) {
+InverseMultipleChoice::InverseMultipleChoice(const std::string& setName)
+    : currentIndex(0)
+    , setName(setName)
+{
     keyValues = UserSessionInfo::getUserSessionInfo()->getTableKeyValues(setName);
 }
 
-void InverseMultipleChoice::startStudying() {
+void InverseMultipleChoice::startStudying()
+{
     currentIndex = 0;
     std::cout << "Started studying inverse multiple choice." << std::endl;
 }
 
-void InverseMultipleChoice::endStudying() {
+void InverseMultipleChoice::endStudying()
+{
     std::cout << "Finished studying inverse multiple choice." << std::endl;
 }
 
-void InverseMultipleChoice::generateOptions() {
+void InverseMultipleChoice::generateOptions()
+{
     options.clear();
     std::sample(keyValues.begin(), keyValues.end(), std::back_inserter(options),
-                4, std::mt19937{std::random_device{}()});
+        4, std::mt19937 { std::random_device {}() });
     if (std::find(options.begin(), options.end(), keyValues[currentIndex]) == options.end()) {
         options[0] = keyValues[currentIndex]; // Ensure the correct answer is one of the options
     }
-    std::shuffle(options.begin(), options.end(), std::mt19937{std::random_device{}()});
+    std::shuffle(options.begin(), options.end(), std::mt19937 { std::random_device {}() });
 }
 
-void InverseMultipleChoice::displayQuestion() {
+void InverseMultipleChoice::displayQuestion()
+{
     if (currentIndex < keyValues.size()) {
         generateOptions();
         std::cout << "Option: " << keyValues[currentIndex].second << std::endl;
@@ -35,7 +42,8 @@ void InverseMultipleChoice::displayQuestion() {
     }
 }
 
-std::string InverseMultipleChoice::revealAnswer() {
+std::string InverseMultipleChoice::revealAnswer()
+{
     if (currentIndex < keyValues.size()) {
         std::string correctQuestion = keyValues[currentIndex].first;
 
@@ -58,7 +66,8 @@ std::string InverseMultipleChoice::revealAnswer() {
     return "option=&correctQuestion=";
 }
 
-void InverseMultipleChoice::goToNextQuestion() {
+void InverseMultipleChoice::goToNextQuestion()
+{
     if (currentIndex < keyValues.size()) {
         currentIndex++;
     } else {
@@ -66,7 +75,8 @@ void InverseMultipleChoice::goToNextQuestion() {
     }
 }
 
-void InverseMultipleChoice::updateScoresInTable(bool isCorrect) {
+void InverseMultipleChoice::updateScoresInTable(bool isCorrect)
+{
     if (currentIndex < keyValues.size()) {
         UserSessionInfo::getUserSessionInfo()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
     }

@@ -5,11 +5,11 @@
 #ifndef QUIZLITE_INVERSEMULTIPLECHOICE_H
 #define QUIZLITE_INVERSEMULTIPLECHOICE_H
 
-#include "StudyMethods.h"
 #include "../User/UserSessionInfo.h"
-#include <vector>
-#include <random>
+#include "StudyMethods.h"
 #include <algorithm>
+#include <random>
+#include <vector>
 
 class InverseMultipleChoice : public StudyMethods {
 private:
@@ -29,4 +29,4 @@ public:
     void generateOptions();
 };
 
-#endif //QUIZLITE_INVERSEMULTIPLECHOICE_H
+#endif // QUIZLITE_INVERSEMULTIPLECHOICE_H

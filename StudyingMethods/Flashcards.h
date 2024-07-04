@@ -5,8 +5,8 @@
 #ifndef QUIZLITE_FLASHCARDS_H
 #define QUIZLITE_FLASHCARDS_H
 
-#include "StudyMethods.h"
 #include "../User/UserSessionInfo.h"
+#include "StudyMethods.h"
 
 class Flashcards : public StudyMethods {
 private:
@@ -23,4 +23,4 @@ public:
     void goToNextQuestion() override;
 };
 
-#endif //QUIZLITE_FLASHCARDS_H
+#endif // QUIZLITE_FLASHCARDS_H
