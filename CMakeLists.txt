@@ -38,8 +38,17 @@ add_executable(QuizLITE
         User/UserSessionInfo.cpp
         Database/DatabaseManager.cpp
         Database/DatabaseManager.h
+        StudyingMethods/StudyMethods.h
+        StudyingMethods/Flashcards.cpp
+        StudyingMethods/Flashcards.h
+        StudyingMethods/MultipleChoice.cpp
+        StudyingMethods/MultipleChoice.h
+        StudyingMethods/InverseMultipleChoice.cpp
+        StudyingMethods/InverseMultipleChoice.h
 )
-target_link_libraries(QuizLITE SQLite::SQLite3)
+target_link_libraries(QuizLITE
+        SQLite::SQLite3
+)
 
 # Test executables
 add_executable(TestExecutables
