@@ -8,7 +8,7 @@
 
 MainWindow::MainWindow() {
     //make user session
-    UserSessionInfo *userSession = UserSessionInfo::getUserSessionInfo();
+//    UserSessionInfo *userSession = UserSessionInfo::getUserSessionInfo();
 
     //Creating new Widgets
     QWidget *widget = new QWidget;
@@ -47,8 +47,8 @@ MainWindow::MainWindow() {
     actionPingLayout->addWidget(bottomFiller);
     widget->setLayout(actionPingLayout);
 
-    createActions();
-    createMenus();
+    createMenuActions();
+    addMenuActions();
 
     QString msg = tr("A context menu is available by right-clicking");
     statusBar()->showMessage(msg);
@@ -58,15 +58,15 @@ MainWindow::MainWindow() {
     resize(480, 320);
 }
 
-void MainWindow::createSet() {
-
-}
-
-
-
-void MainWindow::startSearch() {
-
-}
+//void MainWindow::createSet() {
+//
+//}
+//
+//
+//
+//void MainWindow::startSearch() {
+//
+//}
 
 
 

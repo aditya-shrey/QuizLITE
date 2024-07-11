@@ -30,13 +30,14 @@ private slots:
     void newFile();
     void open();
     void save();
+
+
     void undo();
     void redo();
 
 private:
     void createMenuActions();
     void addMenuActions();
-    void
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -48,10 +49,6 @@ private:
     QAction *undoAct;
     QAction *redoAct;
     QLabel *infoLabel;
-
-
-
-
 
 
 };
