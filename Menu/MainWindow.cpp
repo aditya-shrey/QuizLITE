@@ -4,10 +4,30 @@
 
 #include <QtWidgets>
 #include "MainWindow.h"
+#include "../User/UserSessionInfo.h"
 
 MainWindow::MainWindow() {
+    //make user session
+    UserSessionInfo *userSession = UserSessionInfo::getUserSessionInfo();
+
     //Creating new Widgets
     QWidget *widget = new QWidget;
+
+    QPushButton *createSet_butt = new QPushButton("Create set");
+    QPushButton *search_butt = new QPushButton("Search for anything");
+
+    // button layout
+    QVBoxLayout *button_layout = new QVBoxLayout();
+    button_layout->addWidget(createSet_butt);
+    button_layout->addWidget(search_butt);
+    button_layout->setContentsMargins(0, 0, 0, 0);
+    button_layout->setSpacing(0);
+
+    // main layout
+    QVBoxLayout *main_layout = new QVBoxLayout(widget);
+    main_layout->addLayout(button_layout, Qt::AlignTop);
+    main_layout->addStretch(); // Add stretch to push buttons to the top
+
     setCentralWidget(widget);
 
     QWidget *topFiller = new QWidget();
@@ -20,12 +40,12 @@ MainWindow::MainWindow() {
     QWidget *bottomFiller = new QWidget;
     bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(5, 5, 5, 5);
-    layout->addWidget(topFiller);
-    layout->addWidget(infoLabel);
-    layout->addWidget(bottomFiller);
-    widget->setLayout(layout);
+    QVBoxLayout *actionPingLayout = new QVBoxLayout;
+    actionPingLayout->setContentsMargins(5, 5, 5, 5);
+    actionPingLayout->addWidget(topFiller);
+    actionPingLayout->addWidget(infoLabel);
+    actionPingLayout->addWidget(bottomFiller);
+    widget->setLayout(actionPingLayout);
 
     createActions();
     createMenus();
@@ -34,22 +54,22 @@ MainWindow::MainWindow() {
     statusBar()->showMessage(msg);
 
     setWindowTitle(tr("QuizLITE"));
-    setMinimumSize(160, 160);
+    setMinimumSize(300, 300);
     resize(480, 320);
 }
 
+void MainWindow::createSet() {
 
-
-// IDK why there is ifndef here. This is just if you right-click on blank page it opens a small menu
-#ifndef QT_NO_CONTEXTMENU
-void MainWindow::contextMenuEvent(QContextMenuEvent *event) {
-    QMenu menu(this);
-    menu.addAction(cutAct);
-//    menu.addAction(copyAct);
-//    menu.addAction(pasteAct);
-    menu.exec(event->globalPos());
 }
-#endif // QT_NO_CONTEXTMENU
+
+
+
+void MainWindow::startSearch() {
+
+}
+
+
+
 
 
 void MainWindow::newFile() {
@@ -72,56 +92,8 @@ void MainWindow::redo() {
     infoLabel->setText(tr("Invoked <b>Edt|Redo</b>"));
 }
 
-void MainWindow::cut() {
-    infoLabel->setText(tr("Invoked <b>Edit|Cut</b>"));
-}
 
-//void MainWindow::copy() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Copy</b>"));
-//}
-//
-//void MainWindow::paste(){
-//    infoLabel->setText(tr("Invoked <b>Edit|Paste</b>"));
-//}
-//
-//void MainWindow::bold() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Bold</b>"));
-//}
-//
-//void MainWindow::italic() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Italic</b>"));
-//}
-//
-//void MainWindow::leftAlign() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Left Align</b>"));
-//}
-//
-//void MainWindow::rightAlign() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Right Align</b>"));
-//}
-//
-//void MainWindow::justify() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Justify</b>"));
-//}
-//
-//void MainWindow::center() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Center</b>"));
-//}
-//
-//void MainWindow::setLineSpacing() {}() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Set Line Spacing</b>"));
-//}
-//
-//void MainWindow::setParagraphSpacing() {}() {
-//    infoLabel->setText(tr("Invoked <b>Edit|Format|Set Paragraph Spacing</b>"));
-//}
-//
-//void MainWindow::about() {
-//    infoLabel->setText(tr("Invoked <b>Help|About</b>"));
-//    QMessageBox::about(this, tr("About Menu"), tr("This <b>Menu</b> shows how to make menu-bars and context menus");
-//}
-
-void MainWindow::createActions() {
+void MainWindow::createMenuActions() {
     newAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew), tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Create a new file"));
@@ -147,33 +119,15 @@ void MainWindow::createActions() {
     undoAct->setStatusTip(tr("Undo last action"));
     connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
 
-
     redoAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::EditRedo), tr("&Redo"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo last action"));
     connect(redoAct, &QAction::triggered, this, &MainWindow::redo);
 
-    cutAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::EditCut), tr("&Cut)"), this);
-    cutAct->setShortcuts(QKeySequence::Cut);
-    cutAct->setStatusTip(tr("Cut last action"));
-    connect(cutAct, &QAction::triggered, this, &MainWindow::cut);
-
-    /**
-     * Remaining actions
-     *
-     * copy
-     * paste
-     * bold
-     * italic
-     * setlinespacing
-     * setparagraphspacing
-     * about tab
-     * left, right, justify, center alignment
-     */
 }
 
 
-void MainWindow::createMenus() {
+void MainWindow::addMenuActions() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
@@ -184,19 +138,7 @@ void MainWindow::createMenus() {
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
-    editMenu->addSeparator();
-    editMenu->addAction(cutAct);
-//    editMenu->addAction(copyAct);
-//    editMenu->addAction(pasteAct);
-//    editMenu->addSeparator();
-
-//    helpMenu = menuBar()->addMenu(tr("&Help"));
-//    helpMenu->addAction(aboutAct);
-
-
-//    formatMenu = menuBar()->addMenu(tr("&Format"));
-    /*
-    * Add formatMenu
-    * bold, italic, alignment options...
-    */
 }
+
+
+
