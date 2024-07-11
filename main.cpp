@@ -6,6 +6,8 @@
 #include "StudyingMethods/MultipleChoice.h"
 #include "StudyingMethods/InverseMultipleChoice.h"
 
+
+
 void populateDatabase() {
     UserSessionInfo* session = UserSessionInfo::getUserSessionInfo();
     std::string setName = "AnimalQuiz";
