@@ -31,32 +31,6 @@ UserSessionInfo* UserSessionInfo::getUserSessionInfo()
     return instancePtr;
 }
 
-void UserSessionInfo::setStudySet(std::string setName)
-{
-    studySet = std::move(setName);
-}
-
-void UserSessionInfo::setSessionType(int sessionNum)
-{
-    sessionType = sessionNum;
-}
-
-void UserSessionInfo::setValues(std::string setName, int sessionNum)
-{
-    setStudySet(std::move(setName));
-    setSessionType(sessionNum);
-}
-
-[[nodiscard]] std::string UserSessionInfo::getStudySet() const
-{
-    return studySet;
-}
-
-[[nodiscard]] int UserSessionInfo::getSessionType() const
-{
-    return sessionType;
-}
-
 void UserSessionInfo::printDatabaseTable(const std::string& tableName)
 {
     if (dbManager->openDatabase()) {
@@ -148,7 +122,7 @@ bool UserSessionInfo::addToStudySet(const std::string& setName, const std::strin
 {
     bool success = false;
     if (dbManager->openDatabase()) {
-        std::string query = "INSERT INTO \"" + setName + "\" (Key, Value, TotalCorrect, TimesAsked) VALUES ('" + key + "', '" + value + "', 0, 1);";
+        std::string query = "INSERT INTO \"" + setName + "\" (Key, Value, TotalCorrect, TimesAsked) VALUES ('" + key + "', '" + value + "', 0, 0);";
         int result = dbManager->executeQuery(query);
         if (result == SQLITE_OK) {
             success = true;
@@ -235,6 +209,32 @@ std::vector<std::pair<std::string, std::string>> UserSessionInfo::getTableKeyVal
     return keyValues;
 }
 
+std::vector<std::tuple<int, std::string, std::string, int, int>> UserSessionInfo::getTable(const std::string& setName)
+{
+    std::vector<std::tuple<int, std::string, std::string, int, int>> tableData;
+    if (!existsStudySet(setName)) {
+        std::cerr << "Study set " << setName << " does not exist." << std::endl;
+        return tableData;
+    }
+
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT id, Key, Value, TotalCorrect, TimesAsked FROM \"" + setName + "\";";
+        auto results = dbManager->executeQueryWithResults(query);
+        for (const auto& row : results) {
+            int id = std::stoi(row.at("id"));
+            std::string key = row.at("Key");
+            std::string value = row.at("Value");
+            int totalCorrect = std::stoi(row.at("TotalCorrect"));
+            int timesAsked = std::stoi(row.at("TimesAsked"));
+            tableData.emplace_back(id, key, value, totalCorrect, timesAsked);
+        }
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getTable" << std::endl;
+    }
+    return tableData;
+}
+
 std::vector<std::tuple<std::string, std::string, float>> UserSessionInfo::getLowestAccuracies(const std::string& setName, int x)
 {
     std::vector<std::tuple<std::string, std::string, float>> lowestAccuracies;
@@ -244,7 +244,8 @@ std::vector<std::tuple<std::string, std::string, float>> UserSessionInfo::getLow
     }
 
     if (dbManager->openDatabase()) {
-        std::string query = "SELECT Key, Value, (TotalCorrect * 1.0 / TimesAsked) as Accuracy "
+        std::string query = "SELECT Key, Value, "
+                            "CASE WHEN TimesAsked = 0 THEN 0 ELSE (TotalCorrect * 1.0 / TimesAsked) END as Accuracy "
                             "FROM \""
             + setName + "\" "
                         "ORDER BY Accuracy ASC LIMIT "
