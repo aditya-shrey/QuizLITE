@@ -1,13 +1,13 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include "User/UserSessionInfo.h"
+#include "User/UserSession.h"
 #include "StudyingMethods/Flashcards.h"
 #include "StudyingMethods/MultipleChoice.h"
 #include "StudyingMethods/InverseMultipleChoice.h"
 
 void populateDatabase() {
-    auto userSession = UserSessionInfo::getUserSessionInfo();
+    auto userSession = UserSession::getUserSession();
 
     // Create study sets
     userSession->createStudySet("Math");

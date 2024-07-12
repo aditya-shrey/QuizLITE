@@ -1,5 +1,5 @@
 #include "../StudyingMethods/InverseMultipleChoice.h"
-#include "../User/UserSessionInfo.h"
+#include "../User/UserSession.h"
 #include <gtest/gtest.h>
 #include <unordered_set>
 
@@ -7,7 +7,7 @@ class InverseMultipleChoiceTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
-        auto userSession = UserSessionInfo::getUserSessionInfo();
+        auto userSession = UserSession::getUserSession();
         userSession->createStudySet("History");
         userSession->addToStudySet("History", "1776", "Independence of USA");
         userSession->addToStudySet("History", "1945", "End of WWII");
@@ -16,7 +16,7 @@ protected:
 
     void TearDown() override
     {
-        auto userSession = UserSessionInfo::getUserSessionInfo();
+        auto userSession = UserSession::getUserSession();
         userSession->deleteStudySet("History");
     }
 };
@@ -81,7 +81,7 @@ TEST_F(InverseMultipleChoiceTest, TestGenerateOptions)
 
 TEST_F(InverseMultipleChoiceTest, TestUpdateScoresAndOrder)
 {
-    auto userSession = UserSessionInfo::getUserSessionInfo();
+    auto userSession = UserSession::getUserSession();
     TestableInverseMultipleChoice inverseMultipleChoice("History", 3, 0); // 3 lowest accuracy entries, no random entries
 
     for (int i = 0; i < 3; ++i) {

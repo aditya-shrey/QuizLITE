@@ -5,7 +5,7 @@
 #ifndef QUIZLITE_FLASHCARDS_H
 #define QUIZLITE_FLASHCARDS_H
 
-#include "../User/UserSessionInfo.h"
+#include "../User/UserSession.h"
 #include "StudyMethods.h"
 
 /**

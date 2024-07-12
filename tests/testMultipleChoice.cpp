@@ -1,5 +1,5 @@
 #include "../StudyingMethods/MultipleChoice.h"
-#include "../User/UserSessionInfo.h"
+#include "../User/UserSession.h"
 #include <gtest/gtest.h>
 #include <unordered_set>
 
@@ -7,7 +7,7 @@ class MultipleChoiceTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
-        auto userSession = UserSessionInfo::getUserSessionInfo();
+        auto userSession = UserSession::getUserSession();
         userSession->createStudySet("Science");
         userSession->addToStudySet("Science", "H2O", "Water");
         userSession->addToStudySet("Science", "CO2", "Carbon Dioxide");
@@ -16,7 +16,7 @@ protected:
 
     void TearDown() override
     {
-        auto userSession = UserSessionInfo::getUserSessionInfo();
+        auto userSession = UserSession::getUserSession();
         userSession->deleteStudySet("Science");
     }
 };
@@ -80,7 +80,7 @@ TEST_F(MultipleChoiceTest, TestGenerateOptions)
 
 TEST_F(MultipleChoiceTest, TestUpdateScoresAndOrder)
 {
-    auto userSession = UserSessionInfo::getUserSessionInfo();
+    auto userSession = UserSession::getUserSession();
     TestableMultipleChoice multipleChoice("Science", 3, 0); // 3 lowest accuracy entries, no random entries
 
     for (int i = 0; i < 3; ++i) {

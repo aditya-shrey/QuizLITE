@@ -34,8 +34,8 @@ find_package(GTest REQUIRED)
 
 add_executable(QuizLITE
         main.cpp
-        User/UserSessionInfo.h
-        User/UserSessionInfo.cpp
+        User/UserSession.h
+        User/UserSession.cpp
         Database/DatabaseManager.cpp
         Database/DatabaseManager.h
         StudyingMethods/StudyMethods.h
@@ -57,8 +57,8 @@ add_executable(TestExecutables
         Database/DatabaseManager.cpp
         Database/DatabaseManager.h
         tests/testUser.cpp
-        User/UserSessionInfo.h
-        User/UserSessionInfo.cpp
+        User/UserSession.h
+        User/UserSession.cpp
         tests/testFlashcards.cpp
         StudyingMethods/StudyMethods.h
         StudyingMethods/Flashcards.cpp

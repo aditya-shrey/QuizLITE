@@ -4,7 +4,7 @@ InverseMultipleChoice::InverseMultipleChoice(const std::string& setName, int num
     : currentIndex(0)
     , setName(setName)
 {
-    auto userSession = UserSessionInfo::getUserSessionInfo();
+    auto userSession = UserSession::getUserSession();
 
     auto lowestAccuracies = userSession->getLowestAccuracies(setName, numLowestAccuracies);
     for (const auto& entry : lowestAccuracies) {
@@ -58,6 +58,6 @@ std::tuple<std::string, std::string, std::string, std::string> InverseMultipleCh
 void InverseMultipleChoice::updateScoresInTable(bool isCorrect)
 {
     if (currentIndex < keyValues.size()) {
-        UserSessionInfo::getUserSessionInfo()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
+        UserSession::getUserSession()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
     }
 }

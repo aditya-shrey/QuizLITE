@@ -100,8 +100,8 @@ private:
     static void resetInstance();
 #endif
 
-    friend class UserSessionInfo;
+    friend class UserSession;
     friend class DatabaseManagerTest;
-    friend class UserSessionInfoTest;
+    friend class UserSessionTest;
 };
 #endif // QUIZLITE_DATABASEMANAGER_H

@@ -1,24 +1,24 @@
 //
 // Created by Aditya Shrey on 6/26/24.
 //
-#ifndef QUIZLITE_USERSESSIONINFO_H
-#define QUIZLITE_USERSESSIONINFO_H
+#ifndef QUIZLITE_UserSession_H
+#define QUIZLITE_UserSession_H
 
 #include "../Database/DatabaseManager.h"
 #include <iostream>
 
 /**
- * @class UserSessionInfo
+ * @class UserSession
  * @brief Singleton class to manage user session information.
  */
-class UserSessionInfo {
+class UserSession {
 public:
     /**
-     * @brief Gets the singleton instance of UserSessionInfo.
+     * @brief Gets the singleton instance of UserSession.
      *
      * @return Pointer to the singleton instance.
      */
-    static UserSessionInfo* getUserSessionInfo();
+    static UserSession* getUserSession();
 
     /**
      * @brief Checks if a study set exists in the database.
@@ -125,8 +125,8 @@ public:
      */
     void printDatabaseTable(const std::string& tableName);
 
-    UserSessionInfo(const UserSessionInfo& obj) = delete;
-    UserSessionInfo& operator=(const UserSessionInfo& obj) = delete;
+    UserSession(const UserSession& obj) = delete;
+    UserSession& operator=(const UserSession& obj) = delete;
 
 private:
     /**
@@ -147,21 +147,21 @@ private:
     /**
      * @brief Pointer to the singleton instance.
      */
-    static UserSessionInfo* instancePtr;
+    static UserSession* instancePtr;
 
     /**
      * @brief Private constructor for singleton pattern.
      */
-    UserSessionInfo();
+    UserSession();
 
 #ifdef TESTING
     /**
-     * @brief Resets the singleton instance of UserSessionInfo.
+     * @brief Resets the singleton instance of UserSession.
      */
     static void resetInstance();
 #endif
 
-    friend class UserSessionInfoTest;
+    friend class UserSessionTest;
 };
 
-#endif // QUIZLITE_USERSESSIONINFO_H
+#endif // QUIZLITE_UserSession_H

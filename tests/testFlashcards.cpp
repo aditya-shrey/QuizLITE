@@ -1,12 +1,12 @@
 #include "../StudyingMethods/Flashcards.h"
-#include "../User/UserSessionInfo.h"
+#include "../User/UserSession.h"
 #include <gtest/gtest.h>
 
 class FlashcardsTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
-        auto userSession = UserSessionInfo::getUserSessionInfo();
+        auto userSession = UserSession::getUserSession();
         userSession->createStudySet("Math");
         userSession->addToStudySet("Math", "2+2", "4");
         userSession->addToStudySet("Math", "3*3", "9");

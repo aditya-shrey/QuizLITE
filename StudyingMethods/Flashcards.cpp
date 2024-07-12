@@ -4,7 +4,7 @@ Flashcards::Flashcards(const std::string& setName)
     : currentIndex(0)
     , setName(setName)
 {
-    keyValues = UserSessionInfo::getUserSessionInfo()->getTableKeyValues(setName);
+    keyValues = UserSession::getUserSession()->getTableKeyValues(setName);
 }
 
 std::string Flashcards::getQuestion()

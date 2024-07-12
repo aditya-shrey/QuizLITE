@@ -5,7 +5,7 @@
 #ifndef QUIZLITE_INVERSEMULTIPLECHOICE_H
 #define QUIZLITE_INVERSEMULTIPLECHOICE_H
 
-#include "../User/UserSessionInfo.h"
+#include "../User/UserSession.h"
 #include "StudyMethods.h"
 #include <algorithm>
 #include <random>

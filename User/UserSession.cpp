@@ -1,13 +1,13 @@
 //
 // Created by Aditya Shrey on 6/26/24.
 //
-#include "UserSessionInfo.h"
+#include "UserSession.h"
 #include <iostream>
 #include <utility>
 
-UserSessionInfo* UserSessionInfo::instancePtr = nullptr;
+UserSession* UserSession::instancePtr = nullptr;
 
-UserSessionInfo::UserSessionInfo()
+UserSession::UserSession()
 {
     dbManager = DatabaseManager::getDatabaseManager("StudySets.db");
     if (dbManager->openDatabase()) {
@@ -23,15 +23,15 @@ UserSessionInfo::UserSessionInfo()
     }
 }
 
-UserSessionInfo* UserSessionInfo::getUserSessionInfo()
+UserSession* UserSession::getUserSession()
 {
     if (instancePtr == nullptr) {
-        instancePtr = new UserSessionInfo();
+        instancePtr = new UserSession();
     }
     return instancePtr;
 }
 
-void UserSessionInfo::printDatabaseTable(const std::string& tableName)
+void UserSession::printDatabaseTable(const std::string& tableName)
 {
     if (dbManager->openDatabase()) {
         std::cout << "Printing table: " << tableName << std::endl;
@@ -43,7 +43,7 @@ void UserSessionInfo::printDatabaseTable(const std::string& tableName)
     }
 }
 
-bool UserSessionInfo::existsStudySet(const std::string& setName)
+bool UserSession::existsStudySet(const std::string& setName)
 {
     bool exists = false;
     if (dbManager->openDatabase()) {
@@ -59,7 +59,7 @@ bool UserSessionInfo::existsStudySet(const std::string& setName)
     return exists;
 }
 
-bool UserSessionInfo::createStudySet(const std::string& setName)
+bool UserSession::createStudySet(const std::string& setName)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
@@ -92,7 +92,7 @@ bool UserSessionInfo::createStudySet(const std::string& setName)
     return success;
 }
 
-bool UserSessionInfo::deleteStudySet(const std::string& setName)
+bool UserSession::deleteStudySet(const std::string& setName)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
@@ -118,7 +118,7 @@ bool UserSessionInfo::deleteStudySet(const std::string& setName)
     return success;
 }
 
-bool UserSessionInfo::addToStudySet(const std::string& setName, const std::string& key, const std::string& value)
+bool UserSession::addToStudySet(const std::string& setName, const std::string& key, const std::string& value)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
@@ -134,7 +134,7 @@ bool UserSessionInfo::addToStudySet(const std::string& setName, const std::strin
     return success;
 }
 
-bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::string& key)
+bool UserSession::deleteFromStudySet(const std::string& setName, const std::string& key)
 {
     bool success = false;
     if (dbManager->openDatabase()) {
@@ -150,7 +150,7 @@ bool UserSessionInfo::deleteFromStudySet(const std::string& setName, const std::
     return success;
 }
 
-bool UserSessionInfo::isSetNamesTableEmpty()
+bool UserSession::isSetNamesTableEmpty()
 {
     if (dbManager->openDatabase()) {
         bool res = dbManager->isTableEmpty("set_names");
@@ -160,7 +160,7 @@ bool UserSessionInfo::isSetNamesTableEmpty()
     return false;
 }
 
-bool UserSessionInfo::updateScore(const std::string& setName, const std::string& key, bool isCorrect)
+bool UserSession::updateScore(const std::string& setName, const std::string& key, bool isCorrect)
 {
     if (!existsStudySet(setName)) {
         std::cerr << "Study set " << setName << " does not exist." << std::endl;
@@ -188,7 +188,7 @@ bool UserSessionInfo::updateScore(const std::string& setName, const std::string&
     return success;
 }
 
-std::vector<std::pair<std::string, std::string>> UserSessionInfo::getTableKeyValues(const std::string& setName)
+std::vector<std::pair<std::string, std::string>> UserSession::getTableKeyValues(const std::string& setName)
 {
     std::vector<std::pair<std::string, std::string>> keyValues;
     if (!existsStudySet(setName)) {
@@ -209,7 +209,7 @@ std::vector<std::pair<std::string, std::string>> UserSessionInfo::getTableKeyVal
     return keyValues;
 }
 
-std::vector<std::tuple<int, std::string, std::string, int, int>> UserSessionInfo::getTable(const std::string& setName)
+std::vector<std::tuple<int, std::string, std::string, int, int>> UserSession::getTable(const std::string& setName)
 {
     std::vector<std::tuple<int, std::string, std::string, int, int>> tableData;
     if (!existsStudySet(setName)) {
@@ -235,7 +235,7 @@ std::vector<std::tuple<int, std::string, std::string, int, int>> UserSessionInfo
     return tableData;
 }
 
-std::vector<std::tuple<std::string, std::string, float>> UserSessionInfo::getLowestAccuracies(const std::string& setName, int x)
+std::vector<std::tuple<std::string, std::string, float>> UserSession::getLowestAccuracies(const std::string& setName, int x)
 {
     std::vector<std::tuple<std::string, std::string, float>> lowestAccuracies;
     if (!existsStudySet(setName)) {
@@ -261,7 +261,7 @@ std::vector<std::tuple<std::string, std::string, float>> UserSessionInfo::getLow
     return lowestAccuracies;
 }
 
-std::vector<std::pair<std::string, std::string>> UserSessionInfo::getRandomEntries(const std::string& setName, int x)
+std::vector<std::pair<std::string, std::string>> UserSession::getRandomEntries(const std::string& setName, int x)
 {
     std::vector<std::pair<std::string, std::string>> randomEntries;
     if (!existsStudySet(setName)) {
@@ -282,7 +282,7 @@ std::vector<std::pair<std::string, std::string>> UserSessionInfo::getRandomEntri
     return randomEntries;
 }
 
-bool UserSessionInfo::emptyAllSets()
+bool UserSession::emptyAllSets()
 {
     bool success = true;
 
@@ -323,7 +323,7 @@ bool UserSessionInfo::emptyAllSets()
 }
 
 #ifdef TESTING
-void UserSessionInfo::resetInstance()
+void UserSession::resetInstance()
 {
     if (instancePtr) {
         delete instancePtr;
