@@ -7,151 +7,152 @@
 #include "StudyingMethods/InverseMultipleChoice.h"
 
 void populateDatabase() {
-    UserSessionInfo* session = UserSessionInfo::getUserSessionInfo();
-    std::string setName = "AnimalQuiz";
+    auto userSession = UserSessionInfo::getUserSessionInfo();
 
-    if (!session->existsStudySet(setName)) {
-        if (session->createStudySet(setName)) {
-            std::cout << "Study set " << setName << " created." << std::endl;
+    // Create study sets
+    userSession->createStudySet("Math");
+    userSession->createStudySet("Science");
 
-            session->addToStudySet(setName, "What is the largest land animal?", "Elephant");
-            session->addToStudySet(setName, "What is the fastest land animal?", "Cheetah");
-            session->addToStudySet(setName, "What is the tallest animal?", "Giraffe");
-            session->addToStudySet(setName, "What animal is known as the King of the Jungle?", "Lion");
-            session->addToStudySet(setName, "What is the largest marine mammal?", "Blue Whale");
+    // Add entries to "Math" set
+    userSession->addToStudySet("Math", "2+2", "4");
+    userSession->addToStudySet("Math", "3*3", "9");
+    userSession->addToStudySet("Math", "sqrt(16)", "4");
 
-            std::cout << "Study set " << setName << " populated with quiz data." << std::endl;
-        } else {
-            std::cerr << "Failed to create study set " << setName << "." << std::endl;
-        }
-    } else {
-        std::cout << "Study set " << setName << " already exists." << std::endl;
-    }
+    // Add entries to "Science" set
+    userSession->addToStudySet("Science", "H2O", "Water");
+    userSession->addToStudySet("Science", "CO2", "Carbon Dioxide");
+    userSession->addToStudySet("Science", "NaCl", "Salt");
 }
 
-void studyWithFlashcards() {
-    std::string setName = "AnimalQuiz";
+void interactiveFlashcards() {
+    std::string setName;
+    std::cout << "Enter the name of the study set for Flashcards: ";
+    std::cin >> setName;
+
     Flashcards flashcards(setName);
+    std::cout << "Flashcards for " << setName << ":" << std::endl;
 
-    flashcards.startStudying();
-
-    while (true) {
-        flashcards.displayQuestion();
-
-        std::cout << "Press Enter to reveal the answer or 'q' to quit...";
-        std::string input;
-        std::getline(std::cin, input);
-        if (input == "q") {
-            break;
-        }
-
-        std::string answerFormat = flashcards.revealAnswer();
-//        std::cout << "Answer in key-value format: " << answerFormat << std::endl;
-
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-
+    std::string question = flashcards.getQuestion();
+    while (!question.empty()) {
+        std::cout << "Q: " << question << std::endl;
+        std::string answer;
+        std::cout << "Your answer: ";
+        std::cin >> answer;
+        std::cout << "Correct answer: " << flashcards.getAnswer() << std::endl;
         flashcards.goToNextQuestion();
-
-        if (flashcards.revealAnswer() == "question=&answer=") {
-            std::cout << "End of flashcards." << std::endl;
-            break;
-        }
+        question = flashcards.getQuestion();
     }
-
-    flashcards.endStudying();
 }
 
-void studyWithMultipleChoice() {
-    std::string setName = "AnimalQuiz";
-    MultipleChoice multipleChoice(setName);
+void interactiveMultipleChoice() {
+    std::string setName;
+    int numLowestAccuracies, numRandomEntries;
+    std::cout << "Enter the name of the study set for Multiple Choice: ";
+    std::cin >> setName;
+    std::cout << "Enter the number of lowest accuracy entries to include: ";
+    std::cin >> numLowestAccuracies;
+    std::cout << "Enter the number of random entries to include: ";
+    std::cin >> numRandomEntries;
 
-    multipleChoice.startStudying();
+    MultipleChoice multipleChoice(setName, numLowestAccuracies, numRandomEntries);
+    std::cout << "Multiple Choice for " << setName << ":" << std::endl;
 
-    while (true) {
-        multipleChoice.displayQuestion();
+    std::string question = multipleChoice.getQuestion();
+    while (!question.empty()) {
+        std::cout << "Q: " << question << std::endl;
+        auto options = multipleChoice.generateOptions();
+        std::cout << "Options: " << std::endl;
+        std::cout << "1: " << std::get<0>(options) << std::endl;
+        std::cout << "2: " << std::get<1>(options) << std::endl;
+        std::cout << "3: " << std::get<2>(options) << std::endl;
+        std::cout << "4: " << std::get<3>(options) << std::endl;
 
-        std::cout << "Press Enter to reveal the answer or 'q' to quit...";
-        std::string input;
-        std::getline(std::cin, input);
-        if (input == "q") {
-            break;
-        }
+        int choice;
+        std::cout << "Your choice (1-4): ";
+        std::cin >> choice;
 
-        std::string answerFormat = multipleChoice.revealAnswer();
-//        std::cout << "Answer in key-value format: " << answerFormat << std::endl;
+        bool isCorrect = (choice == 1 && std::get<0>(options) == multipleChoice.getAnswer()) ||
+                         (choice == 2 && std::get<1>(options) == multipleChoice.getAnswer()) ||
+                         (choice == 3 && std::get<2>(options) == multipleChoice.getAnswer()) ||
+                         (choice == 4 && std::get<3>(options) == multipleChoice.getAnswer());
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        multipleChoice.updateScoresInTable(isCorrect);
+        std::cout << (isCorrect ? "Correct!" : "Wrong!") << std::endl;
 
         multipleChoice.goToNextQuestion();
-
-        if (multipleChoice.revealAnswer() == "question=&correctAnswer=") {
-            std::cout << "End of multiple choice questions." << std::endl;
-            break;
-        }
+        question = multipleChoice.getQuestion();
     }
-
-    multipleChoice.endStudying();
 }
 
-void studyWithInverseMultipleChoice() {
-    std::string setName = "AnimalQuiz";
-    InverseMultipleChoice inverseMultipleChoice(setName);
+void interactiveInverseMultipleChoice() {
+    std::string setName;
+    int numLowestAccuracies, numRandomEntries;
+    std::cout << "Enter the name of the study set for Inverse Multiple Choice: ";
+    std::cin >> setName;
+    std::cout << "Enter the number of lowest accuracy entries to include: ";
+    std::cin >> numLowestAccuracies;
+    std::cout << "Enter the number of random entries to include: ";
+    std::cin >> numRandomEntries;
 
-    inverseMultipleChoice.startStudying();
+    InverseMultipleChoice inverseMultipleChoice(setName, numLowestAccuracies, numRandomEntries);
+    std::cout << "Inverse Multiple Choice for " << setName << ":" << std::endl;
 
-    while (true) {
-        inverseMultipleChoice.displayQuestion();
+    std::string question = inverseMultipleChoice.getQuestion();
+    while (!question.empty()) {
+        std::cout << "Q: " << question << std::endl;
+        auto options = inverseMultipleChoice.generateOptions();
+        std::cout << "Options: " << std::endl;
+        std::cout << "1: " << std::get<0>(options) << std::endl;
+        std::cout << "2: " << std::get<1>(options) << std::endl;
+        std::cout << "3: " << std::get<2>(options) << std::endl;
+        std::cout << "4: " << std::get<3>(options) << std::endl;
 
-        std::cout << "Press Enter to reveal the answer or 'q' to quit...";
-        std::string input;
-        std::getline(std::cin, input);
-        if (input == "q") {
-            break;
-        }
+        int choice;
+        std::cout << "Your choice (1-4): ";
+        std::cin >> choice;
 
-        std::string answerFormat = inverseMultipleChoice.revealAnswer();
-//        std::cout << "Answer in key-value format: " << answerFormat << std::endl;
+        bool isCorrect = (choice == 1 && std::get<0>(options) == inverseMultipleChoice.getAnswer()) ||
+                         (choice == 2 && std::get<1>(options) == inverseMultipleChoice.getAnswer()) ||
+                         (choice == 3 && std::get<2>(options) == inverseMultipleChoice.getAnswer()) ||
+                         (choice == 4 && std::get<3>(options) == inverseMultipleChoice.getAnswer());
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        inverseMultipleChoice.updateScoresInTable(isCorrect);
+        std::cout << (isCorrect ? "Correct!" : "Wrong!") << std::endl;
 
         inverseMultipleChoice.goToNextQuestion();
-
-        if (inverseMultipleChoice.revealAnswer() == "option=&correctQuestion=") {
-            std::cout << "End of inverse multiple choice questions." << std::endl;
-            break;
-        }
+        question = inverseMultipleChoice.getQuestion();
     }
-
-    inverseMultipleChoice.endStudying();
 }
 
 int main() {
     populateDatabase();
 
-    std::cout << "Choose a study method:\n";
-    std::cout << "1. Flashcards\n";
-    std::cout << "2. Multiple Choice\n";
-    std::cout << "3. Inverse Multiple Choice\n";
-    std::cout << "Enter the number of your choice: ";
-
     int choice;
-    std::cin >> choice;
-    std::cin.ignore(); // Ignore the newline character left in the input buffer
+    do {
+        std::cout << "Choose an option:" << std::endl;
+        std::cout << "1. Flashcards" << std::endl;
+        std::cout << "2. Multiple Choice" << std::endl;
+        std::cout << "3. Inverse Multiple Choice" << std::endl;
+        std::cout << "4. Exit" << std::endl;
+        std::cin >> choice;
 
-    switch (choice) {
-        case 1:
-            studyWithFlashcards();
-            break;
-        case 2:
-            studyWithMultipleChoice();
-            break;
-        case 3:
-            studyWithInverseMultipleChoice();
-            break;
-        default:
-            std::cout << "Invalid choice." << std::endl;
-            break;
-    }
+        switch (choice) {
+            case 1:
+                interactiveFlashcards();
+                break;
+            case 2:
+                interactiveMultipleChoice();
+                break;
+            case 3:
+                interactiveInverseMultipleChoice();
+                break;
+            case 4:
+                std::cout << "Exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again." << std::endl;
+        }
+    } while (choice != 4);
 
     return 0;
 }
