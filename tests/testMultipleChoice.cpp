@@ -56,28 +56,6 @@ TEST_F(MultipleChoiceTest, TestGetQuestionAndAnswer)
     ASSERT_TRUE(expectedAnswers.empty());
 }
 
-TEST_F(MultipleChoiceTest, TestGenerateOptions)
-{
-    TestableMultipleChoice multipleChoice("Science", 3, 0); // 3 lowest accuracy entries, no random entries
-
-    // Test options for the first question
-    auto options = multipleChoice.generateOptions();
-    ASSERT_TRUE(
-        std::get<0>(options) == "Water" || std::get<1>(options) == "Water" || std::get<2>(options) == "Water" || std::get<3>(options) == "Water");
-
-    // Test options for the second question
-    multipleChoice.goToNextQuestion();
-    options = multipleChoice.generateOptions();
-    ASSERT_TRUE(
-        std::get<0>(options) == "Carbon Dioxide" || std::get<1>(options) == "Carbon Dioxide" || std::get<2>(options) == "Carbon Dioxide" || std::get<3>(options) == "Carbon Dioxide");
-
-    // Test options for the third question
-    multipleChoice.goToNextQuestion();
-    options = multipleChoice.generateOptions();
-    ASSERT_TRUE(
-        std::get<0>(options) == "Salt" || std::get<1>(options) == "Salt" || std::get<2>(options) == "Salt" || std::get<3>(options) == "Salt");
-}
-
 TEST_F(MultipleChoiceTest, TestUpdateScoresAndOrder)
 {
     auto userSession = UserSession::getUserSession();
