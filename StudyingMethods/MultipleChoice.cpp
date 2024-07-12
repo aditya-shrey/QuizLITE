@@ -1,83 +1,63 @@
 #include "MultipleChoice.h"
 
-MultipleChoice::MultipleChoice(const std::string& setName)
+MultipleChoice::MultipleChoice(const std::string& setName, int numLowestAccuracies, int numRandomEntries)
     : currentIndex(0)
     , setName(setName)
 {
-    keyValues = UserSessionInfo::getUserSessionInfo()->getTableKeyValues(setName);
+    auto userSession = UserSession::getUserSession();
+
+    auto lowestAccuracies = userSession->getLowestAccuracies(setName, numLowestAccuracies);
+    for (const auto& entry : lowestAccuracies) {
+        keyValues.emplace_back(std::get<0>(entry), std::get<1>(entry));
+    }
+
+    auto randomEntries = userSession->getRandomEntries(setName, numRandomEntries);
+    keyValues.insert(keyValues.end(), randomEntries.begin(), randomEntries.end());
+
+    std::shuffle(keyValues.begin(), keyValues.end(), std::mt19937 { std::random_device {}() });
 }
 
-void MultipleChoice::startStudying()
+std::string MultipleChoice::getQuestion()
 {
-    currentIndex = 0;
-    std::cout << "Started studying multiple choice." << std::endl;
+    if (currentIndex < keyValues.size()) {
+        return keyValues[currentIndex].first;
+    }
+    return "";
 }
 
-void MultipleChoice::endStudying()
+std::string MultipleChoice::getAnswer()
 {
-    std::cout << "Finished studying multiple choice." << std::endl;
+    if (currentIndex < keyValues.size()) {
+        return keyValues[currentIndex].second;
+    }
+    return "";
 }
 
-void MultipleChoice::generateOptions()
+bool MultipleChoice::goToNextQuestion()
 {
-    options.clear();
+    if (currentIndex + 1 < keyValues.size()) {
+        ++currentIndex;
+        return true;
+    }
+    return false;
+}
+
+std::tuple<std::string, std::string, std::string, std::string> MultipleChoice::generateOptions()
+{
+    std::vector<std::pair<std::string, std::string>> options;
     std::sample(keyValues.begin(), keyValues.end(), std::back_inserter(options),
         4, std::mt19937 { std::random_device {}() });
     if (std::find(options.begin(), options.end(), keyValues[currentIndex]) == options.end()) {
         options[0] = keyValues[currentIndex]; // Ensure the correct answer is one of the options
     }
     std::shuffle(options.begin(), options.end(), std::mt19937 { std::random_device {}() });
-}
 
-void MultipleChoice::displayQuestion()
-{
-    if (currentIndex < keyValues.size()) {
-        generateOptions();
-        std::cout << "Question: " << keyValues[currentIndex].first << std::endl;
-        for (size_t i = 0; i < options.size(); ++i) {
-            std::cout << "Option " << i + 1 << ": " << options[i].second << std::endl;
-        }
-    } else {
-        std::cout << "No more questions." << std::endl;
-    }
-}
-
-std::string MultipleChoice::revealAnswer()
-{
-    if (currentIndex < keyValues.size()) {
-        std::string correctAnswer = keyValues[currentIndex].second;
-
-        std::cout << "Enter the number of the correct option: ";
-        int userAnswer;
-        std::cin >> userAnswer;
-
-        bool isCorrect = (options[userAnswer - 1].second == correctAnswer);
-        if (isCorrect) {
-            std::cout << "Correct!" << std::endl;
-        } else {
-            std::cout << "Incorrect. The correct answer is: " << correctAnswer << std::endl;
-        }
-
-        updateScoresInTable(isCorrect);
-
-        std::string result = "question=" + keyValues[currentIndex].first + "&correctAnswer=" + correctAnswer;
-        return result;
-    }
-    return "question=&correctAnswer=";
-}
-
-void MultipleChoice::goToNextQuestion()
-{
-    if (currentIndex < keyValues.size()) {
-        currentIndex++;
-    } else {
-        std::cout << "End of multiple choice questions." << std::endl;
-    }
+    return std::make_tuple(options[0].second, options[1].second, options[2].second, options[3].second);
 }
 
 void MultipleChoice::updateScoresInTable(bool isCorrect)
 {
     if (currentIndex < keyValues.size()) {
-        UserSessionInfo::getUserSessionInfo()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
+        UserSession::getUserSession()->updateScore(setName, keyValues[currentIndex].first, isCorrect);
     }
 }
