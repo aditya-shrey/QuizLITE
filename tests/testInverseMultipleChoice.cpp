@@ -62,21 +62,18 @@ TEST_F(InverseMultipleChoiceTest, TestGenerateOptions)
     TestableInverseMultipleChoice inverseMultipleChoice("History", 3, 0); // 3 lowest accuracy entries, no random entries
 
     // Test options for the first answer
-    std::string firstAnswer = inverseMultipleChoice.getAnswer();
     auto options = inverseMultipleChoice.generateOptions();
     ASSERT_TRUE(
         std::get<0>(options) == "1776" || std::get<1>(options) == "1776" || std::get<2>(options) == "1776" || std::get<3>(options) == "1776");
 
     // Test options for the second answer
     inverseMultipleChoice.goToNextQuestion();
-    std::string secondAnswer = inverseMultipleChoice.getAnswer();
     options = inverseMultipleChoice.generateOptions();
     ASSERT_TRUE(
         std::get<0>(options) == "1945" || std::get<1>(options) == "1945" || std::get<2>(options) == "1945" || std::get<3>(options) == "1945");
 
     // Test options for the third answer
     inverseMultipleChoice.goToNextQuestion();
-    std::string thirdAnswer = inverseMultipleChoice.getAnswer();
     options = inverseMultipleChoice.generateOptions();
     ASSERT_TRUE(
         std::get<0>(options) == "1969" || std::get<1>(options) == "1969" || std::get<2>(options) == "1969" || std::get<3>(options) == "1969");
