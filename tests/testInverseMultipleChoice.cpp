@@ -1,11 +1,11 @@
 #include "../StudyingMethods/InverseMultipleChoice.h"
 #include "../User/UserSession.h"
 #include <gtest/gtest.h>
-#include <iostream>
-#include <string>
-#include <tuple>
 #include <unordered_set>
+#include <tuple>
+#include <string>
 #include <vector>
+
 
 class InverseMultipleChoiceTest : public ::testing::Test {
 protected:
