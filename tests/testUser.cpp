@@ -36,7 +36,8 @@ protected:
     UserSession* userSession {};
 };
 
-TEST_F(UserSessionTest, SingletonTest) {
+TEST_F(UserSessionTest, SingletonTest)
+{
     UserSession* userSession1 = UserSession::getUserSession();
     UserSession* userSession2 = UserSession::getUserSession();
 
