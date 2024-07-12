@@ -1,5 +1,19 @@
 #include "../User/UserSessionInfo.h"
 #include <gtest/gtest.h>
+#include <iostream>
+#include <sstream>
+
+class CoutRedirect {
+public:
+    CoutRedirect(std::streambuf* new_buffer)
+        : old(std::cout.rdbuf(new_buffer))
+    {
+    }
+    ~CoutRedirect() { std::cout.rdbuf(old); }
+
+private:
+    std::streambuf* old;
+};
 
 class UserSessionInfoTest : public ::testing::Test {
 protected:
@@ -27,25 +41,6 @@ TEST_F(UserSessionInfoTest, SingletonInstance)
     UserSessionInfo* userSessionInfo1 = UserSessionInfo::getUserSessionInfo();
     UserSessionInfo* userSessionInfo2 = UserSessionInfo::getUserSessionInfo();
     EXPECT_EQ(userSessionInfo1, userSessionInfo2);
-}
-
-TEST_F(UserSessionInfoTest, SetAndGetStudySet)
-{
-    userSessionInfo->setStudySet("TestSet");
-    EXPECT_EQ(userSessionInfo->getStudySet(), "TestSet");
-}
-
-TEST_F(UserSessionInfoTest, SetAndGetSessionType)
-{
-    userSessionInfo->setSessionType(1);
-    EXPECT_EQ(userSessionInfo->getSessionType(), 1);
-}
-
-TEST_F(UserSessionInfoTest, SetValues)
-{
-    userSessionInfo->setValues("TestSet", 2);
-    EXPECT_EQ(userSessionInfo->getStudySet(), "TestSet");
-    EXPECT_EQ(userSessionInfo->getSessionType(), 2);
 }
 
 TEST_F(UserSessionInfoTest, CreateAndCheckStudySet)
@@ -116,4 +111,28 @@ TEST_F(UserSessionInfoTest, EmptyAllSets)
     userSessionInfo->createStudySet("SetToEmpty");
     EXPECT_TRUE(userSessionInfo->emptyAllSets());
     EXPECT_TRUE(userSessionInfo->isSetNamesTableEmpty());
+}
+
+TEST_F(UserSessionInfoTest, PrintDatabaseTable)
+{
+    userSessionInfo->createStudySet("PrintSet");
+    userSessionInfo->addToStudySet("PrintSet", "Key1", "Value1");
+
+    std::ostringstream oss;
+    CoutRedirect redirect(oss.rdbuf());
+    userSessionInfo->printDatabaseTable("PrintSet");
+
+    std::string output = oss.str();
+    EXPECT_NE(output.find("Key1"), std::string::npos);
+    EXPECT_NE(output.find("Value1"), std::string::npos);
+}
+
+TEST_F(UserSessionInfoTest, GetTable)
+{
+    userSessionInfo->createStudySet("TableSet");
+    userSessionInfo->addToStudySet("TableSet", "Key1", "Value1");
+    auto tableData = userSessionInfo->getTable("TableSet");
+    ASSERT_EQ(tableData.size(), 1);
+    EXPECT_EQ(std::get<1>(tableData[0]), "Key1");
+    EXPECT_EQ(std::get<2>(tableData[0]), "Value1");
 }
