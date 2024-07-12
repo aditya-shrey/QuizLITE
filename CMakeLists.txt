@@ -59,6 +59,16 @@ add_executable(TestExecutables
         tests/testUser.cpp
         User/UserSessionInfo.h
         User/UserSessionInfo.cpp
+        tests/testFlashcards.cpp
+        StudyingMethods/StudyMethods.h
+        StudyingMethods/Flashcards.cpp
+        StudyingMethods/Flashcards.h
+        StudyingMethods/MultipleChoice.cpp
+        StudyingMethods/MultipleChoice.h
+        StudyingMethods/InverseMultipleChoice.cpp
+        StudyingMethods/InverseMultipleChoice.h
+        tests/testMultipleChoice.cpp
+        tests/testInverseMultipleChoice.cpp
 )
 target_link_libraries(TestExecutables
         GTest::GTest
