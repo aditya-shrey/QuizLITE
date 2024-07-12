@@ -7,43 +7,36 @@ Flashcards::Flashcards(const std::string& setName)
     keyValues = UserSessionInfo::getUserSessionInfo()->getTableKeyValues(setName);
 }
 
-void Flashcards::startStudying()
-{
-    currentIndex = 0;
-    std::cout << "Started studying flashcards." << std::endl;
-}
-
-void Flashcards::endStudying()
-{
-    std::cout << "Finished studying flashcards." << std::endl;
-}
-
-void Flashcards::displayQuestion()
+std::string Flashcards::getQuestion()
 {
     if (currentIndex < keyValues.size()) {
-        std::cout << "Question: " << keyValues[currentIndex].first << std::endl;
-    } else {
-        std::cout << "No more questions." << std::endl;
+        return keyValues[currentIndex].first;
     }
+    return "";
 }
 
-std::string Flashcards::revealAnswer()
+std::string Flashcards::getAnswer()
 {
     if (currentIndex < keyValues.size()) {
-        std::string answer = keyValues[currentIndex].second;
-        std::cout << "Answer: " << answer << std::endl;
-
-        std::string result = "question=" + keyValues[currentIndex].first + "&answer=" + answer;
-        return result;
+        return keyValues[currentIndex].second;
     }
-    return "question=&answer=";
+    return "";
 }
 
-void Flashcards::goToNextQuestion()
+bool Flashcards::goToNextQuestion()
 {
-    if (currentIndex < keyValues.size()) {
-        currentIndex++;
-    } else {
-        std::cout << "End of flashcards." << std::endl;
+    if (currentIndex + 1 < keyValues.size()) {
+        ++currentIndex;
+        return true;
     }
+    return false;
+}
+
+bool Flashcards::goToPrevQuestion()
+{
+    if (currentIndex >= 1) {
+        --currentIndex;
+        return true;
+    }
+    return false;
 }
