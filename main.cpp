@@ -6,6 +6,12 @@
 #include "StudyingMethods/MultipleChoice.h"
 #include "StudyingMethods/InverseMultipleChoice.h"
 
+
+//Interface
+#include "Interface/MainWindow.h"
+#include <QApplication>
+#include <QPushButton>
+
 void populateDatabase() {
     auto userSession = UserSession::getUserSession();
 
@@ -124,7 +130,7 @@ void interactiveInverseMultipleChoice() {
     }
 }
 
-int main() {
+int main(int argc, char **argv) {
     populateDatabase();
 
     int choice;
@@ -154,5 +160,10 @@ int main() {
         }
     } while (choice != 4);
 
-    return 0;
+
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+
+    return app.exec();
 }

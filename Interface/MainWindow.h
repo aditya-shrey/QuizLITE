@@ -7,6 +7,10 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QMainWindow>
+#include <QLabel>
+#include <QAction>
+#include <QMenu>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -41,9 +45,6 @@ public:
 
 private slots:
     void newSet();
-    void
-
-
 
 };
 
