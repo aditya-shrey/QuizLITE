@@ -11,6 +11,8 @@
 #include <QLabel>
 #include <QAction>
 #include <QMenu>
+#include "../Interface/CreateSetPage.h"
+#include "../Interface/LibraryPage.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -23,20 +25,6 @@ class QStackedWidget;
 class QPushButton;
 QT_END_NAMESPACE
 
-
-class LibraryPage : public QWidget {
-    Q_OBJECT
-public:
-    LibraryPage(QWidget *parent = nullptr);
-
-};
-
-
-class CreateSetPage : public QWidget {
-    Q_OBJECT
-public:
-    CreateSetPage(QWidget *parent = nullptr);
-};
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
