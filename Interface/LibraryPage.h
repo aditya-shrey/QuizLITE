@@ -8,13 +8,22 @@
 #include "../Interface/MainWindow.h"
 
 class LibraryPage : public QWidget {
-    Q_OBJECT
+	Q_OBJECT
+
 public:
-    LibraryPage(QWidget *parent = nullptr);
+	LibraryPage(QWidget *parent = nullptr);
+
+	//Im creating a "signal" label to do something when the "+ Create Set"
+    // button is clicked.
+signals:
+	void createSetClicked();
+
+
+private:
+    //UI Stuff
+    QVBoxLayout *ui;
+    QLabel *pageLabel;
+    QPushButton *createSetButton;
+
 };
-
-
-
-
-
 #endif //QUIZLITE_LIBRARYPAGE_H

@@ -12,6 +12,18 @@ class CreateSetPage : public QWidget {
 Q_OBJECT
 public:
     CreateSetPage(QWidget *parent = nullptr);
+
+
+signals:
+    void setNameConfirmed(const QString &setName);
+
+
+private:
+    QVBoxLayout *ui;
+    QLabel *pageLabel;
+    QLabel *setNameLabel;
+    QLineEdit *setNameInput;
+    QPushButton *confirmButton;
 };
 
 

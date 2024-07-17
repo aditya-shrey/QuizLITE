@@ -53,6 +53,8 @@ add_executable(QuizLITE
         Interface/LibraryPage.h
         Interface/CreateSetPage.cpp
         Interface/CreateSetPage.h
+        Interface/AddQuestionsPage.cpp
+        Interface/AddQuestionsPage.h
 )
 
 target_link_libraries(QuizLITE

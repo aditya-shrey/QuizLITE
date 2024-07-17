@@ -11,8 +11,11 @@
 #include <QLabel>
 #include <QAction>
 #include <QMenu>
+#include <QLineEdit>
+#include <QListWidget>
 #include "../Interface/CreateSetPage.h"
 #include "../Interface/LibraryPage.h"
+#include "../Interface/AddQuestionsPage.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -23,6 +26,8 @@ class QWidget;
 class QVBoxLayout;
 class QStackedWidget;
 class QPushButton;
+class QLineEdit;
+class QListWidget;
 QT_END_NAMESPACE
 
 
@@ -32,16 +37,24 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void newSet();
+    void showCreatePageSet();
+    void showAddQuestionsPage(const QString &setName);
+    void addToSet(const QString &question, const QString &answer);
+    void finishSet();
+
+private:
+    QStackedWidget *pageStack;
+    LibraryPage *libraryPage;
+    CreateSetPage *createSetPage;
+    AddQuestionsPage *addQuestionsPage;
+    QVector<QPair<QString, QString>> currentSetQA;
+    QString currentSetName;
 
 };
-
-
 #endif //QUIZLITE_MAINWINDOW_H
 
 
-
-//
+//EXTRA GOODIES DELETE LATER
 //
 //class MainWindow : public QMainWindow
 //{
