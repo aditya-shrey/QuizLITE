@@ -6,12 +6,12 @@
 
 
 CreateSetPage::CreateSetPage(QWidget *parent) :
-QWidget(parent),
-ui(new QVBoxLayout(this)),
-pageLabel(new QLabel("Name your Set")),
-setNameLabel(new QLabel("Set Name:", this)),
-setNameInput(new QLineEdit(this)),
-confirmButton(new QPushButton("Confirm", this)) {
+        QWidget(parent),
+        ui(new QVBoxLayout(this)),
+        pageLabel(new QLabel("Name your Set")),
+        setNameLabel(new QLabel("Set Name:", this)),
+        setNameInput(new QLineEdit(this)),
+        confirmButton(new QPushButton("Confirm", this)) {
 
     ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
     ui->addWidget(setNameLabel);
@@ -23,6 +23,7 @@ confirmButton(new QPushButton("Confirm", this)) {
     // provided [still a little confusing, but just "emitting the signal"
     connect(confirmButton, &QPushButton::clicked, [this]() {
         emit setNameConfirmed(setNameInput->text());
+        setNameInput->clear();
     });
 }
 

@@ -13,9 +13,10 @@
 #include <QMenu>
 #include <QLineEdit>
 #include <QListWidget>
-#include "../Interface/CreateSetPage.h"
-#include "../Interface/LibraryPage.h"
-#include "../Interface/AddQuestionsPage.h"
+#include "CreateSetPage.h"
+#include "LibraryPage.h"
+#include "AddQuestionsPage.h"
+#include "EnterSetPage.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -30,25 +31,33 @@ class QLineEdit;
 class QListWidget;
 QT_END_NAMESPACE
 
+class CreateSetPage;
+class LibraryPage;
+class AddQuestionsPage;
+class EnterSetPage;
+
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+Q_OBJECT
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
 
 private slots:
     void showCreatePageSet();
     void showAddQuestionsPage(const QString &setName);
     void addToSet(const QString &question, const QString &answer);
     void finishSet();
+    void openSet(const QString &setName);
 
 private:
     QStackedWidget *pageStack;
     LibraryPage *libraryPage;
     CreateSetPage *createSetPage;
     AddQuestionsPage *addQuestionsPage;
+    EnterSetPage *enterSetPage;
     QVector<QPair<QString, QString>> currentSetQA;
     QString currentSetName;
+    QMap<QString, QListWidget*> setWidgets;
 
 };
 #endif //QUIZLITE_MAINWINDOW_H

@@ -5,13 +5,14 @@
 #ifndef QUIZLITE_ADDQUESTIONSPAGE_H
 #define QUIZLITE_ADDQUESTIONSPAGE_H
 
-#include "../Interface/MainWindow.h"
+#include "MainWindow.h"
 
 class AddQuestionsPage : public QWidget {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     AddQuestionsPage(QWidget *parent = nullptr);
+    QListWidget *getQAListWidget() const { return qaListWidget; }
 
 signals:
     void addToSetClicked(const QString &question, const QString &answer);

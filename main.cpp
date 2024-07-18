@@ -161,6 +161,7 @@ int main(int argc, char **argv) {
     } while (choice != 4);
 
 
+    // SELECT 4 to exit studying methods CLI to enter application
     QApplication app(argc, argv);
     MainWindow window;
     window.show();

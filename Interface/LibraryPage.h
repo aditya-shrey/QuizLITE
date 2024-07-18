@@ -5,19 +5,21 @@
 #ifndef QUIZLITE_LIBRARYPAGE_H
 #define QUIZLITE_LIBRARYPAGE_H
 
-#include "../Interface/MainWindow.h"
+#include "MainWindow.h"
 
 class LibraryPage : public QWidget {
-	Q_OBJECT
+Q_OBJECT
 
 public:
-	LibraryPage(QWidget *parent = nullptr);
-
-	//Im creating a "signal" label to do something when the "+ Create Set"
+    explicit LibraryPage(QWidget *parent = nullptr);
+    //Im creating a "signal" label to do something when the "+ Create Set"
     // button is clicked.
 signals:
-	void createSetClicked();
+    void createSetClicked();
+    void openSetClicked(const QString &setName);
 
+public slots:
+    void addSetButton(const QString &setName);
 
 private:
     //UI Stuff

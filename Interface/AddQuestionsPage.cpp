@@ -3,22 +3,23 @@
 //
 
 #include "AddQuestionsPage.h"
+#include "CreateSetPage.h"
 
 
 AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
-QWidget(parent),
-ui(new QVBoxLayout(this)),
-pageLabel(new QLabel("Populate your Set")),
-questionInput(new QLineEdit(this)),
-answerInput(new QLineEdit(this)),
-addToSetButton(new QPushButton("Add to Set", this)),
-finishButton(new QPushButton("Finish", this)),
-qaListWidget(new QListWidget(this))
+        QWidget(parent),
+        ui(new QVBoxLayout(this)),
+        pageLabel(new QLabel("Populate your Set")),
+        questionInput(new QLineEdit(this)),
+        answerInput(new QLineEdit(this)),
+        addToSetButton(new QPushButton("Add to Set", this)),
+        finishButton(new QPushButton("Finish", this)),
+        qaListWidget(new QListWidget(this))
 {
     ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    ui->addWidget(new QLineEdit("Question 1:", this));
+    ui->addWidget(new QLabel("Question 1:", this));
     ui->addWidget(questionInput);
-    ui->addWidget(new QLineEdit("Answer 1:", this));
+    ui->addWidget(new QLabel("Answer 1:", this));
     ui->addWidget(answerInput);
     ui->addWidget(addToSetButton);
     ui->addWidget(finishButton);
@@ -29,6 +30,7 @@ qaListWidget(new QListWidget(this))
     connect(addToSetButton, &QPushButton::clicked, this,&AddQuestionsPage::addToSet);
     connect(finishButton, &QPushButton::clicked, [this]() {
         emit finishedClicked();
+        qaListWidget->clear();
     });
     setLayout(ui);
 }
@@ -42,4 +44,3 @@ void AddQuestionsPage::addToSet() {
     questionInput->clear();
     answerInput->clear();
 }
-

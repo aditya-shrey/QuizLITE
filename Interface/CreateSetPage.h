@@ -5,7 +5,7 @@
 #ifndef QUIZLITE_CREATESETPAGE_H
 #define QUIZLITE_CREATESETPAGE_H
 
-#include "../Interface/MainWindow.h"
+#include "MainWindow.h"
 
 
 class CreateSetPage : public QWidget {
