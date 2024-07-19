@@ -48,6 +48,7 @@ private slots:
     void addToSet(const QString &question, const QString &answer);
     void finishSet();
     void openSet(const QString &setName);
+    void showLibraryPage();
 
 private:
     QStackedWidget *pageStack;
@@ -58,6 +59,7 @@ private:
     QVector<QPair<QString, QString>> currentSetQA;
     QString currentSetName;
     QMap<QString, QListWidget*> setWidgets;
+    QPushButton backToLibrary;
 
 };
 #endif //QUIZLITE_MAINWINDOW_H

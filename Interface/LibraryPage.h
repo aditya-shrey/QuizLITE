@@ -12,6 +12,10 @@ Q_OBJECT
 
 public:
     explicit LibraryPage(QWidget *parent = nullptr);
+    void populateLibrary();
+
+
+
     //Im creating a "signal" label to do something when the "+ Create Set"
     // button is clicked.
 signals:

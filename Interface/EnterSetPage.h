@@ -14,17 +14,20 @@
 
 class EnterSetPage : public QWidget {
 Q_OBJECT
+QPushButton *backToLibraryButton;
 public:
     EnterSetPage(QWidget *parent = nullptr);
 
 signals:
     void openSetClicked(const QString &setName);
+    void backToLibraryClicked();
 
 public slots:
     void addSet(const QString &setName);
     void setSetName(const QString &setName);
-    void setQAList(const QList<QPair<QString, QString>> &qaList);
+    void setQAList(const QString &setName);
     void clearAllEntries();
+    void setupBackButton();
 
 private:
     QVBoxLayout *ui;

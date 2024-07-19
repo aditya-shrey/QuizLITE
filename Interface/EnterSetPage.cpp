@@ -3,9 +3,11 @@
 //
 
 #include "EnterSetPage.h"
+#include "../User/UserSession.h"
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
+        backToLibraryButton(new QPushButton("< Back to Library", this)),
         ui(new QVBoxLayout(this)),
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel(this)),
@@ -14,6 +16,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     ui->addWidget(setNameLabel);
     ui->addWidget(pageLabel);
     ui->addWidget(qaListWidget);
+    ui->addWidget(backToLibraryButton);
+    setupBackButton();
     setLayout(ui);
 }
 
@@ -29,10 +33,18 @@ void EnterSetPage::setSetName(const QString &setName) {
     setNameLabel->setText(setName);
 }
 
-void EnterSetPage::setQAList(const QList<QPair<QString, QString>> &qaList) {
+void EnterSetPage::setQAList(const QString& setName) {
+    UserSession *session = UserSession::getUserSession();
     qaListWidget->clear();
-    for (const auto &qa : qaList) {
-        qaListWidget->addItem("Q: " + qa.first + " - A: " + qa.second);
+
+    if (session->existsStudySet(setName.toStdString())) {
+        auto qaList = session->getTableKeyValues(setName.toStdString());
+
+        for (const auto &qa : qaList) {
+            QString key = QString::fromStdString(qa.first);
+            QString value = QString::fromStdString(qa.second);
+            qaListWidget->addItem("Q: " + key + " - A: " + value);
+        }
     }
 }
 
@@ -41,3 +53,8 @@ void EnterSetPage::clearAllEntries() {
 }
 
 //CREATE A BACKTO LIBRARY BUTTON THAT ONCE CLICKED GOES BACK TO THE LIBRARY PAGE
+void EnterSetPage::setupBackButton() {
+    connect(backToLibraryButton, &QPushButton::clicked, this, [this]() {
+        emit backToLibraryClicked();
+    });
+}

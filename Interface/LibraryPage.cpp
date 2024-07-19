@@ -3,6 +3,7 @@
 //
 
 #include "LibraryPage.h"
+#include "../User/UserSession.h"
 
 LibraryPage::LibraryPage(QWidget *parent) :
         QWidget(parent),
@@ -25,4 +26,14 @@ void LibraryPage::addSetButton(const QString &setName) {
     connect(setButton, &QPushButton::clicked, [this, setName]() {
         emit openSetClicked(setName);
     });
+}
+
+
+void LibraryPage::populateLibrary() {
+    UserSession *session = UserSession::getUserSession();
+    auto setNamesTable = session->getTable("set_names");
+    for (const auto &row : setNamesTable) {
+        QString setName = QString::fromStdString(std::get<1>(row));
+        addSetButton(setName);
+    }
 }

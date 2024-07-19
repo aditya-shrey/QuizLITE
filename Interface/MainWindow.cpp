@@ -3,6 +3,7 @@
 //
 
 #include "MainWindow.h"
+#include <QMessageBox>
 #include "../User/UserSession.h"
 
 
@@ -12,10 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
         libraryPage(new LibraryPage(this)),
         createSetPage(new CreateSetPage(this)),
         addQuestionsPage(new AddQuestionsPage(this)),
-        enterSetPage(new EnterSetPage(this)) {
+        enterSetPage(new EnterSetPage(this))
+        {
 
     // Add pages onto pageStack
+
     pageStack->addWidget(libraryPage);
+    libraryPage->populateLibrary();
     pageStack->addWidget(createSetPage);
     pageStack->addWidget(addQuestionsPage);
     pageStack->addWidget(enterSetPage);
@@ -32,9 +36,11 @@ MainWindow::MainWindow(QWidget *parent) :
             &MainWindow::finishSet);
     connect(enterSetPage, &EnterSetPage::openSetClicked, this, &MainWindow::openSet);
     connect(libraryPage, &LibraryPage::openSetClicked, this, &MainWindow::openSet);
-//    connect(enterSetPage, &EnterSetPage::backClicked, this, &MainWindow::goBackToLibrary);
+    connect(enterSetPage, &EnterSetPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
 
-    pageStack->setCurrentWidget(libraryPage);
+
+            pageStack->setCurrentWidget(libraryPage);
+
 }
 
 
@@ -55,16 +61,14 @@ void MainWindow::addToSet(const QString &question, const QString &answer) {
 
 void MainWindow::openSet(const QString &setName) {
     UserSession *session = UserSession::getUserSession();
-    auto qaList = session->getTableKeyValues(setName.toStdString());
 
-    QList<QPair<QString, QString>> qaPairList;
-    for (const auto &qa : qaList) {
-        qaPairList.append(qMakePair(QString::fromStdString(qa.first), QString::fromStdString(qa.second)));
+    if (session->existsStudySet(setName.toStdString())) {
+        enterSetPage->setSetName(setName);
+        enterSetPage->setQAList(setName);
+        pageStack->setCurrentWidget(enterSetPage);
+    } else {
+        QMessageBox::warning(this, "Set Not Found", "The selected study set does not exist.");
     }
-
-    enterSetPage->setSetName(setName);
-    enterSetPage->setQAList(qaPairList);
-    pageStack->setCurrentWidget(enterSetPage);
 }
 
 void MainWindow::finishSet() {
@@ -87,3 +91,9 @@ void MainWindow::finishSet() {
     currentSetQA.clear();
     pageStack->setCurrentWidget(libraryPage);
 }
+
+
+void MainWindow::showLibraryPage() {
+    pageStack->setCurrentWidget(libraryPage);
+}
+
