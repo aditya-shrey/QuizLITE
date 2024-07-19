@@ -6,7 +6,6 @@
 #include <QMessageBox>
 #include "../User/UserSession.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
         pageStack(new QStackedWidget(this)),
@@ -17,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
         {
 
     // Add pages onto pageStack
-
     pageStack->addWidget(libraryPage);
     libraryPage->populateLibrary();
     pageStack->addWidget(createSetPage);
