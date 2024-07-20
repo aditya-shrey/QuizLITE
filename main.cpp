@@ -165,6 +165,11 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     MainWindow window;
     window.show();
+//    QWidget *wdg = new QWidget;
+//    wdg->show();
+//    window.close();//this will disappear main window4
+//
+//    wdg->close(); window.show();
 
     return app.exec();
 }

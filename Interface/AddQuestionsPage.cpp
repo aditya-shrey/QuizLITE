@@ -8,18 +8,19 @@
 
 AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         QWidget(parent),
+        backToLibraryButton(new QPushButton("< Back to Library", this)),
         ui(new QVBoxLayout(this)),
         pageLabel(new QLabel("Populate your Set")),
         questionInput(new QLineEdit(this)),
         answerInput(new QLineEdit(this)),
         addToSetButton(new QPushButton("Add to Set", this)),
         finishButton(new QPushButton("Finish", this)),
-        qaListWidget(new QListWidget(this))
-{
+        qaListWidget(new QListWidget(this)) {
+
     ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    ui->addWidget(new QLabel("Question 1:", this));
+    ui->addWidget(new QLabel("Question:", this));
     ui->addWidget(questionInput);
-    ui->addWidget(new QLabel("Answer 1:", this));
+    ui->addWidget(new QLabel("Answer:", this));
     ui->addWidget(answerInput);
     ui->addWidget(addToSetButton);
     ui->addWidget(finishButton);
@@ -32,6 +33,9 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         emit finishedClicked();
         qaListWidget->clear();
     });
+
+    ui->addWidget(backToLibraryButton);
+    setupBackToLibrary();
     setLayout(ui);
 }
 
@@ -43,4 +47,12 @@ void AddQuestionsPage::addToSet() {
     qaListWidget->addItem("Q: " + question + " - A: " + answer);
     questionInput->clear();
     answerInput->clear();
+}
+
+void AddQuestionsPage::setupBackToLibrary() {
+    connect(backToLibraryButton, &QPushButton::clicked, this, [this]() {
+        emit backToLibraryClicked();
+        questionInput->clear();
+        answerInput->clear();
+    });
 }

@@ -24,20 +24,22 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(pageStack);
 
     //Connect pages and buttons that have been clicked, then set current page to library
-    connect(libraryPage, &LibraryPage::createSetClicked, this,
-            &MainWindow::showCreatePageSet);
-    connect(createSetPage, &CreateSetPage::setNameConfirmed, this,
-            &MainWindow::showAddQuestionsPage);
-    connect(addQuestionsPage, &AddQuestionsPage::addToSetClicked, this,
-            &MainWindow::addToSet);
-    connect(addQuestionsPage, &AddQuestionsPage::finishedClicked, this,
-            &MainWindow::finishSet);
+    connect(libraryPage, &LibraryPage::createSetClicked, this,&MainWindow::showCreatePageSet);
+    connect(createSetPage, &CreateSetPage::setNameConfirmed, this,&MainWindow::showAddQuestionsPage);
+    connect(addQuestionsPage, &AddQuestionsPage::addToSetClicked, this,&MainWindow::addToSet);
+    connect(addQuestionsPage, &AddQuestionsPage::finishedClicked, this,&MainWindow::finishSet);
     connect(enterSetPage, &EnterSetPage::openSetClicked, this, &MainWindow::openSet);
     connect(libraryPage, &LibraryPage::openSetClicked, this, &MainWindow::openSet);
+
+
     connect(enterSetPage, &EnterSetPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
+    connect(createSetPage, &CreateSetPage::backToLibraryClicked, this,&MainWindow::showLibraryPage);
+    connect(addQuestionsPage, &AddQuestionsPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
 
 
-            pageStack->setCurrentWidget(libraryPage);
+
+
+    pageStack->setCurrentWidget(libraryPage);
 
 }
 

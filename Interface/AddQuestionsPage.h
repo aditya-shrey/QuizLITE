@@ -8,8 +8,8 @@
 #include "MainWindow.h"
 
 class AddQuestionsPage : public QWidget {
-Q_OBJECT
-
+    Q_OBJECT
+    QPushButton *backToLibraryButton;
 public:
     AddQuestionsPage(QWidget *parent = nullptr);
     QListWidget *getQAListWidget() const { return qaListWidget; }
@@ -17,6 +17,10 @@ public:
 signals:
     void addToSetClicked(const QString &question, const QString &answer);
     void finishedClicked();
+    void backToLibraryClicked();
+
+public slots:
+    void setupBackToLibrary();
 
 private slots:
     void addToSet();

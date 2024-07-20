@@ -15,6 +15,7 @@
 class EnterSetPage : public QWidget {
 Q_OBJECT
 QPushButton *backToLibraryButton;
+
 public:
     EnterSetPage(QWidget *parent = nullptr);
 

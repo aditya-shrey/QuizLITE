@@ -10,12 +10,19 @@
 
 class CreateSetPage : public QWidget {
 Q_OBJECT
+
+QPushButton *backToLibraryButton;
+
 public:
     CreateSetPage(QWidget *parent = nullptr);
 
 
 signals:
     void setNameConfirmed(const QString &setName);
+    void backToLibraryClicked();
+
+public slots:
+    void setupBackToLibrary();
 
 
 private:
