@@ -4,7 +4,6 @@
 
 #include "CreateSetPage.h"
 
-
 CreateSetPage::CreateSetPage(QWidget *parent) :
         QWidget(parent),
         backToLibraryButton(new QPushButton("< Back to Library", this)),

@@ -7,15 +7,12 @@
 
 #include "MainWindow.h"
 
-
 class CreateSetPage : public QWidget {
-Q_OBJECT
-
-QPushButton *backToLibraryButton;
+    Q_OBJECT
+    QPushButton *backToLibraryButton;
 
 public:
     CreateSetPage(QWidget *parent = nullptr);
-
 
 signals:
     void setNameConfirmed(const QString &setName);
@@ -24,7 +21,6 @@ signals:
 public slots:
     void setupBackToLibrary();
 
-
 private:
     QVBoxLayout *ui;
     QLabel *pageLabel;
@@ -32,6 +28,4 @@ private:
     QLineEdit *setNameInput;
     QPushButton *confirmButton;
 };
-
-
 #endif //QUIZLITE_CREATESETPAGE_H
