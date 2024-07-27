@@ -6,6 +6,7 @@
 #define QUIZLITE_ADDQUESTIONSPAGE_H
 
 #include "MainWindow.h"
+#include <QMessageBox>
 
 class AddQuestionsPage : public QWidget {
     Q_OBJECT

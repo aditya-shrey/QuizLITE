@@ -44,9 +44,14 @@ void AddQuestionsPage::addToSet() {
     QString question = questionInput->text();
     QString answer = answerInput->text();
     emit addToSetClicked(question, answer);
-    qaListWidget->addItem("Q: " + question + " - A: " + answer);
-    questionInput->clear();
-    answerInput->clear();
+    if (question.isEmpty() || answer.isEmpty()) {
+        QMessageBox::information(this, "Empty Entry", "Both question and answer must be non-empty.");
+    } else {
+        emit addToSetClicked(question, answer);
+        qaListWidget->addItem("Q: " + question + " - A: " + answer);
+        questionInput->clear();
+        answerInput->clear();
+    }
 }
 
 void AddQuestionsPage::setupBackToLibrary() {

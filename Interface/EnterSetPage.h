@@ -11,6 +11,7 @@
 #include <QListWidget>
 #include <QLabel>
 #include <QPair>
+#include <QMessageBox>
 
 class EnterSetPage : public QWidget {
 Q_OBJECT
