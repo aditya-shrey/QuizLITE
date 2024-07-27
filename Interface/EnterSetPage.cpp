@@ -1,11 +1,13 @@
 #include "EnterSetPage.h"
 #include "../User/UserSession.h"
 #include <iostream>
+#include <QScrollArea>
+#include <QEvent>
+#include <QIcon>
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
         backToLibraryButton(new QPushButton("Back to Library", this)),
-        ui(new QVBoxLayout(this)),
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel("Set Content", this)),
         qaListWidget(new QListWidget(this)) {
@@ -43,7 +45,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
             "background-color: #32CD32;"
             "border: 2px solid #32CD32;"
             "}"
-            );
+    );
+
     QPushButton *deleteSetButton = new QPushButton("Delete Set", this);
     deleteSetButton->setStyleSheet(
             "QPushButton {"
@@ -58,22 +61,26 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
             "background-color: #FF6347;"
             "border: 2px solid #FF6347;"
             "}"
-            );
+    );
 
-    // Create layout
-    QVBoxLayout *mainLayout = new QVBoxLayout();
+    // Create the main layout for the entire page
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(10);
     mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
     mainLayout->addWidget(qaListWidget);
     mainLayout->addWidget(addQuestionButton);
-    mainLayout->addWidget(deleteSetButton);
     mainLayout->addStretch(1); // Add a stretch to push the elements up
-    mainLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft | Qt::AlignBottom);
 
-    // Set the layout to the main UI
-    ui->addLayout(mainLayout);
-    setLayout(ui);
+    // Create a horizontal layout for the bottom buttons
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    bottomLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft);
+    bottomLayout->addStretch(1); // Add stretch to push the delete button to the right
+    bottomLayout->addWidget(deleteSetButton, 0, Qt::AlignRight);
+
+    mainLayout->addLayout(bottomLayout);
+
+    setLayout(mainLayout);
 
     // Connect signals
     connect(addQuestionButton, &QPushButton::clicked, this, &EnterSetPage::showAddQuestionPage);
@@ -83,6 +90,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     setupBackButton();
 }
+
 
 void EnterSetPage::addSet(const QString &setName) {
     std::cout << "Adding set: " << setName.toStdString() << std::endl;
@@ -126,18 +134,43 @@ void EnterSetPage::setQAList(const QString& setName) {
 
             QWidget *qaWidget = new QWidget(this);
             QHBoxLayout *qaLayout = new QHBoxLayout(qaWidget);
+            qaLayout->setSpacing(5); // Reduce horizontal spacing
 
-            QLabel *qaLabel = new QLabel("Q: " + key + " - A: " + value, this);
+            QLabel *keyLabel = new QLabel(key, this);
+            keyLabel->setStyleSheet("font-size: 16px; color: #FFFFFF;");
+            keyLabel->setAlignment(Qt::AlignLeft);
+            keyLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-            QPushButton *deleteButton = new QPushButton("Delete", this);
-            deleteButton->setFixedHeight(25);
+            QLabel *valueLabel = new QLabel(value, this);
+            valueLabel->setStyleSheet("font-size: 16px; color: #FFFFFF;");
+            valueLabel->setAlignment(Qt::AlignLeft);
+            valueLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+            // Create a container widget to apply background color
+            QWidget *containerWidget = new QWidget(this);
+            QHBoxLayout *containerLayout = new QHBoxLayout(containerWidget);
+            containerWidget->setStyleSheet(
+                    "background-color: #403e3e; "
+                    "border-radius: 10px; "
+                    "padding: 5px; "
+                    "margin: 5px 0;"
+            );
+
+            QPushButton *deleteButton = new QPushButton(this);
+            deleteButton->setIcon(QIcon("../icons/trash.png"));
+            deleteButton->setIconSize(QSize(20, 20)); // Adjust icon size
+            deleteButton->setStyleSheet("background-color: transparent; border: none;");
+            deleteButton->setFixedSize(30, 30);
             connect(deleteButton, &QPushButton::clicked, [this, setName, key, qaWidget]() {
                 deleteKeyValuePair(setName, key);
                 qaWidget->deleteLater();
             });
 
-            QPushButton *adjustButton = new QPushButton("Adjust", this);
-            adjustButton->setFixedHeight(25);
+            QPushButton *adjustButton = new QPushButton(this);
+            adjustButton->setIcon(QIcon("../icons/pencil.png"));
+            adjustButton->setIconSize(QSize(20, 20)); // Adjust icon size
+            adjustButton->setStyleSheet("background-color: transparent; border: none;");
+            adjustButton->setFixedSize(30, 30);
             connect(adjustButton, &QPushButton::clicked, [this, setName, key, value]() {
                 bool ok;
                 QString newValue = QInputDialog::getText(this, tr("Adjust Value"),
@@ -148,9 +181,19 @@ void EnterSetPage::setQAList(const QString& setName) {
                 }
             });
 
-            qaLayout->addWidget(qaLabel);
-            qaLayout->addWidget(deleteButton);
-            qaLayout->addWidget(adjustButton);
+            // Add event filters for hover effects
+            deleteButton->installEventFilter(this);
+            adjustButton->installEventFilter(this);
+
+            containerLayout->addWidget(keyLabel, 1); // First third
+            containerLayout->addWidget(valueLabel, 2); // Second third
+            containerLayout->addStretch(1);
+            containerLayout->addWidget(adjustButton);
+            containerLayout->addWidget(deleteButton);
+            containerWidget->setLayout(containerLayout);
+
+            qaLayout->addWidget(containerWidget);
+            qaWidget->setLayout(qaLayout);
 
             QListWidgetItem *item = new QListWidgetItem(qaListWidget);
             item->setSizeHint(qaWidget->sizeHint());
@@ -159,6 +202,23 @@ void EnterSetPage::setQAList(const QString& setName) {
         }
     }
 }
+
+
+
+
+// Override event filter to handle hover effects
+bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
+    QPushButton *button = qobject_cast<QPushButton *>(watched);
+    if (button) {
+        if (event->type() == QEvent::Enter) {
+            button->setIconSize(QSize(24, 24)); // Increase icon size on hover
+        } else if (event->type() == QEvent::Leave) {
+            button->setIconSize(QSize(20, 20)); // Reset icon size when not hovered
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
 
 void EnterSetPage::clearAllEntries() {
     std::cout << "Clearing all entries" << std::endl;

@@ -12,6 +12,8 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <map>
+#include <QEvent> // Include QEvent header
+#include <QIcon>
 
 class EnterSetPage : public QWidget {
 Q_OBJECT
@@ -38,6 +40,9 @@ public slots:
     void deleteSet(const QString &setName);
     void deleteKeyValuePair(const QString &setName, const QString &key);
     void adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     QVBoxLayout *ui;
