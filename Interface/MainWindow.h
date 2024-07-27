@@ -1,6 +1,3 @@
-//
-// Created by Fardeen Bablu on 7/13/24.
-//
 #ifndef QUIZLITE_MAINWINDOW_H
 #define QUIZLITE_MAINWINDOW_H
 
@@ -49,6 +46,7 @@ private slots:
     void finishSet();
     void openSet(const QString &setName);
     void showLibraryPage();
+    void handleDeleteSet(const QString &setName);
 
 private:
     QStackedWidget *pageStack;
@@ -62,42 +60,5 @@ private:
     QPushButton backToLibrary;
 
 };
-#endif //QUIZLITE_MAINWINDOW_H
 
-
-//EXTRA GOODIES DELETE LATER
-//
-//class MainWindow : public QMainWindow
-//{
-//    Q_OBJECT
-//
-//public:
-//    MainWindow(QWidget *parent = nullptr);
-//
-//private slots:
-//    void newFile();
-//    void open();
-//    void save();
-//    void undo();
-//    void redo();
-//    void switchPage();
-//
-//private:
-//    void createMenuActions();
-//    void addMenuActions();
-//
-//    QMenu *fileMenu;
-//    QMenu *editMenu;
-//
-//    QAction *newAct;
-//    QAction *openAct;
-//    QAction *saveAct;
-//    QAction *exitAct;
-//    QAction *undoAct;
-//    QAction *redoAct;
-//
-//    QStackedWidget *m_stack;
-//    QPushButton *switchButton;
-//};
-//
-//#endif // QUIZLITE_MAINWINDOW_H
+#endif // QUIZLITE_MAINWINDOW_H

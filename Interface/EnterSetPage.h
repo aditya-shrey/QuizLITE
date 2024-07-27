@@ -1,7 +1,3 @@
-//
-// Created by Fardeen Bablu on 7/18/24.
-//
-
 #ifndef QUIZLITE_ENTERSETPAGE_H
 #define QUIZLITE_ENTERSETPAGE_H
 
@@ -12,10 +8,14 @@
 #include <QLabel>
 #include <QPair>
 #include <QMessageBox>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QLineEdit>
+#include <map>
 
 class EnterSetPage : public QWidget {
 Q_OBJECT
-QPushButton *backToLibraryButton;
+    QPushButton *backToLibraryButton;
 
 public:
     EnterSetPage(QWidget *parent = nullptr);
@@ -23,6 +23,10 @@ public:
 signals:
     void openSetClicked(const QString &setName);
     void backToLibraryClicked();
+    void deleteSetClicked(const QString &setName);
+    void deleteKeyValuePairClicked(const QString &setName, const QString &key);
+    void adjustKeyValuePairClicked(const QString &setName, const QString &key, const QString &newValue);
+    void confirmDeleteSet(const QString &setName);
 
 public slots:
     void addSet(const QString &setName);
@@ -30,13 +34,18 @@ public slots:
     void setQAList(const QString &setName);
     void clearAllEntries();
     void setupBackButton();
+    void showAddQuestionPage();
+    void deleteSet(const QString &setName);
+    void deleteKeyValuePair(const QString &setName, const QString &key);
+    void adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue);
 
 private:
     QVBoxLayout *ui;
     QLabel *setNameLabel;
     QLabel *pageLabel;
     QListWidget *qaListWidget;
-    QPushButton *exitSet;
+    QString currentSetName;
+    std::map<QString, QWidget*> setWidgets;
 };
 
-#endif //QUIZLITE_ENTERSETPAGE_H
+#endif // QUIZLITE_ENTERSETPAGE_H
