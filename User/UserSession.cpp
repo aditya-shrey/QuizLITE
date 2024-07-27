@@ -75,7 +75,7 @@ bool UserSession::createStudySet(const std::string& setName)
             int result = sqlite3_step(stmt);
             sqlite3_finalize(stmt);
             if (result == SQLITE_DONE) {
-                std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT UNIQUE, Value TEXT, TotalCorrect INTEGER, TimesAsked INTEGER);";
+                std::string createTableQuery = "CREATE TABLE IF NOT EXISTS \"" + setName + "\" (id INTEGER PRIMARY KEY, Key TEXT, Value TEXT, TotalCorrect INTEGER, TimesAsked INTEGER);";
                 if (dbManager->executeQuery(createTableQuery) == SQLITE_OK) {
                     success = true;
                 } else {
