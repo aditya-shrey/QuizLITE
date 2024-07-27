@@ -43,7 +43,6 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
 void AddQuestionsPage::addToSet() {
     QString question = questionInput->text();
     QString answer = answerInput->text();
-    emit addToSetClicked(question, answer);
     if (question.isEmpty() || answer.isEmpty()) {
         QMessageBox::information(this, "Empty Entry", "Both question and answer must be non-empty.");
     } else {
