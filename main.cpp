@@ -129,8 +129,9 @@
 //        question = inverseMultipleChoice.getQuestion();
 //    }
 //}
-//
+////
 int main(int argc, char **argv) {
+//int main() {
 //    populateDatabase();
 //
 //    int choice;
@@ -172,4 +173,5 @@ int main(int argc, char **argv) {
 //    wdg->close(); window.show();
 
     return app.exec();
+
 }

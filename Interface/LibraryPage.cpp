@@ -31,11 +31,9 @@ void LibraryPage::addSetButton(const QString &setName) {
 
 void LibraryPage::populateLibrary() {
     UserSession *session = UserSession::getUserSession();
-    auto setNamesTable = session->getTable("set_names");
-    std::cout << "counting" << std::endl;
+    auto setNamesTable = session->getMainTable();
     for (const auto &row : setNamesTable) {
-        QString setName = QString::fromStdString(std::get<1>(row));
-        std::cout << setName.toStdString() << std::endl;
+        QString setName = QString::fromStdString(row.at("name"));
         addSetButton(setName);
     }
 }
