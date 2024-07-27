@@ -4,7 +4,7 @@
 
 #include "AddQuestionsPage.h"
 #include "CreateSetPage.h"
-
+#include <QSet>
 
 AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         QWidget(parent),
@@ -15,7 +15,8 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         answerInput(new QLineEdit(this)),
         addToSetButton(new QPushButton("Add to Set", this)),
         finishButton(new QPushButton("Finish", this)),
-        qaListWidget(new QListWidget(this)) {
+        qaListWidget(new QListWidget(this)),
+        addedQuestions(new QSet<QString>) { // Initialize the QSet
 
     ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
     ui->addWidget(new QLabel("Question:", this));
@@ -32,6 +33,7 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
     connect(finishButton, &QPushButton::clicked, [this]() {
         emit finishedClicked();
         qaListWidget->clear();
+        addedQuestions->clear();
     });
 
     ui->addWidget(backToLibraryButton);
@@ -45,7 +47,10 @@ void AddQuestionsPage::addToSet() {
     QString answer = answerInput->text();
     if (question.isEmpty() || answer.isEmpty()) {
         QMessageBox::information(this, "Empty Entry", "Both question and answer must be non-empty.");
+    } else if (addedQuestions->contains(question)) {
+        QMessageBox::information(this, "Duplicate Entry", "This question has already been added.");
     } else {
+        addedQuestions->insert(question);
         emit addToSetClicked(question, answer);
         qaListWidget->addItem("Q: " + question + " - A: " + answer);
         questionInput->clear();
@@ -58,5 +63,6 @@ void AddQuestionsPage::setupBackToLibrary() {
         emit backToLibraryClicked();
         questionInput->clear();
         answerInput->clear();
+        addedQuestions->clear();
     });
 }

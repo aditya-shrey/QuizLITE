@@ -34,6 +34,7 @@ private:
     QPushButton *addToSetButton;
     QPushButton *finishButton;
     QListWidget *qaListWidget;
+    QSet<QString> *addedQuestions;
 };
 
 #endif //QUIZLITE_ADDQUESTIONSPAGE_H
