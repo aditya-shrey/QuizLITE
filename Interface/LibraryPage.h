@@ -66,6 +66,7 @@ private:
     QLabel *pageLabel;
     QPushButton *createSetButton;
     QLabel *yourSetsLabel;
+    QLabel *logoLabel;
     QGridLayout *setButtonsLayout;
     QList<QPushButton *> setButtons;
 

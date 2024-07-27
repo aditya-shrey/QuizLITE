@@ -6,8 +6,16 @@ LibraryPage::LibraryPage(QWidget *parent) :
         pageLabel(new QLabel("QuizLITE", this)),
         createSetButton(new QPushButton("+ Create Set", this)),
         yourSetsLabel(new QLabel("Your Sets", this)),
+        logoLabel(new QLabel(this)),
         setButtonsLayout(new QGridLayout())
 {
+    // Set the logo image
+    QPixmap logoPixmap("../icons/logo.png");
+    QPixmap scaledPixmap = logoPixmap.scaled(30, 30, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    logoLabel->setPixmap(scaledPixmap);
+    logoLabel->setFixedSize(scaledPixmap.size());
+    logoLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
     // Set stylesheets for the widgets
     pageLabel->setStyleSheet("color: #5DF779; font-size: 30px; font-weight: bold;");
     createSetButton->setStyleSheet(
@@ -28,6 +36,7 @@ LibraryPage::LibraryPage(QWidget *parent) :
 
     // Create a horizontal layout for the top row
     QHBoxLayout *topRowLayout = new QHBoxLayout();
+    topRowLayout->addWidget(logoLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
     topRowLayout->addWidget(pageLabel, 0, Qt::AlignLeft | Qt::AlignTop);
     topRowLayout->addStretch(1);
     topRowLayout->addWidget(createSetButton, 0, Qt::AlignRight | Qt::AlignTop);

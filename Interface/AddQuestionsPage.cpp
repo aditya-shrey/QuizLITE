@@ -34,7 +34,7 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
             "background-color: #26de26;"
             "border: 2px solid #26de26;"
             "}"
-            );
+    );
     finishButton->setStyleSheet(
             "QPushButton {"
             "background-color: #90EE90;"
@@ -48,7 +48,7 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
             "background-color: #80ed80;"
             "border: 2px solid #80ed80;"
             "}"
-            );
+    );
     backToLibraryButton->setStyleSheet(
             "QPushButton {"
             "background-color: #7bd17b;"
@@ -122,7 +122,7 @@ void AddQuestionsPage::addToSet() {
     } else {
         addedQuestions->insert(question);
         emit addToSetClicked(question, answer);
-        qaListWidget->addItem("Q: " + question + " - A: " + answer);
+        qaListWidget->addItem("Q: " + question + " | A: " + answer);
         questionInput->clear();
         answerInput->clear();
     }
