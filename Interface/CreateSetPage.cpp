@@ -23,8 +23,13 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
     // lambda function, which then emits setNameConfirmed signal with text
     // provided [still a little confusing, but just "emitting the signal"
     connect(confirmButton, &QPushButton::clicked, [this]() {
-        emit setNameConfirmed(setNameInput->text());
-        setNameInput->clear();
+        QString setName = setNameInput->text();
+        if (setName.isEmpty()) {
+            QMessageBox::warning(this, "Empty Set Name", "The set name must be non-empty.");
+        } else {
+            emit setNameConfirmed(setName);
+            setNameInput->clear();
+        }
     });
 }
 
