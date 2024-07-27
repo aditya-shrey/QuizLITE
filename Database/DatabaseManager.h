@@ -10,6 +10,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <vector>
+#include <utility>
 
 /**
  * @class DatabaseManager

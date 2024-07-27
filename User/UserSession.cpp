@@ -2,8 +2,6 @@
 // Created by Aditya Shrey on 6/26/24.
 //
 #include "UserSession.h"
-#include <iostream>
-#include <utility>
 
 UserSession* UserSession::instancePtr = nullptr;
 

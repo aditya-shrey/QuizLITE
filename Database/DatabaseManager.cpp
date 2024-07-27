@@ -2,7 +2,6 @@
 // Created by Aditya Shrey on 6/27/24.
 //
 #include "DatabaseManager.h"
-#include <utility>
 
 DatabaseManager* DatabaseManager::instancePtr = nullptr;
 DatabaseManager::DatabaseManager(std::string databaseName)

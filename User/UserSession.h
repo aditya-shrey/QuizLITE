@@ -6,6 +6,7 @@
 
 #include "../Database/DatabaseManager.h"
 #include <iostream>
+#include <utility>
 
 /**
  * @class UserSession
