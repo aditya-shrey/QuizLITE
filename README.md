@@ -44,7 +44,7 @@ A step-by-step guide to set up your development environment:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/quizlite.git
+    git clone https://github.com/aditya-shrey/quizlite.git
     ```
 
 2. Navigate to the project directory:
