@@ -9,8 +9,8 @@
 #include <map>
 #include <sqlite3.h>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 /**
  * @class DatabaseManager
