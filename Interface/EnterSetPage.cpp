@@ -1,10 +1,4 @@
 #include "EnterSetPage.h"
-#include "../User/UserSession.h"
-#include <iostream>
-#include <QScrollArea>
-#include <QEvent>
-#include <QIcon>
-#include <QMessageBox>
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
@@ -163,7 +157,7 @@ void EnterSetPage::setQAList(const QString& setName) {
 
             QWidget *qaWidget = new QWidget(this);
             QHBoxLayout *qaLayout = new QHBoxLayout(qaWidget);
-            qaLayout->setSpacing(2); // Reduce vertical spacing between key-value bars
+            qaLayout->setSpacing(2);
 
             QLabel *keyLabel = new QLabel(key, this);
             keyLabel->setStyleSheet("font-size: 16px; color: #FFFFFF;");
@@ -182,7 +176,7 @@ void EnterSetPage::setQAList(const QString& setName) {
                     "background-color: #403e3e; "
                     "border-radius: 10px; "
                     "padding: 5px; "
-                    "margin: 2px 0;" // Adjust margin to reduce vertical spacing
+                    "margin: 2px 0;"
             );
 
             QPushButton *deleteButton = new QPushButton(this);
@@ -232,14 +226,13 @@ void EnterSetPage::setQAList(const QString& setName) {
     }
 }
 
-// Override event filter to handle hover effects
 bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
     QPushButton *button = qobject_cast<QPushButton *>(watched);
     if (button) {
         if (event->type() == QEvent::Enter) {
-            button->setIconSize(QSize(24, 24)); // Increase icon size on hover
+            button->setIconSize(QSize(24, 24));
         } else if (event->type() == QEvent::Leave) {
-            button->setIconSize(QSize(20, 20)); // Reset icon size when not hovered
+            button->setIconSize(QSize(20, 20));
         }
     }
     return QWidget::eventFilter(watched, event);
@@ -432,4 +425,3 @@ void EnterSetPage::showAddQuestionPage() {
         msgBox.exec();
     }
 }
-

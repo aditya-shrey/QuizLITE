@@ -1,9 +1,4 @@
 #include "LibraryPage.h"
-#include "../User/UserSession.h"
-#include <QWidgetItem>
-#include <QResizeEvent>
-#include <QPushButton>
-#include <algorithm> // for std::as_const
 
 LibraryPage::LibraryPage(QWidget *parent) :
         QWidget(parent),
@@ -11,7 +6,7 @@ LibraryPage::LibraryPage(QWidget *parent) :
         pageLabel(new QLabel("QuizLITE", this)),
         createSetButton(new QPushButton("+ Create Set", this)),
         yourSetsLabel(new QLabel("Your Sets", this)),
-        setButtonsLayout(new QGridLayout()) // Grid layout for set buttons
+        setButtonsLayout(new QGridLayout())
 {
     // Set stylesheets for the widgets
     pageLabel->setStyleSheet("color: #5DF779; font-size: 30px; font-weight: bold;");
@@ -39,19 +34,19 @@ LibraryPage::LibraryPage(QWidget *parent) :
 
     // Create a vertical layout to stack the rows
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setSpacing(0); // No spacing between elements
+    mainLayout->setSpacing(0);
     mainLayout->addLayout(topRowLayout);
     mainLayout->addWidget(yourSetsLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    mainLayout->addLayout(setButtonsLayout); // Add the grid layout for set buttons
-    mainLayout->addStretch(1); // Add a stretch at the bottom to push everything upwards
+    mainLayout->addLayout(setButtonsLayout);
+    mainLayout->addStretch(1);
 
     // Set the layout to the main UI
     ui->addLayout(mainLayout);
 
     // Set the spacing for the set buttons layout
-    setButtonsLayout->setHorizontalSpacing(20); // Set horizontal spacing between buttons
-    setButtonsLayout->setVerticalSpacing(20); // Set vertical spacing between buttons
-    setButtonsLayout->setContentsMargins(10, 10, 10, 10); // Optional: Set margins for the layout
+    setButtonsLayout->setHorizontalSpacing(20);
+    setButtonsLayout->setVerticalSpacing(20);
+    setButtonsLayout->setContentsMargins(10, 10, 10, 10);
 
     // Connecting createSetButton signal to the createSetClicked slot
     connect(createSetButton, &QPushButton::clicked, this, &LibraryPage::createSetClicked);
@@ -78,7 +73,7 @@ void LibraryPage::addSetButton(const QString &setName) {
     connect(setButton, &QPushButton::clicked, [this, setName]() {
         emit openSetClicked(setName);
     });
-    setButtons.append(setButton); // Store the button in a list for layout management
+    setButtons.append(setButton);
     updateSetButtonsLayout();
 }
 
@@ -88,10 +83,10 @@ void LibraryPage::populateLibrary() {
     // Clear existing widgets in the grid layout
     QLayoutItem *item;
     while ((item = setButtonsLayout->takeAt(0)) != nullptr) {
-        delete item->widget();  // Delete the widget
-        delete item;  // Delete the layout item
+        delete item->widget();
+        delete item;
     }
-    setButtons.clear(); // Clear the list of buttons
+    setButtons.clear();
 
     auto setNamesTable = session->getMainTable();
     for (const auto &row : setNamesTable) {
@@ -102,7 +97,7 @@ void LibraryPage::populateLibrary() {
 
 void LibraryPage::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
-    updateSetButtonsLayout(); // Update layout on resize
+    updateSetButtonsLayout();
 }
 
 void LibraryPage::updateSetButtonsLayout() {

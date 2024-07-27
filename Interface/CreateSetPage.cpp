@@ -104,7 +104,6 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
     setupBackToLibrary();
 }
 
-
 void CreateSetPage::setupBackToLibrary() {
     connect(backToLibraryButton, &QPushButton::clicked, this, [this]() {
         emit backToLibraryClicked();

@@ -3,8 +3,6 @@
 //
 
 #include "AddQuestionsPage.h"
-#include "CreateSetPage.h"
-#include <QSet>
 
 AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         QWidget(parent),
@@ -94,7 +92,6 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
 
     setupBackToLibrary();
 }
-
 
 void AddQuestionsPage::addToSet() {
     QString question = questionInput->text();

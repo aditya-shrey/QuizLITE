@@ -1,7 +1,5 @@
 #include "MainWindow.h"
-#include <QMessageBox>
-#include "../User/UserSession.h"
-#include <iostream>
+
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
