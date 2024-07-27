@@ -14,12 +14,51 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     this->setStyleSheet("background-color: #000000;");
     setNameLabel->setStyleSheet("color: #32CD32; font-size: 30px; font-weight: bold;");
     pageLabel->setStyleSheet("color: #FFFFFF; font-size: 24px; font-weight: bold;");
-    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 10px; border-radius: 15px; border: 2px solid #5DF779;");
+    backToLibraryButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #7bd17b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #7bd17b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #90EE90;"
+            "border: 2px solid #90EE90;"
+            "}"
+    );
 
     QPushButton *addQuestionButton = new QPushButton("Add to Set", this);
-    addQuestionButton->setStyleSheet("background-color: #32CD32; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #32CD32;");
+    addQuestionButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+            );
     QPushButton *deleteSetButton = new QPushButton("Delete Set", this);
-    deleteSetButton->setStyleSheet("background-color: #FF6347; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #FF6347;");
+    deleteSetButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #ed583e;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #ed583e;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #FF6347;"
+            "border: 2px solid #FF6347;"
+            "}"
+            );
 
     // Create layout
     QVBoxLayout *mainLayout = new QVBoxLayout();

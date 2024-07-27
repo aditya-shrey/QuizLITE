@@ -119,29 +119,29 @@ void MainWindow::handleDeleteSet(const QString &setName) {
     );
 
     // Get the No button and apply specific styles
-    QPushButton *noButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::Yes));
-    if (noButton) {
-        noButton->setStyleSheet(
+    QPushButton *yesButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::Yes));
+    if (yesButton) {
+        yesButton->setStyleSheet(
                 "QPushButton {"
-                "background-color: #FF6347;"
+                "background-color: #e5533c;"
                 "color: #000000;"
                 "}"
                 "QPushButton:hover {"
-                "background-color: #e5533c;"
+                "background-color: #FF6347;"
                 "}"
         );
     }
 
     // Get the Yes button and apply specific styles
-    QPushButton *yesButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::No));
-    if (yesButton) {
-        yesButton->setStyleSheet(
+    QPushButton *noButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::No));
+    if (noButton) {
+        noButton->setStyleSheet(
                 "QPushButton {"
-                "background-color: #5DF779;"
+                "background-color: #2db544;"
                 "color: #000000;"
                 "}"
                 "QPushButton:hover {"
-                "background-color: #2db544;"
+                "background-color: #5DF779;"
                 "}"
         );
     }

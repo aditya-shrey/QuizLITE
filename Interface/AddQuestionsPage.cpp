@@ -23,9 +23,48 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
     pageLabel->setStyleSheet("color: #5DF779; font-size: 24px; font-weight: bold;");
     questionInput->setStyleSheet("font-size: 18px;");
     answerInput->setStyleSheet("font-size: 18px;");
-    addToSetButton->setStyleSheet("background-color: #32CD32; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #32CD32;");
-    finishButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
-    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
+    addToSetButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #32CD32;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #32CD32;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #26de26;"
+            "border: 2px solid #26de26;"
+            "}"
+            );
+    finishButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #90EE90;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #90EE90;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #80ed80;"
+            "border: 2px solid #80ed80;"
+            "}"
+            );
+    backToLibraryButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #7bd17b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #7bd17b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #90EE90;"
+            "border: 2px solid #90EE90;"
+            "}"
+    );
 
     // Create layout
     QVBoxLayout *mainLayout = new QVBoxLayout();

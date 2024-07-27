@@ -16,12 +16,18 @@ LibraryPage::LibraryPage(QWidget *parent) :
     // Set stylesheets for the widgets
     pageLabel->setStyleSheet("color: #5DF779; font-size: 30px; font-weight: bold;");
     createSetButton->setStyleSheet(
-            "background-color: #5DF779;"
+            "QPushButton {"
+            "background-color: #4bd664;"
             "color: #000000;"
             "font-size: 18px;"
             "padding: 5px;"
             "border-radius: 15px;"
+            "border: 2px solid #4bd664;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #5DF779;"
             "border: 2px solid #5DF779;"
+            "}"
     );
     yourSetsLabel->setStyleSheet("color: #FFFFFF; font-size: 20px; font-weight: normal; padding: 10px");
 
@@ -56,12 +62,18 @@ LibraryPage::LibraryPage(QWidget *parent) :
 void LibraryPage::addSetButton(const QString &setName) {
     QPushButton *setButton = new QPushButton(setName, this);
     setButton->setStyleSheet(
-            "background-color: #90EE90;"
+            "QPushButton {"
+            "background-color: #7bd17b;"
             "color: #000000;"
             "font-size: 18px;"
             "padding: 5px;"
             "border-radius: 15px;"
-            "border: 2px solid #5DF779;"
+            "border: 2px solid #7bd17b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #90EE90;"
+            "border: 2px solid #90EE90;"
+            "}"
     );
     connect(setButton, &QPushButton::clicked, [this, setName]() {
         emit openSetClicked(setName);

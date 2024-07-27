@@ -18,8 +18,34 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
     pageLabel->setStyleSheet("color: #5DF779; font-size: 24px; font-weight: bold;");
     setNameLabel->setStyleSheet("color: #FFFFFF; font-size: 20px;");
     setNameInput->setStyleSheet("font-size: 18px;");
-    confirmButton->setStyleSheet("background-color: #5DF779; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
-    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
+    confirmButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #4bd664;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #4bd664;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #5DF779;"
+            "border: 2px solid #5DF779;"
+            "}"
+            );
+    backToLibraryButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #7bd17b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #7bd17b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #90EE90;"
+            "border: 2px solid #90EE90;"
+            "}"
+    );
 
     // Create layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
