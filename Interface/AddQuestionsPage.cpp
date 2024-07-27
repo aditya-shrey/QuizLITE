@@ -8,9 +8,9 @@
 
 AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         QWidget(parent),
-        backToLibraryButton(new QPushButton("< Back to Library", this)),
+        backToLibraryButton(new QPushButton("Back to Library", this)),
         ui(new QVBoxLayout(this)),
-        pageLabel(new QLabel("Populate your Set")),
+        pageLabel(new QLabel("Populate your Set", this)),
         questionInput(new QLineEdit(this)),
         answerInput(new QLineEdit(this)),
         addToSetButton(new QPushButton("Add to Set", this)),
@@ -18,27 +18,42 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
         qaListWidget(new QListWidget(this)),
         addedQuestions(new QSet<QString>) { // Initialize the QSet
 
-    ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    ui->addWidget(new QLabel("Question:", this));
-    ui->addWidget(questionInput);
-    ui->addWidget(new QLabel("Answer:", this));
-    ui->addWidget(answerInput);
-    ui->addWidget(addToSetButton);
-    ui->addWidget(finishButton);
-    ui->addWidget(qaListWidget);
+    // Set stylesheets for the widgets
+    this->setStyleSheet("background-color: #000000;");
+    pageLabel->setStyleSheet("color: #5DF779; font-size: 24px; font-weight: bold;");
+    questionInput->setStyleSheet("font-size: 18px;");
+    answerInput->setStyleSheet("font-size: 18px;");
+    addToSetButton->setStyleSheet("background-color: #32CD32; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #32CD32;");
+    finishButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
+    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
 
-    //only need to connect these buttons, not the inputs. The buttons
-    // basically do all the work by taking in what's in the input
-    connect(addToSetButton, &QPushButton::clicked, this,&AddQuestionsPage::addToSet);
+    // Create layout
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
+    mainLayout->addWidget(new QLabel("Question:", this));
+    mainLayout->addWidget(questionInput);
+    mainLayout->addWidget(new QLabel("Answer:", this));
+    mainLayout->addWidget(answerInput);
+    mainLayout->addWidget(addToSetButton);
+    mainLayout->addWidget(finishButton);
+    mainLayout->addWidget(qaListWidget);
+    mainLayout->addStretch(1); // Add a stretch to push the elements up
+    mainLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft | Qt::AlignBottom);
+
+    // Set the layout to the main UI
+    ui->addLayout(mainLayout);
+    setLayout(ui);
+
+    // Connect signals
+    connect(addToSetButton, &QPushButton::clicked, this, &AddQuestionsPage::addToSet);
     connect(finishButton, &QPushButton::clicked, [this]() {
         emit finishedClicked();
         qaListWidget->clear();
         addedQuestions->clear();
     });
 
-    ui->addWidget(backToLibraryButton);
     setupBackToLibrary();
-    setLayout(ui);
 }
 
 

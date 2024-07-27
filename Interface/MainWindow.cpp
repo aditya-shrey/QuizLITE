@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
         addQuestionsPage(new AddQuestionsPage(this)),
         enterSetPage(new EnterSetPage(this)) {
 
+    // Set stylesheets for the widgets
+    this->setStyleSheet("background-color: #000000;");
+
     // Add pages onto pageStack
     pageStack->addWidget(libraryPage);
     pageStack->addWidget(createSetPage);
@@ -94,11 +97,61 @@ void MainWindow::showLibraryPage() {
 
 void MainWindow::handleDeleteSet(const QString &setName) {
     std::cout << "Handling delete set: " << setName.toStdString() << std::endl;
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Delete Set", "Are you sure you want to delete this set?",
-                                  QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Delete Set");
+    msgBox.setText("Are you sure you want to delete this set?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+
+    // Set general stylesheet for the QMessageBox
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
+    // Get the No button and apply specific styles
+    QPushButton *noButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::Yes));
+    if (noButton) {
+        noButton->setStyleSheet(
+                "QPushButton {"
+                "background-color: #FF6347;"
+                "color: #000000;"
+                "}"
+                "QPushButton:hover {"
+                "background-color: #e5533c;"
+                "}"
+        );
+    }
+
+    // Get the Yes button and apply specific styles
+    QPushButton *yesButton = qobject_cast<QPushButton *>(msgBox.button(QMessageBox::No));
+    if (yesButton) {
+        yesButton->setStyleSheet(
+                "QPushButton {"
+                "background-color: #5DF779;"
+                "color: #000000;"
+                "}"
+                "QPushButton:hover {"
+                "background-color: #2db544;"
+                "}"
+        );
+    }
+
+    // Execute the message box and handle the user's response
+    if (msgBox.exec() == QMessageBox::Yes) {
         enterSetPage->deleteSet(setName);
         showLibraryPage();
     }
 }
+
+
+

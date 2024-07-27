@@ -6,37 +6,52 @@
 
 CreateSetPage::CreateSetPage(QWidget *parent) :
         QWidget(parent),
-        backToLibraryButton(new QPushButton("< Back to Library", this)),
+        backToLibraryButton(new QPushButton("Back to Library", this)),
         ui(new QVBoxLayout(this)),
-        pageLabel(new QLabel("Name your Set")),
+        pageLabel(new QLabel("Create New Set", this)),
         setNameLabel(new QLabel("Set Name:", this)),
         setNameInput(new QLineEdit(this)),
         confirmButton(new QPushButton("Confirm", this)) {
 
-    ui->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    ui->addWidget(setNameLabel);
-    ui->addWidget(setNameInput);
-    ui->addWidget(confirmButton);
-    ui->addWidget(backToLibraryButton);
-    setupBackToLibrary();
-    // Connects hitting the confirm button, and takes the "this" pointer into a
-    // lambda function, which then emits setNameConfirmed signal with text
-    // provided [still a little confusing, but just "emitting the signal"
+    // Set stylesheets for the widgets
+    this->setStyleSheet("background-color: #000000;");
+    pageLabel->setStyleSheet("color: #5DF779; font-size: 24px; font-weight: bold;");
+    setNameLabel->setStyleSheet("color: #FFFFFF; font-size: 20px;");
+    setNameInput->setStyleSheet("font-size: 18px;");
+    confirmButton->setStyleSheet("background-color: #5DF779; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
+    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #5DF779;");
+
+    // Create layout
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
+    mainLayout->addWidget(setNameLabel, 0, Qt::AlignLeft);
+    mainLayout->addWidget(setNameInput);
+    mainLayout->addWidget(confirmButton);
+    mainLayout->addStretch(1); // Add a stretch to push the elements up
+    mainLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft | Qt::AlignBottom);
+
+    // Set the layout to the main UI
+    ui->addLayout(mainLayout);
+    setLayout(ui);
+
+    // Connect the confirm button signal
     connect(confirmButton, &QPushButton::clicked, [this]() {
         QString setName = setNameInput->text();
         UserSession *session = UserSession::getUserSession();
-            if (setName.isEmpty()) {
-                QMessageBox::warning(this, "Empty Set Name", "The set name must be non-empty.");
-            } else if (setName == "set_names") {
-                QMessageBox::warning(this, "Invalid set name", "'set_names' is reserved.");
-            } else if (session->existsStudySet(setName.toStdString())) {
-                QMessageBox::warning(this, "Invalid set name", "The set name " + setName + " has already been created.");
-            } else {
-                emit setNameConfirmed(setName);
-                setNameInput->clear();
-            }
+        if (setName.isEmpty()) {
+            QMessageBox::warning(this, "Empty Set Name", "The set name must be non-empty.");
+        } else if (setName == "set_names") {
+            QMessageBox::warning(this, "Invalid set name", "'set_names' is reserved.");
+        } else if (session->existsStudySet(setName.toStdString())) {
+            QMessageBox::warning(this, "Invalid set name", "The set name " + setName + " has already been created.");
+        } else {
+            emit setNameConfirmed(setName);
+            setNameInput->clear();
         }
-    );
+    });
+
+    setupBackToLibrary();
 }
 
 

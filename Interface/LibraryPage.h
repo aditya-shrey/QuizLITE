@@ -1,35 +1,39 @@
-//
-// Created by Fardeen Bablu on 7/13/24.
-//
+#ifndef LIBRARYPAGE_H
+#define LIBRARYPAGE_H
 
-#ifndef QUIZLITE_LIBRARYPAGE_H
-#define QUIZLITE_LIBRARYPAGE_H
-
-#include "MainWindow.h"
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QList>
 
 class LibraryPage : public QWidget {
 Q_OBJECT
 
 public:
     explicit LibraryPage(QWidget *parent = nullptr);
-    void populateLibrary();
 
-
-
-    //Im creating a "signal" label to do something when the "+ Create Set"
-    // button is clicked.
 signals:
     void createSetClicked();
     void openSetClicked(const QString &setName);
 
 public slots:
+    void populateLibrary();
     void addSetButton(const QString &setName);
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
-    //UI Stuff
     QVBoxLayout *ui;
     QLabel *pageLabel;
     QPushButton *createSetButton;
+    QLabel *yourSetsLabel;
+    QGridLayout *setButtonsLayout;
+    QList<QPushButton *> setButtons;
 
+    void updateSetButtonsLayout();
 };
-#endif //QUIZLITE_LIBRARYPAGE_H
+
+#endif // LIBRARYPAGE_H

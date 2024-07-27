@@ -4,31 +4,45 @@
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
-        backToLibraryButton(new QPushButton("< Back to Library", this)),
+        backToLibraryButton(new QPushButton("Back to Library", this)),
         ui(new QVBoxLayout(this)),
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel("Set Content", this)),
         qaListWidget(new QListWidget(this)) {
 
-    std::cout << "EnterSetPage constructor" << std::endl;
-
-    ui->addWidget(setNameLabel);
-    ui->addWidget(pageLabel);
-    ui->addWidget(qaListWidget);
+    // Set stylesheets for the widgets
+    this->setStyleSheet("background-color: #000000;");
+    setNameLabel->setStyleSheet("color: #32CD32; font-size: 30px; font-weight: bold;");
+    pageLabel->setStyleSheet("color: #FFFFFF; font-size: 24px; font-weight: bold;");
+    backToLibraryButton->setStyleSheet("background-color: #90EE90; color: #000000; font-size: 18px; padding: 10px; border-radius: 15px; border: 2px solid #5DF779;");
 
     QPushButton *addQuestionButton = new QPushButton("Add to Set", this);
-    connect(addQuestionButton, &QPushButton::clicked, this, &EnterSetPage::showAddQuestionPage);
-    ui->addWidget(addQuestionButton);
-
+    addQuestionButton->setStyleSheet("background-color: #32CD32; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #32CD32;");
     QPushButton *deleteSetButton = new QPushButton("Delete Set", this);
+    deleteSetButton->setStyleSheet("background-color: #FF6347; color: #000000; font-size: 18px; padding: 5px; border-radius: 15px; border: 2px solid #FF6347;");
+
+    // Create layout
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
+    mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
+    mainLayout->addWidget(qaListWidget);
+    mainLayout->addWidget(addQuestionButton);
+    mainLayout->addWidget(deleteSetButton);
+    mainLayout->addStretch(1); // Add a stretch to push the elements up
+    mainLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft | Qt::AlignBottom);
+
+    // Set the layout to the main UI
+    ui->addLayout(mainLayout);
+    setLayout(ui);
+
+    // Connect signals
+    connect(addQuestionButton, &QPushButton::clicked, this, &EnterSetPage::showAddQuestionPage);
     connect(deleteSetButton, &QPushButton::clicked, [this]() {
         emit confirmDeleteSet(currentSetName);
     });
-    ui->addWidget(deleteSetButton);
 
-    ui->addWidget(backToLibraryButton);
     setupBackButton();
-    setLayout(ui);
 }
 
 void EnterSetPage::addSet(const QString &setName) {
