@@ -10,7 +10,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         backToLibraryButton(new QPushButton("Back to Library", this)),
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel("Set Content", this)),
-        qaListWidget(new QListWidget(this)) {
+        qaListWidget(new QListWidget(this)),
+        scrollArea(new QScrollArea(this)) { // Initialize scrollArea
 
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
@@ -64,13 +65,22 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     );
 
     // Create the main layout for the entire page
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setSpacing(10);
     mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    mainLayout->addWidget(qaListWidget);
-    mainLayout->addWidget(addQuestionButton);
-    mainLayout->addStretch(1); // Add a stretch to push the elements up
+
+    // Create a scroll area for the QA list
+    scrollArea->setWidgetResizable(true);
+    QWidget *scrollAreaContent = new QWidget(scrollArea);
+    QVBoxLayout *scrollAreaLayout = new QVBoxLayout(scrollAreaContent);
+    scrollAreaLayout->addWidget(qaListWidget);
+    scrollAreaContent->setLayout(scrollAreaLayout);
+    scrollArea->setWidget(scrollAreaContent);
+
+    mainLayout->addWidget(scrollArea); // Add the scroll area
+    mainLayout->addStretch(1); // Add a stretch to push the button down
+    mainLayout->addWidget(addQuestionButton, 0, Qt::AlignBottom); // Ensure Add to Set button is at the bottom
 
     // Create a horizontal layout for the bottom buttons
     QHBoxLayout *bottomLayout = new QHBoxLayout();
@@ -80,7 +90,19 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     mainLayout->addLayout(bottomLayout);
 
-    setLayout(mainLayout);
+    // Create a QWidget for the scroll area content
+    QWidget *mainWidget = new QWidget;
+    mainWidget->setLayout(mainLayout);
+
+    // Set the mainWidget to the scroll area
+    QScrollArea *pageScrollArea = new QScrollArea(this);
+    pageScrollArea->setWidgetResizable(true);
+    pageScrollArea->setWidget(mainWidget);
+
+    // Create a main layout for the EnterSetPage
+    QVBoxLayout *pageLayout = new QVBoxLayout(this);
+    pageLayout->addWidget(pageScrollArea);
+    setLayout(pageLayout);
 
     // Connect signals
     connect(addQuestionButton, &QPushButton::clicked, this, &EnterSetPage::showAddQuestionPage);
@@ -90,7 +112,6 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     setupBackButton();
 }
-
 
 void EnterSetPage::addSet(const QString &setName) {
     std::cout << "Adding set: " << setName.toStdString() << std::endl;
@@ -128,13 +149,20 @@ void EnterSetPage::setQAList(const QString& setName) {
     if (session->existsStudySet(setName.toStdString())) {
         auto qaList = session->getTableKeyValues(setName.toStdString());
 
+        int itemHeight = 85; // Estimated height for each item
+        int totalItems = qaList.size();
+        int height = totalItems * itemHeight;
+
+        // Adjust the height of the scrollArea based on the calculated height
+        scrollArea->setMinimumHeight(height);
+
         for (const auto &qa : qaList) {
             QString key = QString::fromStdString(qa.first);
             QString value = QString::fromStdString(qa.second);
 
             QWidget *qaWidget = new QWidget(this);
             QHBoxLayout *qaLayout = new QHBoxLayout(qaWidget);
-            qaLayout->setSpacing(5); // Reduce horizontal spacing
+            qaLayout->setSpacing(2); // Reduce vertical spacing between key-value bars
 
             QLabel *keyLabel = new QLabel(key, this);
             keyLabel->setStyleSheet("font-size: 16px; color: #FFFFFF;");
@@ -153,7 +181,7 @@ void EnterSetPage::setQAList(const QString& setName) {
                     "background-color: #403e3e; "
                     "border-radius: 10px; "
                     "padding: 5px; "
-                    "margin: 5px 0;"
+                    "margin: 2px 0;" // Adjust margin to reduce vertical spacing
             );
 
             QPushButton *deleteButton = new QPushButton(this);
@@ -203,9 +231,6 @@ void EnterSetPage::setQAList(const QString& setName) {
     }
 }
 
-
-
-
 // Override event filter to handle hover effects
 bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
     QPushButton *button = qobject_cast<QPushButton *>(watched);
@@ -218,7 +243,6 @@ bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
     }
     return QWidget::eventFilter(watched, event);
 }
-
 
 void EnterSetPage::clearAllEntries() {
     std::cout << "Clearing all entries" << std::endl;

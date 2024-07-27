@@ -14,6 +14,7 @@
 #include <map>
 #include <QEvent> // Include QEvent header
 #include <QIcon>
+#include <QScrollArea>
 
 class EnterSetPage : public QWidget {
 Q_OBJECT
@@ -51,6 +52,7 @@ private:
     QListWidget *qaListWidget;
     QString currentSetName;
     std::map<QString, QWidget*> setWidgets;
+    QScrollArea *scrollArea;
 };
 
 #endif // QUIZLITE_ENTERSETPAGE_H
