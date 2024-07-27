@@ -85,7 +85,13 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
             msgBox.setWindowTitle("Empty Set Name");
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.exec();
-        } else if (setName == "set_names") {
+        } else if (setName.length() > 50) {
+            msgBox.setText("The set name must be 50 characters or fewer.");
+            msgBox.setWindowTitle("Set Name Too Long");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
+        }
+        else if (setName == "set_names") {
             msgBox.setText("'set_names' is reserved.");
             msgBox.setWindowTitle("Invalid set name");
             msgBox.setIcon(QMessageBox::Warning);
