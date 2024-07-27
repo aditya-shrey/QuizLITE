@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include <QEvent>
 #include <QIcon>
+#include <QMessageBox>
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
@@ -149,7 +150,7 @@ void EnterSetPage::setQAList(const QString& setName) {
     if (session->existsStudySet(setName.toStdString())) {
         auto qaList = session->getTableKeyValues(setName.toStdString());
 
-        int itemHeight = 85; // Estimated height for each item
+        int itemHeight = 95; // Estimated height for each item
         int totalItems = qaList.size();
         int height = totalItems * itemHeight;
 
@@ -260,6 +261,21 @@ void EnterSetPage::setupBackButton() {
 void EnterSetPage::deleteSet(const QString &setName) {
     std::cout << "Deleting set: " << setName.toStdString() << std::endl;
     UserSession *session = UserSession::getUserSession();
+
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
     if (session->deleteStudySet(setName.toStdString())) {
         emit deleteSetClicked(setName);
         auto it = setWidgets.find(setName);
@@ -268,40 +284,124 @@ void EnterSetPage::deleteSet(const QString &setName) {
             setWidgets.erase(it);
         }
     } else {
-        QMessageBox::warning(this, "Error", "Failed to delete set.");
+        msgBox.setText("Failed to delete set.");
+        msgBox.setWindowTitle("Error");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
     }
 }
 
 void EnterSetPage::deleteKeyValuePair(const QString &setName, const QString &key) {
     std::cout << "Deleting key-value pair: " << key.toStdString() << " from set: " << setName.toStdString() << std::endl;
     UserSession *session = UserSession::getUserSession();
+
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
     if (session->deleteFromStudySet(setName.toStdString(), key.toStdString())) {
         emit deleteKeyValuePairClicked(setName, key);
     } else {
-        QMessageBox::warning(this, "Error", "Failed to delete key-value pair.");
+        msgBox.setText("Failed to delete key-value pair.");
+        msgBox.setWindowTitle("Error");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
     }
 }
 
 void EnterSetPage::adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue) {
     std::cout << "Adjusting key-value pair: " << key.toStdString() << " to new value: " << newValue.toStdString() << " in set: " << setName.toStdString() << std::endl;
     UserSession *session = UserSession::getUserSession();
+
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
     if (session->deleteFromStudySet(setName.toStdString(), key.toStdString()) &&
         session->addToStudySet(setName.toStdString(), key.toStdString(), newValue.toStdString())) {
         emit adjustKeyValuePairClicked(setName, key, newValue);
         setQAList(setName);  // Refresh the QA list to reflect the changes
     } else {
-        QMessageBox::warning(this, "Error", "Failed to adjust key-value pair.");
+        msgBox.setText("Failed to adjust key-value pair.");
+        msgBox.setWindowTitle("Error");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
     }
 }
 
 void EnterSetPage::showAddQuestionPage() {
     std::cout << "Showing add question page for set: " << currentSetName.toStdString() << std::endl;
     bool ok;
-    QString key = QInputDialog::getText(this, tr("New Question"),
-                                        tr("Enter new question:"), QLineEdit::Normal,
-                                        QString(), &ok);
+
+    QInputDialog inputDialog;
+    inputDialog.setStyleSheet(
+            "QInputDialog {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QLineEdit {"
+            "background-color: #454545;"
+            "color: #ffffff;"
+            "border: 1px solid #5a5a5a;"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+            "QLabel {"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
+    QString key = inputDialog.getText(this, tr("New Question"),
+                                      tr("Enter new question:"), QLineEdit::Normal,
+                                      QString(), &ok);
+
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
     if (!ok || key.isEmpty() || key == "set_names") {
-        QMessageBox::warning(this, "Invalid Key", "The key is invalid.");
+        msgBox.setText("The key is invalid.");
+        msgBox.setWindowTitle("Invalid Key");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
         return;
     }
 
@@ -310,19 +410,26 @@ void EnterSetPage::showAddQuestionPage() {
         auto qaList = session->getTableKeyValues(currentSetName.toStdString());
         for (const auto &qa : qaList) {
             if (QString::fromStdString(qa.first) == key) {
-                QMessageBox::warning(this, "Duplicate Key", "This key already exists in the set.");
+                msgBox.setText("This key already exists in the set.");
+                msgBox.setWindowTitle("Duplicate Key");
+                msgBox.setIcon(QMessageBox::Warning);
+                msgBox.exec();
                 return;
             }
         }
     }
 
-    QString value = QInputDialog::getText(this, tr("New Answer"),
-                                          tr("Enter new answer:"), QLineEdit::Normal,
-                                          QString(), &ok);
+    QString value = inputDialog.getText(this, tr("New Answer"),
+                                        tr("Enter new answer:"), QLineEdit::Normal,
+                                        QString(), &ok);
     if (ok && !value.isEmpty()) {
         session->addToStudySet(currentSetName.toStdString(), key.toStdString(), value.toStdString());
         setQAList(currentSetName);  // Refresh the QA list to reflect the changes
     } else {
-        QMessageBox::warning(this, "Invalid Value", "The value cannot be empty.");
+        msgBox.setText("The value cannot be empty.");
+        msgBox.setWindowTitle("Invalid Value");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
     }
 }
+

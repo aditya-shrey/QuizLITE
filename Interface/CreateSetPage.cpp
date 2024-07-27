@@ -65,12 +65,36 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
     connect(confirmButton, &QPushButton::clicked, [this]() {
         QString setName = setNameInput->text();
         UserSession *session = UserSession::getUserSession();
+
+        QMessageBox msgBox;
+        msgBox.setStyleSheet(
+                "QMessageBox {"
+                "background-color: #2b2b2b;"
+                "color: #ffffff;"
+                "font-size: 16px;"
+                "}"
+                "QPushButton {"
+                "font-size: 14px;"
+                "padding: 5px;"
+                "border-radius: 5px;"
+                "}"
+        );
+
         if (setName.isEmpty()) {
-            QMessageBox::warning(this, "Empty Set Name", "The set name must be non-empty.");
+            msgBox.setText("The set name must be non-empty.");
+            msgBox.setWindowTitle("Empty Set Name");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
         } else if (setName == "set_names") {
-            QMessageBox::warning(this, "Invalid set name", "'set_names' is reserved.");
+            msgBox.setText("'set_names' is reserved.");
+            msgBox.setWindowTitle("Invalid set name");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
         } else if (session->existsStudySet(setName.toStdString())) {
-            QMessageBox::warning(this, "Invalid set name", "The set name " + setName + " has already been created.");
+            msgBox.setText("The set name " + setName + " has already been created.");
+            msgBox.setWindowTitle("Invalid set name");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
         } else {
             emit setNameConfirmed(setName);
             setNameInput->clear();

@@ -99,10 +99,29 @@ AddQuestionsPage::AddQuestionsPage(QWidget *parent) :
 void AddQuestionsPage::addToSet() {
     QString question = questionInput->text();
     QString answer = answerInput->text();
+
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(
+            "QMessageBox {"
+            "background-color: #2b2b2b;"
+            "color: #ffffff;"
+            "font-size: 16px;"
+            "}"
+            "QPushButton {"
+            "font-size: 14px;"
+            "padding: 5px;"
+            "border-radius: 5px;"
+            "}"
+    );
+
     if (question.isEmpty() || answer.isEmpty()) {
-        QMessageBox::information(this, "Empty Entry", "Both question and answer must be non-empty.");
+        msgBox.setText("Both question and answer must be non-empty.");
+        msgBox.setWindowTitle("Empty Entry");
+        msgBox.exec();
     } else if (addedQuestions->contains(question)) {
-        QMessageBox::information(this, "Duplicate Entry", "This question has already been added.");
+        msgBox.setText("This question has already been added.");
+        msgBox.setWindowTitle("Duplicate Entry");
+        msgBox.exec();
     } else {
         addedQuestions->insert(question);
         emit addToSetClicked(question, answer);
