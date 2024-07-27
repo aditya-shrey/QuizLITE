@@ -235,6 +235,19 @@ std::vector<std::tuple<int, std::string, std::string, int, int>> UserSession::ge
     return tableData;
 }
 
+std::vector<std::map<std::string, std::string>> UserSession::getMainTable()
+{
+    std::vector<std::map<std::string, std::string>> mainTable;
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT * FROM set_names;";
+        mainTable = dbManager->executeQueryWithResults(query);
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getMainTable" << std::endl;
+    }
+    return mainTable;
+}
+
 std::vector<std::tuple<std::string, std::string, float>> UserSession::getLowestAccuracies(const std::string& setName, int x)
 {
     std::vector<std::tuple<std::string, std::string, float>> lowestAccuracies;

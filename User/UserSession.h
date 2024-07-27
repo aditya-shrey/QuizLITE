@@ -94,6 +94,13 @@ public:
     std::vector<std::tuple<int, std::string, std::string, int, int>> getTable(const std::string& setName);
 
     /**
+     * @brief Retrieves the contents of the set_names table.
+     *
+     * @return A vector of maps where each map represents a row in the set_names table.
+     */
+    std::vector<std::map<std::string, std::string>> getMainTable();
+
+    /**
      * @brief Retrieves x number of entries with the lowest accuracies given a set.
      *
      * @param setName The name of the study set.
