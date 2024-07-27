@@ -61,6 +61,11 @@ bool UserSession::existsStudySet(const std::string& setName)
 
 bool UserSession::createStudySet(const std::string& setName)
 {
+    if (setName == "set_names") {
+        std::cerr << "Invalid set name: 'set_names' is reserved." << std::endl;
+        return false;
+    }
+
     bool success = false;
     if (dbManager->openDatabase()) {
         std::string query = "INSERT INTO set_names (name) VALUES (?);";
