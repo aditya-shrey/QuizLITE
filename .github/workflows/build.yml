@@ -94,6 +94,6 @@ jobs:
       - name: Run linter
         uses: DoozyX/clang-format-lint-action@v0.8
         with:
-          source: 'Database User Interface StudyingMethods tests'
+          source: 'Database User StudyingMethods tests'
           extensions: 'cpp,h'
           style: webkit
