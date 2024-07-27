@@ -160,7 +160,7 @@ void EnterSetPage::setQAList(const QString& setName) {
             qaLayout->setSpacing(2);
 
             QLabel *keyLabel = new QLabel(key, this);
-            keyLabel->setStyleSheet("font-size: 16px; color: #FFFFFF;");
+            keyLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: #FFFFFF;");
             keyLabel->setAlignment(Qt::AlignLeft);
             keyLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
