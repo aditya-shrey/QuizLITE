@@ -6,6 +6,7 @@
 #define QUIZLITE_CREATESETPAGE_H
 
 #include "MainWindow.h"
+#include "../User/UserSession.h"
 
 class CreateSetPage : public QWidget {
     Q_OBJECT

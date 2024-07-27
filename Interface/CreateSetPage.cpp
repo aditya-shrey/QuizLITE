@@ -24,10 +24,13 @@ CreateSetPage::CreateSetPage(QWidget *parent) :
     // provided [still a little confusing, but just "emitting the signal"
     connect(confirmButton, &QPushButton::clicked, [this]() {
         QString setName = setNameInput->text();
+        UserSession *session = UserSession::getUserSession();
             if (setName.isEmpty()) {
                 QMessageBox::warning(this, "Empty Set Name", "The set name must be non-empty.");
             } else if (setName == "set_names") {
                 QMessageBox::warning(this, "Invalid set name", "'set_names' is reserved.");
+            } else if (session->existsStudySet(setName.toStdString())) {
+                QMessageBox::warning(this, "Invalid set name", "The set name " + setName + " has already been created.");
             } else {
                 emit setNameConfirmed(setName);
                 setNameInput->clear();
