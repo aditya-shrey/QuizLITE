@@ -25,6 +25,11 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@master
 
+      - name: Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.7.0
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -42,6 +47,7 @@ jobs:
         run: |
           mkdir build
           cd build
+          export QT_DIR=$(ls -d /opt/hostedtoolcache/Qt/*/*/gcc_64)
           cmake -DCMAKE_C_COMPILER=${{ matrix.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} ..
 
       - name: Build
@@ -64,6 +70,7 @@ jobs:
           brew update
           brew install cmake sqlite3
           brew install googletest
+          brew install qt
 
       - name: Configure CMake
         run: cmake -S . -B build

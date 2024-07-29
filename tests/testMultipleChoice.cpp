@@ -23,7 +23,8 @@ protected:
 
 class TestableMultipleChoice : public MultipleChoice {
 public:
-    TestableMultipleChoice(const std::string& setName, int numLowestAccuracies, int numRandomEntries)
+    TestableMultipleChoice(const std::string& setName, int numLowestAccuracies,
+        int numRandomEntries)
         : MultipleChoice(setName, numLowestAccuracies, numRandomEntries)
     {
         // Bypass shuffling for test predictability
@@ -37,10 +38,12 @@ public:
 
 TEST_F(MultipleChoiceTest, TestGetQuestionAndAnswer)
 {
-    TestableMultipleChoice multipleChoice("Science", 3, 0); // 3 lowest accuracy entries, no random entries
+    TestableMultipleChoice multipleChoice(
+        "Science", 3, 0); // 3 lowest accuracy entries, no random entries
 
     std::unordered_set<std::string> expectedQuestions = { "H2O", "CO2", "NaCl" };
-    std::unordered_set<std::string> expectedAnswers = { "Water", "Carbon Dioxide", "Salt" };
+    std::unordered_set<std::string> expectedAnswers = { "Water", "Carbon Dioxide",
+        "Salt" };
 
     for (int i = 0; i < 3; ++i) {
         std::string question = multipleChoice.getQuestion();
@@ -59,7 +62,8 @@ TEST_F(MultipleChoiceTest, TestGetQuestionAndAnswer)
 TEST_F(MultipleChoiceTest, TestUpdateScoresAndOrder)
 {
     auto userSession = UserSession::getUserSession();
-    TestableMultipleChoice multipleChoice("Science", 3, 0); // 3 lowest accuracy entries, no random entries
+    TestableMultipleChoice multipleChoice(
+        "Science", 3, 0); // 3 lowest accuracy entries, no random entries
 
     for (int i = 0; i < 3; ++i) {
         std::string question = multipleChoice.getQuestion();

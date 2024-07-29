@@ -26,7 +26,8 @@ protected:
 
 class TestableInverseMultipleChoice : public InverseMultipleChoice {
 public:
-    TestableInverseMultipleChoice(const std::string& setName, int numLowestAccuracies, int numRandomEntries)
+    TestableInverseMultipleChoice(const std::string& setName,
+        int numLowestAccuracies, int numRandomEntries)
         : InverseMultipleChoice(setName, numLowestAccuracies, numRandomEntries)
     {
         // Bypass shuffling for test predictability
@@ -40,10 +41,13 @@ public:
 
 TEST_F(InverseMultipleChoiceTest, TestGetQuestionAndAnswer)
 {
-    TestableInverseMultipleChoice inverseMultipleChoice("History", 3, 0); // 3 lowest accuracy entries, no random entries
+    TestableInverseMultipleChoice inverseMultipleChoice(
+        "History", 3, 0); // 3 lowest accuracy entries, no random entries
 
     std::unordered_set<std::string> expectedQuestions = { "1776", "1945", "1969" };
-    std::unordered_set<std::string> expectedAnswers = { "Independence of USA", "End of WWII", "Moon Landing" };
+    std::unordered_set<std::string> expectedAnswers = {
+        "Independence of USA", "End of WWII", "Moon Landing"
+    };
 
     for (int i = 0; i < 3; ++i) {
         std::string question = inverseMultipleChoice.getQuestion();
@@ -59,7 +63,8 @@ TEST_F(InverseMultipleChoiceTest, TestGetQuestionAndAnswer)
 TEST_F(InverseMultipleChoiceTest, TestUpdateScoresAndOrder)
 {
     auto userSession = UserSession::getUserSession();
-    TestableInverseMultipleChoice inverseMultipleChoice("History", 3, 0); // 3 lowest accuracy entries, no random entries
+    TestableInverseMultipleChoice inverseMultipleChoice(
+        "History", 3, 0); // 3 lowest accuracy entries, no random entries
 
     for (int i = 0; i < 3; ++i) {
         std::string question = inverseMultipleChoice.getQuestion();

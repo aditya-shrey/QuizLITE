@@ -31,6 +31,8 @@ include_directories(${googletest_SOURCE_DIR}/googletest/include)
 
 find_package(SQLite3 REQUIRED)
 find_package(GTest REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+qt_standard_project_setup()
 
 add_executable(QuizLITE
         main.cpp
@@ -45,9 +47,23 @@ add_executable(QuizLITE
         StudyingMethods/MultipleChoice.h
         StudyingMethods/InverseMultipleChoice.cpp
         StudyingMethods/InverseMultipleChoice.h
+        Interface/MainWindow.cpp
+        Interface/MainWindow.h
+        Interface/LibraryPage.cpp
+        Interface/LibraryPage.h
+        Interface/CreateSetPage.cpp
+        Interface/CreateSetPage.h
+        Interface/AddQuestionsPage.cpp
+        Interface/AddQuestionsPage.h
+        Interface/EnterSetPage.cpp
+        Interface/EnterSetPage.h
 )
+
 target_link_libraries(QuizLITE
         SQLite::SQLite3
+        Qt6::Widgets
+        Qt6::Core
+        Qt6::Gui
 )
 
 # Test executables
@@ -87,3 +103,5 @@ add_custom_target(run_tests
         COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
         DEPENDS TestExecutables
 )
+
+

@@ -2,8 +2,6 @@
 // Created by Aditya Shrey on 6/26/24.
 //
 #include "UserSession.h"
-#include <iostream>
-#include <utility>
 
 UserSession* UserSession::instancePtr = nullptr;
 
@@ -61,6 +59,11 @@ bool UserSession::existsStudySet(const std::string& setName)
 
 bool UserSession::createStudySet(const std::string& setName)
 {
+    if (setName == "set_names") {
+        std::cerr << "Invalid set name: 'set_names' is reserved." << std::endl;
+        return false;
+    }
+
     bool success = false;
     if (dbManager->openDatabase()) {
         std::string query = "INSERT INTO set_names (name) VALUES (?);";
@@ -233,6 +236,19 @@ std::vector<std::tuple<int, std::string, std::string, int, int>> UserSession::ge
         std::cerr << "Failed to open database for getTable" << std::endl;
     }
     return tableData;
+}
+
+std::vector<std::map<std::string, std::string>> UserSession::getMainTable()
+{
+    std::vector<std::map<std::string, std::string>> mainTable;
+    if (dbManager->openDatabase()) {
+        std::string query = "SELECT * FROM set_names;";
+        mainTable = dbManager->executeQueryWithResults(query);
+        dbManager->closeDatabase();
+    } else {
+        std::cerr << "Failed to open database for getMainTable" << std::endl;
+    }
+    return mainTable;
 }
 
 std::vector<std::tuple<std::string, std::string, float>> UserSession::getLowestAccuracies(const std::string& setName, int x)
