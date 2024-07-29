@@ -1,19 +1,22 @@
 #ifndef QUIZLITE_ENTERSETPAGE_H
 #define QUIZLITE_ENTERSETPAGE_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QListWidget>
-#include <QLabel>
-#include <QPair>
-#include <QMessageBox>
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QLineEdit>
-#include <QEvent>
-#include <QIcon>
-#include <QScrollArea>
+#include <QtWidgets>
+#include <QtCore>
+
+//#include <QWidget>
+//#include <QVBoxLayout>
+//#include <QPushButton>
+//#include <QListWidget>
+//#include <QLabel>
+//#include <QPair>
+//#include <QMessageBox>
+//#include <QHBoxLayout>
+//#include <QInputDialog>
+//#include <QLineEdit>
+//#include <QEvent>
+//#include <QIcon>
+//#include <QScrollArea>
 #include <map>
 #include <iostream>
 #include "../User/UserSession.h"
@@ -46,6 +49,13 @@ signals:
      * @brief Signal emitted when the back to library button is clicked.
      */
     void backToLibraryClicked();
+
+    /**
+     * @brief Signal emitted when the multiple choice button is clicked.
+     *
+     * @param setName The name of the set to start quiz.
+     */
+    void openMCPageClicked(const QString &setName);
 
     /**
      * @brief Signal emitted when a set is deleted.
@@ -157,6 +167,12 @@ private:
     QString currentSetName;
     std::map<QString, QWidget*> setWidgets;
     QScrollArea *scrollArea;
+    QStackedWidget *studyMethodsPageStack;
+    QPushButton *mcButton;
+
+
+    void setupStudyButtons();
+    void setupMCButton();
 };
 
 #endif // QUIZLITE_ENTERSETPAGE_H

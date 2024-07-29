@@ -6,7 +6,9 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel("Set Content", this)),
         qaListWidget(new QListWidget(this)),
-        scrollArea(new QScrollArea(this)) { // Initialize scrollArea
+        scrollArea(new QScrollArea(this)),
+        studyMethodsPageStack(new QStackedWidget(this)),
+        mcButton(new QPushButton("Multiple Choice", this)) { // Initialize scrollArea
 
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
@@ -26,6 +28,25 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
             "border: 2px solid #90EE90;"
             "}"
     );
+
+    QHBoxLayout *topRowLayout = new QHBoxLayout();
+    topRowLayout->addStretch(1);
+    topRowLayout->addWidget(mcButton, 0, Qt::AlignRight | Qt::AlignTop);
+    mcButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+
 
     QPushButton *addQuestionButton = new QPushButton("Add to Set", this);
     addQuestionButton->setStyleSheet(
@@ -64,6 +85,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     mainLayout->setSpacing(10);
     mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
+    mainLayout->addWidget(mcButton, 0, Qt::AlignTop | Qt::AlignRight);
 
     // Create a scroll area for the QA list
     scrollArea->setWidgetResizable(true);
@@ -424,4 +446,11 @@ void EnterSetPage::showAddQuestionPage() {
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+}
+
+
+void EnterSetPage::setupMCButton() {
+    connect(mcButton, &QPushButton::clicked, this, [this] {
+        emit openMCPageClicked(setNameLabel->text());
+    });
 }
