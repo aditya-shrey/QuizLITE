@@ -169,6 +169,8 @@ private:
     QScrollArea *scrollArea;
     QStackedWidget *studyMethodsPageStack;
     QPushButton *mcButton;
+    QPushButton *inverseMCButton;
+    QPushButton *flashcardsButton;
 
 
     void setupStudyButtons();

@@ -8,7 +8,9 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         qaListWidget(new QListWidget(this)),
         scrollArea(new QScrollArea(this)),
         studyMethodsPageStack(new QStackedWidget(this)),
-        mcButton(new QPushButton("Multiple Choice", this)) { // Initialize scrollArea
+        mcButton(new QPushButton("Multiple Choice", this)),
+        inverseMCButton(new QPushButton("Inverse Multiple Choice", this)),
+        flashcardsButton(new QPushButton("Flashcards")) { // Initialize scrollArea
 
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
@@ -31,19 +33,51 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     QHBoxLayout *topRowLayout = new QHBoxLayout();
     topRowLayout->addStretch(1);
-    topRowLayout->addWidget(mcButton, 0, Qt::AlignRight | Qt::AlignTop);
+    topRowLayout->addWidget(mcButton, 0, Qt::AlignRight);
+    topRowLayout->addWidget(inverseMCButton, 0, Qt::AlignRight);
+    topRowLayout->addWidget(flashcardsButton, 0, Qt::AlignRight);
     mcButton->setStyleSheet(
             "QPushButton {"
-            "background-color: #2bb52b;"
+            "background-color: #00A7E1;"
             "color: #000000;"
             "font-size: 18px;"
             "padding: 5px;"
             "border-radius: 15px;"
-            "border: 2px solid #2bb52b;"
+            "border: 2px solid #00A7E1;"
             "}"
             "QPushButton:hover {"
-            "background-color: #32CD32;"
-            "border: 2px solid #32CD32;"
+            "background-color: #6BCDEE;"
+            "border: 2px solid #6BCDEE;"
+            "}"
+    );
+
+    inverseMCButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #C55ADD;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #C55ADD;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #D88BE9;"
+            "border: 2px solid #D88BE9;"
+            "}"
+    );
+
+    flashcardsButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #E9A003;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #E9A003;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #E9AE30;"
+            "border: 2px solid #E9AE30;"
             "}"
     );
 
@@ -85,7 +119,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     mainLayout->setSpacing(10);
     mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
-    mainLayout->addWidget(mcButton, 0, Qt::AlignTop | Qt::AlignRight);
+    mainLayout->addLayout(topRowLayout);
 
     // Create a scroll area for the QA list
     scrollArea->setWidgetResizable(true);
