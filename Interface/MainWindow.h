@@ -15,6 +15,7 @@
 #include "LibraryPage.h"
 #include "AddQuestionsPage.h"
 #include "EnterSetPage.h"
+#include "MCPage.h"
 #include <iostream>
 #include "../User/UserSession.h"
 
@@ -35,6 +36,7 @@ class CreateSetPage;
 class LibraryPage;
 class AddQuestionsPage;
 class EnterSetPage;
+class MCPage;
 
 /**
  * @class MainWindow
@@ -101,6 +103,7 @@ private:
     CreateSetPage *createSetPage;
     AddQuestionsPage *addQuestionsPage;
     EnterSetPage *enterSetPage;
+    MCPage *mcPage;
     QVector<QPair<QString, QString>> currentSetQA;
     QString currentSetName;
     QMap<QString, QListWidget*> setWidgets;
