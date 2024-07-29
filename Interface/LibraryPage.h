@@ -22,7 +22,7 @@ Q_OBJECT
 
 public:
     /**
-     * @brief Constructor for LibraryPage.
+     * @brief Constructor for LibraryPage.Œ
      * @param parent The parent widget.
      */
     explicit LibraryPage(QWidget *parent = nullptr);

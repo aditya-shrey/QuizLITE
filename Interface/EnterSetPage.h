@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include <QtCore>
+#include "MCPage.h"
 
 //#include <QWidget>
 //#include <QVBoxLayout>

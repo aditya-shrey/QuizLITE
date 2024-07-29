@@ -131,7 +131,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     mainLayout->addWidget(scrollArea); // Add the scroll area
     mainLayout->addStretch(1); // Add a stretch to push the button down
-    mainLayout->addWidget(addQuestionButton, 0, Qt::AlignBottom); // Ensure Add to Set button is at the bottom
+    mainLayout->addWidget(addQuestionButton, 0,
+                          Qt::AlignBottom); // Ensure Add to Set button is at the bottom
 
     // Create a horizontal layout for the bottom buttons
     QHBoxLayout *bottomLayout = new QHBoxLayout();
@@ -161,7 +162,12 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         emit confirmDeleteSet(currentSetName);
     });
 
+    mainLayout->addWidget(studyMethodsPageStack);
+    setupMCButton();
     setupBackButton();
+
+
+
 }
 
 void EnterSetPage::addSet(const QString &setName) {
