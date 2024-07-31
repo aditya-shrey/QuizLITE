@@ -12,6 +12,8 @@ MCPage::MCPage(QWidget *parent) : QWidget(parent), mc(nullptr), currentScore(0),
 void MCPage::startMCQuiz(const QString &setName) {
     currentSetName = setName;
     resetQuiz();
+
+    //if even number of question/answers, split between lowestAccuracies and randompair, if odd, split again but add +1 for random
     auto qaPair = UserSession::getUserSession()->getTableKeyValues(setName.toStdString());
     int totalPairs = qaPair.size();
     if (totalPairs % 2 == 0) {

@@ -11,7 +11,6 @@ void FlashcardPage::startFlashcardQuiz(const QString &setName) {
     resetFlashcardSession();
     fc = new Flashcards(setName.toStdString());
 
-    // FEELS DIRTY :O
     // Note: Get flashcards directly from the session to count them
     auto flashCardsPairs = UserSession::getUserSession()->getTableKeyValues(setName.toStdString());
     totalFlashcards = flashCardsPairs.size();
