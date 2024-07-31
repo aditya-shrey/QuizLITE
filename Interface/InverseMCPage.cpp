@@ -2,27 +2,29 @@
 // Created by Fardeen Bablu on 7/26/24.
 //
 
-#include "MCPage.h"
+#include "InverseMCPage.h"
+#include "../User/UserSession.h"
 #include <QMessageBox>
 
-MCPage::MCPage(QWidget *parent) : QWidget(parent), mc(nullptr), currentScore(0), totalQuestions(0) {
+InverseMCPage::InverseMCPage(QWidget *parent) : QWidget(parent), imc(nullptr), currentScore(0), totalQuestions(0) {
     setupUI();
 }
 
-void MCPage::startMCQuiz(const QString &setName) {
+void InverseMCPage::startInverseMCQuiz(const QString &setName) {
     currentSetName = setName;
     resetQuiz();
     auto qaPair = UserSession::getUserSession()->getTableKeyValues(setName.toStdString());
     int totalPairs = qaPair.size();
     if (totalPairs % 2 == 0) {
-        mc = new MultipleChoice(setName.toStdString(), totalPairs/2, totalPairs/2);
+        imc = new InverseMultipleChoice(setName.toStdString(), totalPairs/2, totalPairs/2);
     } else {
         --totalPairs;
-        mc = new MultipleChoice(setName.toStdString(), totalPairs/2, (totalPairs/2)+1);
+        imc = new InverseMultipleChoice(setName.toStdString(), totalPairs/2, (totalPairs/2)+1);
     }
     showQuestion();
 }
-void MCPage::resetQuiz() {
+
+void InverseMCPage::resetQuiz() {
     currentScore = 0;
     totalQuestions = 0;
     questionLabel->clear();
@@ -56,7 +58,7 @@ void MCPage::resetQuiz() {
     backToSetButton->hide();
 }
 
-void MCPage::finishQuiz() {
+void InverseMCPage::finishQuiz() {
     float accuracy = (totalQuestions > 0) ? (static_cast<float>(currentScore) / totalQuestions * 100) : 0;
 
     QMessageBox::information(this,
@@ -67,14 +69,14 @@ void MCPage::finishQuiz() {
     backToSetButton->show();
 }
 
-void MCPage::setupUI() {
+void InverseMCPage::setupUI() {
     ui = new QVBoxLayout(this);
     questionLabel = new QLabel(this);
     questionLabel->setStyleSheet("font-size: 20px; color: #FFFFFF;");
     questionLabel->setAlignment(Qt::AlignCenter);
     ui->addWidget(questionLabel);
 
-    // Create MC answer ticks
+    // Create inverse MC answer ticks
     answerGroup = new QButtonGroup(this);
     for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
         answerButtons[i] = new QRadioButton(this);
@@ -116,7 +118,7 @@ void MCPage::setupUI() {
             "background-color: #32CD32;"
             "border: 2px solid #32CD32;"
             "}"
-            );
+    );
     nextButton = new QPushButton("Next", this);
     nextButton->setStyleSheet(
             "QPushButton {"
@@ -163,16 +165,14 @@ void MCPage::setupUI() {
             "}"
     );
 
-
-
     ui->addWidget(submitButton);
     ui->addWidget(nextButton);
     ui->addWidget(finishButton);
     ui->addWidget(backToSetButton);
 
-    connect(submitButton, &QPushButton::clicked, this, &MCPage::checkAnswer);
-    connect(nextButton, &QPushButton::clicked, this, &MCPage::showNextQuestion);
-    connect(finishButton, &QPushButton::clicked, this, &MCPage::finishQuiz);
+    connect(submitButton, &QPushButton::clicked, this, &InverseMCPage::checkAnswer);
+    connect(nextButton, &QPushButton::clicked, this, &InverseMCPage::showNextQuestion);
+    connect(finishButton, &QPushButton::clicked, this, &InverseMCPage::finishQuiz);
 
     setupBackToSetButton();
     nextButton->hide();
@@ -181,26 +181,22 @@ void MCPage::setupUI() {
     setLayout(ui);
 }
 
-
-
-void MCPage::showQuestion() {
-
-    std::string question = mc->getQuestion();
+void InverseMCPage::showQuestion() {
+    std::string question = imc->getQuestion();
     if (question.empty()) {
         finishQuiz();
         return;
     }
 
     questionLabel->setText(QString::fromStdString(question));
-    auto options = mc->generateOptions();
+    auto options = imc->generateOptions();
     answerButtons[0]->setText(QString::fromStdString(std::get<0>(options)));
     answerButtons[1]->setText(QString::fromStdString(std::get<1>(options)));
     answerButtons[2]->setText(QString::fromStdString(std::get<2>(options)));
     answerButtons[3]->setText(QString::fromStdString(std::get<3>(options)));
 
-
     answerGroup->setExclusive(false);
-    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
+    for (uint i = 0; i < sizeof(answerButtons) / sizeof(answerButtons[0]); ++i) {
         answerButtons[i]->setChecked(false);
     }
 
@@ -209,26 +205,25 @@ void MCPage::showQuestion() {
     finishButton->hide();
     ++totalQuestions;
     answerGroup->setExclusive(true);
-    std::cout << totalQuestions << std::endl;
 }
 
-void MCPage::checkAnswer() {
+void InverseMCPage::checkAnswer() {
     int selectedAnswer = answerGroup->checkedId();
     if (selectedAnswer == -1) {
         QMessageBox::warning(this, "No Selection", "Select an answer before submitting");
         return;
     }
-    std::string correctAnswer = mc->getAnswer();
+    std::string correctAnswer = imc->getAnswer();
     bool isCorrect = (answerButtons[selectedAnswer])->text() == QString::fromStdString(correctAnswer);
 
     if (isCorrect) {
         ++currentScore;
     }
 
-    mc->updateScoresInTable(isCorrect);
+    imc->updateScoresInTable(isCorrect);
     submitButton->hide();
-    if (mc->goToNextQuestion()) {
-        for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
+    if (imc->goToNextQuestion()) {
+        for (uint i = 0; i < sizeof(answerButtons) / sizeof(answerButtons[0]); ++i) {
             answerButtons[i]->setChecked(false);
         }
         nextButton->show();
@@ -283,7 +278,7 @@ void MCPage::checkAnswer() {
     }
 }
 
-void MCPage::showNextQuestion() {
+void InverseMCPage::showNextQuestion() {
     answerGroup->setExclusive(false);
     for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
         answerButtons[i]->setChecked(false);
@@ -312,8 +307,7 @@ void MCPage::showNextQuestion() {
     showQuestion();
 }
 
-
-void MCPage::setupBackToSetButton() {
+void InverseMCPage::setupBackToSetButton() {
     connect(backToSetButton, &QPushButton::clicked, this, [this]() {
         emit backToSetClicked();
     });

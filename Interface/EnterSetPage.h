@@ -1,3 +1,7 @@
+//
+// Created by Fardeen Bablu on 7/26/24.
+//
+
 #ifndef QUIZLITE_ENTERSETPAGE_H
 #define QUIZLITE_ENTERSETPAGE_H
 
@@ -44,6 +48,20 @@ signals:
      * @param setName The name of the set to start quiz.
      */
     void openMCPageClicked(const QString &setName);
+
+    /**
+     * @brief Signal emitted when the inverse multiple choice button is clicked.
+     *
+     * @param setName The name of the set to start quiz.
+     */
+    void openInverseMCPageClicked(const QString &setName);
+
+    /**
+     * @brief Signal emitted when the flashcards button is clicked.
+     *
+     * @param setname The name of the set to start quiz.
+     */
+    void openFlashcardsPageClicked(const QString &setname);
 
     /**
      * @brief Signal emitted when a set is deleted.
@@ -152,7 +170,6 @@ protected:
 
 private:
     QVBoxLayout *ui;
-    QString *curretnSetName;
     QLabel *setNameLabel;
     QLabel *pageLabel;
     QListWidget *qaListWidget;
@@ -165,8 +182,7 @@ private:
     QPushButton *flashcardsButton;
 
 
-    void setupStudyButtons();
-    void setupMCButton();
+    void setupStudyMethodButtons();
     void setupBackButton();
 };
 

@@ -16,6 +16,8 @@
 #include "AddQuestionsPage.h"
 #include "EnterSetPage.h"
 #include "MCPage.h"
+#include "InverseMCPage.h"
+#include "FlashcardPage.h"
 #include <iostream>
 #include "../User/UserSession.h"
 
@@ -37,6 +39,8 @@ class LibraryPage;
 class AddQuestionsPage;
 class EnterSetPage;
 class MCPage;
+class InverseMCPage;
+class FlashcardsPage;
 
 /**
  * @class MainWindow
@@ -104,11 +108,12 @@ private:
     AddQuestionsPage *addQuestionsPage;
     EnterSetPage *enterSetPage;
     MCPage *mcPage;
+    InverseMCPage *inverseMCPage;
+    FlashcardPage *flashcardPage;
     QVector<QPair<QString, QString>> currentSetQA;
     QString currentSetName;
     QMap<QString, QListWidget*> setWidgets;
     QPushButton backToLibrary;
-
 };
 
 #endif // QUIZLITE_MAINWINDOW_H

@@ -1,3 +1,6 @@
+//
+// Created by Fardeen Bablu on 7/26/24.
+//
 #include "EnterSetPage.h"
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
@@ -163,7 +166,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     });
 
     mainLayout->addWidget(studyMethodsPageStack);
-    setupMCButton();
+    setupStudyMethodButtons();
     setupBackButton();
 
 
@@ -489,8 +492,16 @@ void EnterSetPage::showAddQuestionPage() {
 }
 
 
-void EnterSetPage::setupMCButton() {
+
+
+void EnterSetPage::setupStudyMethodButtons() {
     connect(mcButton, &QPushButton::clicked, this, [this] {
         emit openMCPageClicked(currentSetName);
+    });
+    connect(inverseMCButton, &QPushButton::clicked, this, [this] {
+        emit openInverseMCPageClicked(currentSetName);
+    });
+    connect(flashcardsButton, &QPushButton::clicked, this, [this] {
+        emit openFlashcardsPageClicked(currentSetName);
     });
 }

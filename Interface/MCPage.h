@@ -7,12 +7,9 @@
 
 #include "EnterSetPage.h"
 #include "../StudyingMethods/MultipleChoice.h"
-#include <QWidget>
-#include <QPushButton>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QRadioButton>
-#include <QButtonGroup>
+#include <QtWidgets>
+#include <QtCore>
+
 
 class MCPage : public QWidget {
 Q_OBJECT
