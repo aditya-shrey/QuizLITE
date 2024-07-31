@@ -34,14 +34,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(enterSetPage, &EnterSetPage::confirmDeleteSet, this, &MainWindow::handleDeleteSet);
 
-
     // Connect Multiple choice
     connect(enterSetPage, &EnterSetPage::openMCPageClicked, this, [this](const QString &setName) {
+        mcPage->resetQuiz();
         mcPage->startMCQuiz(setName);
         pageStack->setCurrentWidget(mcPage);
     });
+
     connect(mcPage, &MCPage::backToSetClicked, this, [this] {
         pageStack->setCurrentWidget(enterSetPage);
+        enterSetPage->setQAList(enterSetPage->getCurrentSetName());
     });
 
     pageStack->setCurrentWidget(libraryPage);

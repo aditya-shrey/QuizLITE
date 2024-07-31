@@ -4,20 +4,6 @@
 #include <QtWidgets>
 #include <QtCore>
 #include "MCPage.h"
-
-//#include <QWidget>
-//#include <QVBoxLayout>
-//#include <QPushButton>
-//#include <QListWidget>
-//#include <QLabel>
-//#include <QPair>
-//#include <QMessageBox>
-//#include <QHBoxLayout>
-//#include <QInputDialog>
-//#include <QLineEdit>
-//#include <QEvent>
-//#include <QIcon>
-//#include <QScrollArea>
 #include <map>
 #include <iostream>
 #include "../User/UserSession.h"
@@ -31,6 +17,7 @@ Q_OBJECT
     QPushButton *backToLibraryButton;
 
 public:
+
     /**
      * @brief Constructor for EnterSetPage.
      *
@@ -116,10 +103,6 @@ public slots:
      */
     void clearAllEntries();
 
-    /**
-     * @brief Sets up the back button functionality.
-     */
-    void setupBackButton();
 
     /**
      * @brief Shows the add question page.
@@ -150,6 +133,13 @@ public slots:
      */
     void adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue);
 
+    /**
+     * @brief Gets the current set name.
+     * @return returns a QString of the current setName;
+     */
+    QString getCurrentSetName() const { return currentSetName; }
+
+
 protected:
     /**
      * @brief Event filter for handling custom events.
@@ -162,6 +152,7 @@ protected:
 
 private:
     QVBoxLayout *ui;
+    QString *curretnSetName;
     QLabel *setNameLabel;
     QLabel *pageLabel;
     QListWidget *qaListWidget;
@@ -176,6 +167,7 @@ private:
 
     void setupStudyButtons();
     void setupMCButton();
+    void setupBackButton();
 };
 
 #endif // QUIZLITE_ENTERSETPAGE_H

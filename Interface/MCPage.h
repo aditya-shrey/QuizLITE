@@ -18,14 +18,14 @@ class MCPage : public QWidget {
 Q_OBJECT
 public:
     MCPage(QWidget *parent = nullptr);
+    void startMCQuiz(const QString &setName);
+    void resetQuiz();
 
 
 signals:
     void openMCPage();
     void backToSetClicked();
 
-public slots:
-    void startMCQuiz(const QString &setName);
 
 private:
     QString currentSetName;
@@ -37,6 +37,7 @@ private:
     QPushButton *submitButton;
     QPushButton *nextButton;
     QPushButton *finishButton;
+    QPushButton *backToSetButton;
 
     int currentScore;
     int totalQuestions;
@@ -46,6 +47,8 @@ private:
     void checkAnswer();
     void showNextQuestion();
     void finishQuiz();
+    void setupBackToSetButton();
 };
+
 
 #endif //QUIZLITE_MCPAGE_H

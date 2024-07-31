@@ -491,6 +491,6 @@ void EnterSetPage::showAddQuestionPage() {
 
 void EnterSetPage::setupMCButton() {
     connect(mcButton, &QPushButton::clicked, this, [this] {
-        emit openMCPageClicked(setNameLabel->text());
+        emit openMCPageClicked(currentSetName);
     });
 }

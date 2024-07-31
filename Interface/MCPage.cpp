@@ -9,6 +9,57 @@ MCPage::MCPage(QWidget *parent) : QWidget(parent), mc(nullptr), currentScore(0),
     setupUI();
 }
 
+void MCPage::startMCQuiz(const QString &setName) {
+    currentSetName = setName;
+    resetQuiz();
+    mc = new MultipleChoice(setName.toStdString(), 5, 5);
+    showQuestion();
+}
+void MCPage::resetQuiz() {
+    currentScore = 0;
+    totalQuestions = 0;
+    questionLabel->clear();
+    for (int i = 0; i < 4; ++i) {
+        answerButtons[i]->show();
+        answerButtons[i]->setChecked(false);
+        answerButtons[i]->setStyleSheet(
+                "QRadioButton {"
+                "font-size: 18px;"
+                "color: #FFFFFF;"
+                "background-color: #403e3e;"
+                "border-radius: 10px;"
+                "padding: 5px;"
+                "margin: 2px 0;"
+                "}"
+                "QRadioButton::indicator {"
+                "width: 20px;"
+                "height: 20px;"
+                "}"
+                "QRadioButton::indicator:checked {"
+                "background-color: #32CD32;"
+                "}"
+                "QRadioButton::indicator:unchecked {"
+                "background-color: #FFFFFF;"
+                "}"
+        );
+    }
+    submitButton->show();
+    nextButton->hide();
+    finishButton->hide();
+    backToSetButton->hide();
+}
+
+void MCPage::finishQuiz() {
+    float accuracy = (totalQuestions > 0) ? (static_cast<float>(currentScore) / totalQuestions * 100) : 0;
+
+    QMessageBox::information(this,
+                             "Quiz Finished",
+                             "Your score: " + QString::number(currentScore) + "/" + QString::number(totalQuestions) + "\nAccuracy: " + QString::number(accuracy) + "%");
+
+    finishButton->hide();
+    backToSetButton->show();
+}
+
 void MCPage::setupUI() {
     ui = new QVBoxLayout(this);
     questionLabel = new QLabel(this);
@@ -45,31 +96,88 @@ void MCPage::setupUI() {
     }
 
     submitButton = new QPushButton("Submit", this);
+    submitButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+            );
     nextButton = new QPushButton("Next", this);
+    nextButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
     finishButton = new QPushButton("Finish", this);
+    finishButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+    backToSetButton = new QPushButton("Back to Set", this);
+    backToSetButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+
+
 
     ui->addWidget(submitButton);
     ui->addWidget(nextButton);
     ui->addWidget(finishButton);
+    ui->addWidget(backToSetButton);
 
     connect(submitButton, &QPushButton::clicked, this, &MCPage::checkAnswer);
     connect(nextButton, &QPushButton::clicked, this, &MCPage::showNextQuestion);
     connect(finishButton, &QPushButton::clicked, this, &MCPage::finishQuiz);
 
+    setupBackToSetButton();
     nextButton->hide();
     finishButton->hide();
+    backToSetButton->hide();
     setLayout(ui);
 }
 
-void MCPage::startMCQuiz(const QString &setName) {
-    currentSetName = setName;
 
-    mc = new MultipleChoice(setName.toStdString(), 5, 5);
-    currentScore = totalQuestions = 0;
-    showQuestion();
-}
 
 void MCPage::showQuestion() {
+
     std::string question = mc->getQuestion();
     if (question.empty()) {
         finishQuiz();
@@ -83,7 +191,9 @@ void MCPage::showQuestion() {
     answerButtons[2]->setText(QString::fromStdString(std::get<2>(options)));
     answerButtons[3]->setText(QString::fromStdString(std::get<3>(options)));
 
-    for (int i = 0; i < 4; ++i) {
+
+    answerGroup->setExclusive(false);
+    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
         answerButtons[i]->setChecked(false);
     }
 
@@ -91,6 +201,8 @@ void MCPage::showQuestion() {
     nextButton->hide();
     finishButton->hide();
     ++totalQuestions;
+    answerGroup->setExclusive(true);
+    std::cout << totalQuestions << std::endl;
 }
 
 void MCPage::checkAnswer() {
@@ -109,6 +221,9 @@ void MCPage::checkAnswer() {
     mc->updateScoresInTable(isCorrect);
     submitButton->hide();
     if (mc->goToNextQuestion()) {
+        for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
+            answerButtons[i]->setChecked(false);
+        }
         nextButton->show();
     } else {
         finishButton->show();
@@ -162,7 +277,9 @@ void MCPage::checkAnswer() {
 }
 
 void MCPage::showNextQuestion() {
-    for (int i = 0; i < 4; ++i) {
+    answerGroup->setExclusive(false);
+    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
+        answerButtons[i]->setChecked(false);
         answerButtons[i]->setStyleSheet(
                 "QRadioButton {"
                 "font-size: 18px;"
@@ -176,53 +293,21 @@ void MCPage::showNextQuestion() {
                 "width: 20px;"
                 "height: 20px;"
                 "}"
-                "QRadioButton::indicator:checked {"
-                "background-color: #32CD32;"
-                "}"
                 "QRadioButton::indicator:unchecked {"
                 "background-color: #FFFFFF;"
                 "}"
+                "QRadioButton::indicator:checked {"
+                "background-color: #32CD32;"
+                "}"
         );
     }
+    answerGroup->setExclusive(true);
     showQuestion();
 }
 
-void MCPage::finishQuiz() {
-    float accuracy;
-    if (totalQuestions > 0) {
-        accuracy = static_cast<float>(currentScore) / totalQuestions * 100;
-    } else {
-        accuracy = 0;
-    }
 
-    QMessageBox::information(this, "Quiz Finished", "Your score: " + QString::number(currentScore) + "/" + QString::number(totalQuestions) + "\nAccuracy: " + QString::number(accuracy) + "%");
-
-    questionLabel->clear();
-    for (int i = 0; i < 4; ++i) {
-        answerButtons[i]->setStyleSheet(
-                "QRadioButton {"
-                "font-size: 18px;"
-                "color: #FFFFFF;"
-                "background-color: #403e3e;"
-                "border-radius: 10px;"
-                "padding: 5px;"
-                "margin: 2px 0;"
-                "}"
-                "QRadioButton::indicator {"
-                "width: 20px;"
-                "height: 20px;"
-                "}"
-                "QRadioButton::indicator:checked {"
-                "background-color: #32CD32;"
-                "}"
-                "QRadioButton::indicator:unchecked {"
-                "background-color: #FFFFFF;"
-                "}"
-        );
-        answerButtons[i]->setText("");
-    }
-
-    submitButton->hide();
-    nextButton->hide();
-    finishButton->hide();
+void MCPage::setupBackToSetButton() {
+    connect(backToSetButton, &QPushButton::clicked, this, [this]() {
+        emit backToSetClicked();
+    });
 }
