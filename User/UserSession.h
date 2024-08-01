@@ -133,6 +133,14 @@ public:
      */
     void printDatabaseTable(const std::string& tableName);
 
+    /**
+     * @brief Gets the size of a study set in the database.
+     *
+     * @param setName The name of the study set.
+     * @return The size of the study set.
+     */
+    int getStudySetSize(const std::string& setName);
+
     UserSession(const UserSession& obj) = delete;
     UserSession& operator=(const UserSession& obj) = delete;
 
