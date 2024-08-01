@@ -64,10 +64,14 @@ static int callbackStore(void* data, int argc, char** argv, char** azColName)
     return 0;
 }
 
-std::vector<std::map<std::string, std::string>>
-DatabaseManager::executeQueryWithResults(const std::string& query) const
+std::vector<std::map<std::string, std::string>> DatabaseManager::executeQueryWithResults(const std::string& query) const
 {
     std::vector<std::map<std::string, std::string>> rows;
+    if (!db) {
+        std::cerr << "Database connection is NULL." << std::endl;
+        return rows;
+    }
+
     char* errorMessage = nullptr;
     int result = sqlite3_exec(db, query.c_str(), callbackStore, &rows, &errorMessage);
     if (result != SQLITE_OK) {
