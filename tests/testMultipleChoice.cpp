@@ -1,11 +1,12 @@
-#include <gtest/gtest.h>
 #include "../StudyingMethods/MultipleChoice.h"
-#include <string>
 #include <algorithm>
+#include <gtest/gtest.h>
+#include <string>
 
 class MultipleChoiceTest : public ::testing::Test {
 protected:
-    void SetUp() override {
+    void SetUp() override
+    {
         UserSession::resetInstance();
         userSession = UserSession::getUserSession();
         userSession->createStudySet("TestSet");
@@ -15,17 +16,19 @@ protected:
         userSession->addToStudySet("TestSet", "Question4", "Answer4");
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         UserSession::resetInstance();
     }
 
     UserSession* userSession;
 };
 
-TEST_F(MultipleChoiceTest, InitializationWithFewEntries) {
+TEST_F(MultipleChoiceTest, InitializationWithFewEntries)
+{
     MultipleChoice mc("TestSet", 4, 0);
     std::string getQuestion = mc.getQuestion();
-    std::set<std::string> expectedQuestions = {"Question1", "Question2", "Question3", "Question4"};
+    std::set<std::string> expectedQuestions = { "Question1", "Question2", "Question3", "Question4" };
     EXPECT_TRUE(expectedQuestions.find(getQuestion) != expectedQuestions.end());
 
     if (getQuestion == "Question1") {
@@ -41,7 +44,8 @@ TEST_F(MultipleChoiceTest, InitializationWithFewEntries) {
     }
 }
 
-TEST_F(MultipleChoiceTest, GoToNextQuestionBoundary) {
+TEST_F(MultipleChoiceTest, GoToNextQuestionBoundary)
+{
     MultipleChoice mc("TestSet", 2, 2);
     for (int i = 0; i < 3; ++i) {
         mc.goToNextQuestion();
@@ -49,14 +53,16 @@ TEST_F(MultipleChoiceTest, GoToNextQuestionBoundary) {
     EXPECT_FALSE(mc.goToNextQuestion());
 }
 
-TEST_F(MultipleChoiceTest, GenerateOptionsForSmallSet) {
+TEST_F(MultipleChoiceTest, GenerateOptionsForSmallSet)
+{
     MultipleChoice mc("TestSet", 2, 1);
     auto options = mc.generateOptions();
-    std::unordered_set<std::string> uniqueOptions{std::get<0>(options), std::get<1>(options), std::get<2>(options), std::get<3>(options)};
+    std::unordered_set<std::string> uniqueOptions { std::get<0>(options), std::get<1>(options), std::get<2>(options), std::get<3>(options) };
     EXPECT_EQ(uniqueOptions.size(), 4);
 }
 
-TEST_F(MultipleChoiceTest, GenerateOptionsForLargeSet) {
+TEST_F(MultipleChoiceTest, GenerateOptionsForLargeSet)
+{
     // Add six new questions
     for (int i = 5; i <= 10; ++i) {
         userSession->addToStudySet("TestSet", "Question" + std::to_string(i), "Answer" + std::to_string(i));
@@ -64,7 +70,7 @@ TEST_F(MultipleChoiceTest, GenerateOptionsForLargeSet) {
 
     MultipleChoice mc("TestSet", 2, 2);
     auto options = mc.generateOptions();
-    std::unordered_set<std::string> uniqueOptions{std::get<0>(options), std::get<1>(options), std::get<2>(options), std::get<3>(options)};
+    std::unordered_set<std::string> uniqueOptions { std::get<0>(options), std::get<1>(options), std::get<2>(options), std::get<3>(options) };
     EXPECT_EQ(uniqueOptions.size(), 4);
 
     // Delete the newly added questions
@@ -78,15 +84,12 @@ TEST_F(MultipleChoiceTest, GenerateOptionsForLargeSet) {
 
     for (const auto& row : table) {
         std::string question = std::get<1>(row);
-        EXPECT_TRUE(question != "Question5" && question != "Question6" &&
-                    question != "Question7" && question != "Question8" &&
-                    question != "Question9" && question != "Question10");
+        EXPECT_TRUE(question != "Question5" && question != "Question6" && question != "Question7" && question != "Question8" && question != "Question9" && question != "Question10");
     }
 }
 
-
-
-TEST_F(MultipleChoiceTest, UpdateScoresInTableCorrect) {
+TEST_F(MultipleChoiceTest, UpdateScoresInTableCorrect)
+{
     MultipleChoice mc("TestSet", 4, 0);
     for (int i = 0; i < 4; ++i) {
         mc.updateScoresInTable(true);
@@ -99,7 +102,8 @@ TEST_F(MultipleChoiceTest, UpdateScoresInTableCorrect) {
     }
 }
 
-TEST_F(MultipleChoiceTest, GetQuestionOutOfBounds) {
+TEST_F(MultipleChoiceTest, GetQuestionOutOfBounds)
+{
     MultipleChoice mc("TestSet", 2, 0);
     for (int i = 0; i < 2; ++i) {
         mc.goToNextQuestion();
@@ -107,7 +111,8 @@ TEST_F(MultipleChoiceTest, GetQuestionOutOfBounds) {
     EXPECT_NE(mc.getQuestion(), "");
 }
 
-TEST_F(MultipleChoiceTest, GetAnswerOutOfBounds) {
+TEST_F(MultipleChoiceTest, GetAnswerOutOfBounds)
+{
     MultipleChoice mc("TestSet", 2, 0);
     for (int i = 0; i < 2; ++i) {
         mc.goToNextQuestion();
