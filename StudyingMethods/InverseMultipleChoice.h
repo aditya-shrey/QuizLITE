@@ -1,7 +1,3 @@
-//
-// Created by Aditya Shrey on 7/4/24.
-//
-
 #ifndef QUIZLITE_INVERSEMULTIPLECHOICE_H
 #define QUIZLITE_INVERSEMULTIPLECHOICE_H
 
@@ -10,6 +6,7 @@
 #include <algorithm>
 #include <random>
 #include <vector>
+#include <unordered_set>
 
 /**
  * @class InverseMultipleChoice
@@ -63,9 +60,14 @@ public:
 
 private:
     /**
-     * @brief Stores the flashcards as pairs of questions and answers.
+     * @brief Stores the question-answer as pairs of questions and answers.
      */
     std::vector<std::pair<std::string, std::string>> keyValues;
+
+    /**
+     * @brief Stores all possible answers.
+     */
+    std::vector<std::string> allAnswers;
 
     /**
      * @brief The current index of the flashcard being displayed.
@@ -76,6 +78,11 @@ private:
      * @brief The name of the flashcard set.
      */
     std::string setName;
+
+    /*
+     * @brief The size of the flashcard set.
+     */
+    int setSize;
 
     friend class TestableInverseMultipleChoice;
 };
