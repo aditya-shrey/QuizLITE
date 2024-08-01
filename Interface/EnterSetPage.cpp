@@ -13,7 +13,9 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         studyMethodsPageStack(new QStackedWidget(this)),
         mcButton(new QPushButton("Multiple Choice", this)),
         inverseMCButton(new QPushButton("Inverse Multiple Choice", this)),
-        flashcardsButton(new QPushButton("Flashcards")) { // Initialize scrollArea
+        flashcardsButton(new QPushButton("Flashcards")),
+        studyMethodsLabel(new QLabel("Studying Methods", this))
+{
 
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
@@ -36,6 +38,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     QHBoxLayout *topRowLayout = new QHBoxLayout();
     topRowLayout->addStretch(1);
+    topRowLayout->addWidget(studyMethodsLabel, 0, Qt::AlignLeft);
     topRowLayout->addWidget(mcButton, 0, Qt::AlignRight);
     topRowLayout->addWidget(inverseMCButton, 0, Qt::AlignRight);
     topRowLayout->addWidget(flashcardsButton, 0, Qt::AlignRight);
@@ -83,6 +86,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
             "border: 2px solid #E9AE30;"
             "}"
     );
+
+    studyMethodsLabel->setStyleSheet("color: #FFFFFF; font-size: 18px; font-weight: normal; padding: 10px");
 
 
     QPushButton *addQuestionButton = new QPushButton("Add to Set", this);
@@ -132,15 +137,15 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     scrollAreaContent->setLayout(scrollAreaLayout);
     scrollArea->setWidget(scrollAreaContent);
 
-    mainLayout->addWidget(scrollArea); // Add the scroll area
-    mainLayout->addStretch(1); // Add a stretch to push the button down
+    mainLayout->addWidget(scrollArea);
+    mainLayout->addStretch(1);
     mainLayout->addWidget(addQuestionButton, 0,
-                          Qt::AlignBottom); // Ensure Add to Set button is at the bottom
+                          Qt::AlignBottom);
 
     // Create a horizontal layout for the bottom buttons
     QHBoxLayout *bottomLayout = new QHBoxLayout();
     bottomLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft);
-    bottomLayout->addStretch(1); // Add stretch to push the delete button to the right
+    bottomLayout->addStretch(1);
     bottomLayout->addWidget(deleteSetButton, 0, Qt::AlignRight);
 
     mainLayout->addLayout(bottomLayout);
@@ -168,9 +173,6 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     mainLayout->addWidget(studyMethodsPageStack);
     setupStudyMethodButtons();
     setupBackButton();
-
-
-
 }
 
 void EnterSetPage::addSet(const QString &setName) {

@@ -180,6 +180,7 @@ private:
     QPushButton *mcButton;
     QPushButton *inverseMCButton;
     QPushButton *flashcardsButton;
+    QLabel *studyMethodsLabel;
 
 
     void setupStudyMethodButtons();
