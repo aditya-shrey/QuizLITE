@@ -40,3 +40,11 @@ bool Flashcards::goToPrevQuestion()
     }
     return false;
 }
+
+void Flashcards::resetIndex() {
+    currentIndex = 0;
+}
+
+void Flashcards::setToLastIndex() {
+    currentIndex = keyValues.size() - 1;
+}

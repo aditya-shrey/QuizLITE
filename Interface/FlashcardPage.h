@@ -9,6 +9,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QResizeEvent>
+#include <QApplication>
 #include "../StudyingMethods/Flashcards.h"
 
 class FlashcardPage : public QWidget {
@@ -16,34 +18,35 @@ Q_OBJECT
 
 public:
     explicit FlashcardPage(QWidget *parent = nullptr);
-
-public slots:
     void startFlashcardQuiz(const QString &setName);
 
-private slots:
-    void setupUI();
-    void showNextFlashcard();
-    void showAnswer();
-    void finishFlashcardSession();
-    void resetFlashcardSession();
-    void setupBackToSetButton();
-
-signals:
-    void backToSetClicked();
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void setupUI();
+    void resetFlashcardSession();
+    void finishFlashcardSession();
+    void showNextFlashcard();
+    void showPreviousFlashcard();
+    void toggleFlashcard();
+    void setupBackToSetButton();
+
     QVBoxLayout *ui;
-    QLabel *flashcardLabel;
-    QPushButton *showAnswerButton;
+    QPushButton *flashcardButton;
     QPushButton *nextButton;
+    QPushButton *prevButton;
     QPushButton *finishButton;
     QPushButton *backToSetButton;
 
-    Flashcards *fc;
     QString currentSetName;
+    Flashcards *fc;
     int currentIndex;
     int totalFlashcards;
+    bool isAnswerShown;
+
+signals:
+    void backToSetClicked();
 };
 
 #endif // FLASHCARD_PAGE_H
-
