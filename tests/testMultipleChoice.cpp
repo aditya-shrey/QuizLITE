@@ -93,7 +93,6 @@ TEST_F(MultipleChoiceTest, UpdateScoresInTableCorrect) {
         mc.goToNextQuestion();
     }
     auto table = userSession->getTable("TestSet");
-    userSession->printDatabaseTable("TestSet");
     for (const auto& row : table) {
         EXPECT_EQ(std::get<3>(row), 1);
         EXPECT_EQ(std::get<4>(row), 1);
@@ -114,4 +113,6 @@ TEST_F(MultipleChoiceTest, GetAnswerOutOfBounds) {
         mc.goToNextQuestion();
     }
     EXPECT_NE(mc.getAnswer(), "");
+
+    userSession->deleteStudySet("TestSet");
 }
