@@ -1,7 +1,7 @@
-#include "../StudyingMethods/MultipleChoice.h"
 #include <algorithm>
 #include <gtest/gtest.h>
 #include <string>
+#include "../StudyingMethods/MultipleChoice.h"
 
 class MultipleChoiceTest : public ::testing::Test {
 protected:
