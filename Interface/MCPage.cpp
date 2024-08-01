@@ -55,8 +55,7 @@ void MCPage::finishQuiz() {
                              "Quiz Finished",
                              "Your score: " + QString::number(currentScore) + "/" + QString::number(totalQuestions) + "\nAccuracy: " + QString::number(accuracy) + "%");
 
-    finishButton->hide();
-    backToSetButton->show();
+    emit backToSetClicked();  // Emit signal to navigate back to the set screen
 }
 
 void MCPage::setupUI() {
@@ -87,6 +86,23 @@ void MCPage::setupUI() {
 
     answerGroup = new QButtonGroup(this);
 
+    for (int i = 0; i < 4; ++i) {
+        auto answerButton = new QRadioButton(this);
+        answerButton->setStyleSheet(
+                "QRadioButton {"
+                "font-size: 18px;"
+                "color: #FFFFFF;"
+                "background-color: #403e3e;"
+                "border-radius: 10px;"
+                "padding: 5px;"
+                "margin: 2px 0;"
+                "}"
+        );
+        answerButtons.append(answerButton);
+        ui->addWidget(answerButton);
+        answerGroup->addButton(answerButton, i);
+    }
+
     submitButton = new QPushButton("Submit", this);
     submitButton->setStyleSheet(
             "QPushButton {"
@@ -102,6 +118,8 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
+    ui->addWidget(submitButton, 0, Qt::AlignBottom);
+
     nextButton = new QPushButton("Next", this);
     nextButton->setStyleSheet(
             "QPushButton {"
@@ -117,6 +135,8 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
+    ui->addWidget(nextButton, 0, Qt::AlignBottom);
+
     finishButton = new QPushButton("Finish", this);
     finishButton->setStyleSheet(
             "QPushButton {"
@@ -132,10 +152,7 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
-
-    ui->addWidget(submitButton);
-    ui->addWidget(nextButton);
-    ui->addWidget(finishButton);
+    ui->addWidget(finishButton, 0, Qt::AlignBottom);
 
     connect(submitButton, &QPushButton::clicked, this, &MCPage::checkAnswer);
     connect(nextButton, &QPushButton::clicked, this, &MCPage::showNextQuestion);
