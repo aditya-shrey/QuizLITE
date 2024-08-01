@@ -1,19 +1,18 @@
-//
-// Created by Fardeen Bablu on 7/26/24.
-//
-
 #include "InverseMCPage.h"
 #include "../User/UserSession.h"
 #include <QMessageBox>
 
-InverseMCPage::InverseMCPage(QWidget *parent) : QWidget(parent), imc(nullptr), currentScore(0), totalQuestions(0) {
+InverseMCPage::InverseMCPage(QWidget *parent) : QWidget(parent), imc(nullptr), currentScore(0), totalQuestions(0), setSize(0) {
     setupUI();
 }
 
 void InverseMCPage::startInverseMCQuiz(const QString &setName) {
     currentSetName = setName;
     resetQuiz();
-    auto qaPair = UserSession::getUserSession()->getTableKeyValues(setName.toStdString());
+
+    UserSession* currentSession = UserSession::getUserSession();
+
+    auto qaPair = currentSession->getTableKeyValues(setName.toStdString());
     int totalPairs = qaPair.size();
     if (totalPairs % 2 == 0) {
         imc = new InverseMultipleChoice(setName.toStdString(), totalPairs/2, totalPairs/2);
@@ -22,16 +21,18 @@ void InverseMCPage::startInverseMCQuiz(const QString &setName) {
         imc = new InverseMultipleChoice(setName.toStdString(), totalPairs/2, (totalPairs/2)+1);
     }
     showQuestion();
+
+    setSize = currentSession->getStudySetSize(setName.toStdString());
 }
 
 void InverseMCPage::resetQuiz() {
     currentScore = 0;
     totalQuestions = 0;
     questionLabel->clear();
-    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
-        answerButtons[i]->show();
-        answerButtons[i]->setChecked(false);
-        answerButtons[i]->setStyleSheet(
+    for (auto &button : answerButtons) {
+        button->hide();
+        button->setChecked(false);
+        button->setStyleSheet(
                 "QRadioButton {"
                 "font-size: 18px;"
                 "color: #FFFFFF;"
@@ -40,22 +41,12 @@ void InverseMCPage::resetQuiz() {
                 "padding: 5px;"
                 "margin: 2px 0;"
                 "}"
-                "QRadioButton::indicator {"
-                "width: 20px;"
-                "height: 20px;"
-                "}"
-                "QRadioButton::indicator:checked {"
-                "background-color: #32CD32;"
-                "}"
-                "QRadioButton::indicator:unchecked {"
-                "background-color: #FFFFFF;"
-                "}"
         );
     }
     submitButton->show();
     nextButton->hide();
     finishButton->hide();
-    backToSetButton->hide();
+    backToSetButton->show();
 }
 
 void InverseMCPage::finishQuiz() {
@@ -65,90 +56,12 @@ void InverseMCPage::finishQuiz() {
                              "Quiz Finished",
                              "Your score: " + QString::number(currentScore) + "/" + QString::number(totalQuestions) + "\nAccuracy: " + QString::number(accuracy) + "%");
 
-    finishButton->hide();
-    backToSetButton->show();
+    emit backToSetClicked();  // Emit signal to navigate back to the set screen
 }
 
 void InverseMCPage::setupUI() {
     ui = new QVBoxLayout(this);
-    questionLabel = new QLabel(this);
-    questionLabel->setStyleSheet("font-size: 20px; color: #FFFFFF;");
-    questionLabel->setAlignment(Qt::AlignCenter);
-    ui->addWidget(questionLabel);
 
-    // Create inverse MC answer ticks
-    answerGroup = new QButtonGroup(this);
-    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
-        answerButtons[i] = new QRadioButton(this);
-        answerButtons[i]->setStyleSheet(
-                "QRadioButton {"
-                "font-size: 18px;"
-                "color: #FFFFFF;"
-                "background-color: #403e3e;"
-                "border-radius: 10px;"
-                "padding: 5px;"
-                "margin: 2px 0;"
-                "}"
-                "QRadioButton::indicator {"
-                "width: 20px;"
-                "height: 20px;"
-                "}"
-                "QRadioButton::indicator:checked {"
-                "background-color: #32CD32;"
-                "}"
-                "QRadioButton::indicator:unchecked {"
-                "background-color: #FFFFFF;"
-                "}"
-        );
-        ui->addWidget(answerButtons[i]);
-        answerGroup->addButton(answerButtons[i], i);
-    }
-
-    submitButton = new QPushButton("Submit", this);
-    submitButton->setStyleSheet(
-            "QPushButton {"
-            "background-color: #2bb52b;"
-            "color: #000000;"
-            "font-size: 18px;"
-            "padding: 5px;"
-            "border-radius: 15px;"
-            "border: 2px solid #2bb52b;"
-            "}"
-            "QPushButton:hover {"
-            "background-color: #32CD32;"
-            "border: 2px solid #32CD32;"
-            "}"
-    );
-    nextButton = new QPushButton("Next", this);
-    nextButton->setStyleSheet(
-            "QPushButton {"
-            "background-color: #2bb52b;"
-            "color: #000000;"
-            "font-size: 18px;"
-            "padding: 5px;"
-            "border-radius: 15px;"
-            "border: 2px solid #2bb52b;"
-            "}"
-            "QPushButton:hover {"
-            "background-color: #32CD32;"
-            "border: 2px solid #32CD32;"
-            "}"
-    );
-    finishButton = new QPushButton("Finish", this);
-    finishButton->setStyleSheet(
-            "QPushButton {"
-            "background-color: #2bb52b;"
-            "color: #000000;"
-            "font-size: 18px;"
-            "padding: 5px;"
-            "border-radius: 15px;"
-            "border: 2px solid #2bb52b;"
-            "}"
-            "QPushButton:hover {"
-            "background-color: #32CD32;"
-            "border: 2px solid #32CD32;"
-            "}"
-    );
     backToSetButton = new QPushButton("Back to Set", this);
     backToSetButton->setStyleSheet(
             "QPushButton {"
@@ -164,17 +77,100 @@ void InverseMCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
+    setupBackToSetButton();
+    ui->addWidget(backToSetButton, 0, Qt::AlignLeft);
 
-    ui->addWidget(submitButton);
-    ui->addWidget(nextButton);
-    ui->addWidget(finishButton);
-    ui->addWidget(backToSetButton);
+    QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    ui->addItem(spacer); // Add a spacer to push the elements down
+
+    questionLabel = new QLabel(this);
+    questionLabel->setStyleSheet("font-size: 20px; color: #FFFFFF;");
+    questionLabel->setAlignment(Qt::AlignCenter);
+    ui->addWidget(questionLabel);
+
+    answerGroup = new QButtonGroup(this);
+
+    QVBoxLayout* answerLayout = new QVBoxLayout(); // New layout for answer buttons
+    for (int i = 0; i < 4; ++i) {
+        auto answerButton = new QRadioButton(this);
+        answerButton->setStyleSheet(
+                "QRadioButton {"
+                "font-size: 18px;"
+                "color: #FFFFFF;"
+                "background-color: #403e3e;"
+                "border-radius: 10px;"
+                "padding: 5px;"
+                "margin: 2px 0;"
+                "}"
+        );
+        answerButtons.append(answerButton);
+        answerLayout->addWidget(answerButton, 0, Qt::AlignBottom);
+        answerGroup->addButton(answerButton, i);
+    }
+
+    spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    ui->addItem(spacer); // Add a spacer to push the elements down
+
+    ui->addLayout(answerLayout); // Add the answerLayout to the main layout
+
+    QVBoxLayout* bottomLayout = new QVBoxLayout(); // New layout for the bottom buttons
+    submitButton = new QPushButton("Submit", this);
+    submitButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+    bottomLayout->addWidget(submitButton, 0, Qt::AlignBottom);
+
+    nextButton = new QPushButton("Next", this);
+    nextButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+    bottomLayout->addWidget(nextButton, 0, Qt::AlignBottom);
+
+    finishButton = new QPushButton("Finish", this);
+    finishButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #2bb52b;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #2bb52b;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #32CD32;"
+            "border: 2px solid #32CD32;"
+            "}"
+    );
+    bottomLayout->addWidget(finishButton, 0, Qt::AlignBottom);
+
+    ui->addLayout(bottomLayout); // Add the bottomLayout to the main layout
 
     connect(submitButton, &QPushButton::clicked, this, &InverseMCPage::checkAnswer);
     connect(nextButton, &QPushButton::clicked, this, &InverseMCPage::showNextQuestion);
     connect(finishButton, &QPushButton::clicked, this, &InverseMCPage::finishQuiz);
 
-    setupBackToSetButton();
     nextButton->hide();
     finishButton->hide();
     backToSetButton->hide();
@@ -190,16 +186,98 @@ void InverseMCPage::showQuestion() {
 
     questionLabel->setText(QString::fromStdString(question));
     auto options = imc->generateOptions();
-    answerButtons[0]->setText(QString::fromStdString(std::get<0>(options)));
-    answerButtons[1]->setText(QString::fromStdString(std::get<1>(options)));
-    answerButtons[2]->setText(QString::fromStdString(std::get<2>(options)));
-    answerButtons[3]->setText(QString::fromStdString(std::get<3>(options)));
 
-    answerGroup->setExclusive(false);
-    for (uint i = 0; i < sizeof(answerButtons) / sizeof(answerButtons[0]); ++i) {
-        answerButtons[i]->setChecked(false);
+    // Hide all existing buttons first
+    for (auto &button : answerButtons) {
+        button->hide();
     }
 
+    // Create buttons only for non-empty options
+    if (!std::get<0>(options).empty()) {
+        if (answerButtons.size() <= 0) {
+            auto answerButton = new QRadioButton(this);
+            answerButton->setStyleSheet(
+                    "QRadioButton {"
+                    "font-size: 18px;"
+                    "color: #FFFFFF;"
+                    "background-color: #403e3e;"
+                    "border-radius: 10px;"
+                    "padding: 5px;"
+                    "margin: 2px 0;"
+                    "}"
+            );
+            answerButtons.append(answerButton);
+            ui->addWidget(answerButton);
+            answerGroup->addButton(answerButton, 0);
+        }
+        answerButtons[0]->setText(QString::fromStdString(std::get<0>(options)));
+        answerButtons[0]->show();
+    }
+    if (!std::get<1>(options).empty()) {
+        if (answerButtons.size() <= 1) {
+            auto answerButton = new QRadioButton(this);
+            answerButton->setStyleSheet(
+                    "QRadioButton {"
+                    "font-size: 18px;"
+                    "color: #FFFFFF;"
+                    "background-color: #403e3e;"
+                    "border-radius: 10px;"
+                    "padding: 5px;"
+                    "margin: 2px 0;"
+                    "}"
+            );
+            answerButtons.append(answerButton);
+            ui->addWidget(answerButton);
+            answerGroup->addButton(answerButton, 1);
+        }
+        answerButtons[1]->setText(QString::fromStdString(std::get<1>(options)));
+        answerButtons[1]->show();
+    }
+    if (!std::get<2>(options).empty()) {
+        if (answerButtons.size() <= 2) {
+            auto answerButton = new QRadioButton(this);
+            answerButton->setStyleSheet(
+                    "QRadioButton {"
+                    "font-size: 18px;"
+                    "color: #FFFFFF;"
+                    "background-color: #403e3e;"
+                    "border-radius: 10px;"
+                    "padding: 5px;"
+                    "margin: 2px 0;"
+                    "}"
+            );
+            answerButtons.append(answerButton);
+            ui->addWidget(answerButton);
+            answerGroup->addButton(answerButton, 2);
+        }
+        answerButtons[2]->setText(QString::fromStdString(std::get<2>(options)));
+        answerButtons[2]->show();
+    }
+    if (!std::get<3>(options).empty()) {
+        if (answerButtons.size() <= 3) {
+            auto answerButton = new QRadioButton(this);
+            answerButton->setStyleSheet(
+                    "QRadioButton {"
+                    "font-size: 18px;"
+                    "color: #FFFFFF;"
+                    "background-color: #403e3e;"
+                    "border-radius: 10px;"
+                    "padding: 5px;"
+                    "margin: 2px 0;"
+                    "}"
+            );
+            answerButtons.append(answerButton);
+            ui->addWidget(answerButton);
+            answerGroup->addButton(answerButton, 3);
+        }
+        answerButtons[3]->setText(QString::fromStdString(std::get<3>(options)));
+        answerButtons[3]->show();
+    }
+
+    answerGroup->setExclusive(false);
+    for (auto &button : answerButtons) {
+        button->setChecked(false);
+    }
     submitButton->show();
     nextButton->hide();
     finishButton->hide();
@@ -223,17 +301,17 @@ void InverseMCPage::checkAnswer() {
     imc->updateScoresInTable(isCorrect);
     submitButton->hide();
     if (imc->goToNextQuestion()) {
-        for (uint i = 0; i < sizeof(answerButtons) / sizeof(answerButtons[0]); ++i) {
-            answerButtons[i]->setChecked(false);
+        for (auto &button : answerButtons) {
+            button->setChecked(false);
         }
         nextButton->show();
     } else {
         finishButton->show();
     }
 
-    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
-        if (answerButtons[i]->text() == QString::fromStdString(correctAnswer)) {
-            answerButtons[i]->setStyleSheet(
+    for (auto &button : answerButtons) {
+        if (button->text() == QString::fromStdString(correctAnswer)) {
+            button->setStyleSheet(
                     "QRadioButton {"
                     "font-size: 18px;"
                     "color: #FFFFFF;"
@@ -242,19 +320,9 @@ void InverseMCPage::checkAnswer() {
                     "padding: 5px;"
                     "margin: 2px 0;"
                     "}"
-                    "QRadioButton::indicator {"
-                    "width: 20px;"
-                    "height: 20px;"
-                    "}"
-                    "QRadioButton::indicator:checked {"
-                    "background-color: #32CD32;"
-                    "}"
-                    "QRadioButton::indicator:unchecked {"
-                    "background-color: #FFFFFF;"
-                    "}"
             );
-        } else if (i == static_cast<uint>(selectedAnswer)) {
-            answerButtons[i]->setStyleSheet(
+        } else if (button == answerButtons[selectedAnswer]) {
+            button->setStyleSheet(
                     "QRadioButton {"
                     "font-size: 18px;"
                     "color: #FFFFFF;"
@@ -263,16 +331,6 @@ void InverseMCPage::checkAnswer() {
                     "padding: 5px;"
                     "margin: 2px 0;"
                     "}"
-                    "QRadioButton::indicator {"
-                    "width: 20px;"
-                    "height: 20px;"
-                    "}"
-                    "QRadioButton::indicator:checked {"
-                    "background-color: #32CD32;"
-                    "}"
-                    "QRadioButton::indicator:unchecked {"
-                    "background-color: #FFFFFF;"
-                    "}"
             );
         }
     }
@@ -280,9 +338,9 @@ void InverseMCPage::checkAnswer() {
 
 void InverseMCPage::showNextQuestion() {
     answerGroup->setExclusive(false);
-    for (uint i = 0; i < sizeof(answerButtons)/sizeof(answerButtons[0]); ++i) {
-        answerButtons[i]->setChecked(false);
-        answerButtons[i]->setStyleSheet(
+    for (auto &button : answerButtons) {
+        button->setChecked(false);
+        button->setStyleSheet(
                 "QRadioButton {"
                 "font-size: 18px;"
                 "color: #FFFFFF;"
@@ -290,16 +348,6 @@ void InverseMCPage::showNextQuestion() {
                 "border-radius: 10px;"
                 "padding: 5px;"
                 "margin: 2px 0;"
-                "}"
-                "QRadioButton::indicator {"
-                "width: 20px;"
-                "height: 20px;"
-                "}"
-                "QRadioButton::indicator:unchecked {"
-                "background-color: #FFFFFF;"
-                "}"
-                "QRadioButton::indicator:checked {"
-                "background-color: #32CD32;"
                 "}"
         );
     }

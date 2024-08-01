@@ -35,8 +35,8 @@ signals:
 private:
     QVBoxLayout *ui;
     QLabel *questionLabel;
-    QRadioButton *answerButtons[4];
     QButtonGroup *answerGroup;
+    QVector<QRadioButton*> answerButtons;
     QPushButton *submitButton;
     QPushButton *nextButton;
     QPushButton *finishButton;
@@ -47,6 +47,7 @@ private:
     QString currentSetName;
     int currentScore;
     int totalQuestions;
+    int setSize;
 
 
 };
