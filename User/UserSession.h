@@ -179,6 +179,7 @@ private:
 
     friend class UserSessionTest;
     friend class MultipleChoiceTest;
+    friend class InverseMultipleChoiceTest;
 };
 
 #endif // QUIZLITE_UserSession_H
