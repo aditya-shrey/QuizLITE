@@ -1,7 +1,3 @@
-//
-// Created by Fardeen Bablu on 7/26/24.
-//
-
 #ifndef QUIZLITE_MCPAGE_H
 #define QUIZLITE_MCPAGE_H
 
@@ -10,7 +6,6 @@
 #include <QtWidgets>
 #include <QtCore>
 
-
 class MCPage : public QWidget {
 Q_OBJECT
 public:
@@ -18,11 +13,9 @@ public:
     void startMCQuiz(const QString &setName);
     void resetQuiz();
 
-
 signals:
     void openMCPage();
     void backToSetClicked();
-
 
 private:
     QString currentSetName;
@@ -30,7 +23,7 @@ private:
     QVBoxLayout *ui;
     QLabel *questionLabel;
     QButtonGroup *answerGroup;
-    QRadioButton *answerButtons[4];
+    QVector<QRadioButton*> answerButtons;
     QPushButton *submitButton;
     QPushButton *nextButton;
     QPushButton *finishButton;
@@ -38,6 +31,7 @@ private:
 
     int currentScore;
     int totalQuestions;
+    int setSize;
 
     void setupUI();
     void showQuestion();
@@ -46,6 +40,5 @@ private:
     void finishQuiz();
     void setupBackToSetButton();
 };
-
 
 #endif //QUIZLITE_MCPAGE_H
