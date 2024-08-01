@@ -1,21 +1,22 @@
 #include "InverseMultipleChoice.h"
-#include <unordered_set>
-#include <random>
 #include <algorithm>
 #include <iostream>
+#include <random>
+#include <unordered_set>
 
 // Hash function for std::pair to be used in std::unordered_set
 struct pair_hash {
     template <class T1, class T2>
-    std::size_t operator() (const std::pair<T1, T2>& pair) const {
+    std::size_t operator()(const std::pair<T1, T2>& pair) const
+    {
         return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
     }
 };
 
 InverseMultipleChoice::InverseMultipleChoice(const std::string& setName, int numLowestAccuracies, int numRandomEntries)
-        : currentIndex(0)
-        , setName(setName)
-        , setSize(0)
+    : currentIndex(0)
+    , setName(setName)
+    , setSize(0)
 {
     auto userSession = UserSession::getUserSession();
 
@@ -75,7 +76,8 @@ bool InverseMultipleChoice::goToNextQuestion()
     return false;
 }
 
-std::tuple<std::string, std::string, std::string, std::string> InverseMultipleChoice::generateOptions() {
+std::tuple<std::string, std::string, std::string, std::string> InverseMultipleChoice::generateOptions()
+{
     std::vector<std::string> options;
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -111,7 +113,6 @@ std::tuple<std::string, std::string, std::string, std::string> InverseMultipleCh
 
     return std::make_tuple(options[0], options[1], options[2], options[3]);
 }
-
 
 void InverseMultipleChoice::updateScoresInTable(bool isCorrect)
 {

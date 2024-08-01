@@ -41,10 +41,12 @@ bool Flashcards::goToPrevQuestion()
     return false;
 }
 
-void Flashcards::resetIndex() {
+void Flashcards::resetIndex()
+{
     currentIndex = 0;
 }
 
-void Flashcards::setToLastIndex() {
+void Flashcards::setToLastIndex()
+{
     currentIndex = keyValues.size() - 1;
 }

@@ -5,8 +5,8 @@
 #include "StudyMethods.h"
 #include <algorithm>
 #include <random>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 /**
  * @class MultipleChoice

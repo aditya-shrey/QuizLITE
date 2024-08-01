@@ -154,4 +154,3 @@ TEST_F(UserSessionTest, GetStudySetSize_NonEmptySet)
     int size = userSession->getStudySetSize("NonEmptySet");
     EXPECT_EQ(size, 2);
 }
-
