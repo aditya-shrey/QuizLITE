@@ -1,7 +1,3 @@
-//
-// Created by Fardeen Bablu on 7/26/24.
-//
-
 #ifndef QUIZLITE_ENTERSETPAGE_H
 #define QUIZLITE_ENTERSETPAGE_H
 
@@ -121,7 +117,6 @@ public slots:
      */
     void clearAllEntries();
 
-
     /**
      * @brief Shows the add question page.
      */
@@ -157,7 +152,6 @@ public slots:
      */
     QString getCurrentSetName() const { return currentSetName; }
 
-
 protected:
     /**
      * @brief Event filter for handling custom events.
@@ -182,9 +176,12 @@ private:
     QPushButton *flashcardsButton;
     QLabel *studyMethodsLabel;
 
-
     void setupStudyMethodButtons();
     void setupBackButton();
+    void updateSetSize();
+    void checkSetSizeAndEmitSignal(const std::function<void()>& emitSignal);
+
+    int setSize;
 };
 
 #endif // QUIZLITE_ENTERSETPAGE_H

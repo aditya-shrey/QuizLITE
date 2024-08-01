@@ -1,6 +1,3 @@
-//
-// Created by Fardeen Bablu on 7/26/24.
-//
 #include "EnterSetPage.h"
 
 EnterSetPage::EnterSetPage(QWidget *parent) :
@@ -14,9 +11,9 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         mcButton(new QPushButton("Multiple Choice", this)),
         inverseMCButton(new QPushButton("Inverse Multiple Choice", this)),
         flashcardsButton(new QPushButton("Flashcards")),
-        studyMethodsLabel(new QLabel("Studying Methods", this))
+        studyMethodsLabel(new QLabel("Studying Methods", this)),
+        setSize(0)
 {
-
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
     setNameLabel->setStyleSheet("color: #32CD32; font-size: 30px; font-weight: bold;");
@@ -139,8 +136,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
 
     mainLayout->addWidget(scrollArea);
     mainLayout->addStretch(1);
-    mainLayout->addWidget(addQuestionButton, 0,
-                          Qt::AlignBottom);
+    mainLayout->addWidget(addQuestionButton, 0, Qt::AlignBottom);
 
     // Create a horizontal layout for the bottom buttons
     QHBoxLayout *bottomLayout = new QHBoxLayout();
@@ -291,6 +287,8 @@ void EnterSetPage::setQAList(const QString& setName) {
             qaListWidget->setItemWidget(item, qaWidget);
         }
     }
+
+    updateSetSize();
 }
 
 bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
@@ -308,6 +306,7 @@ bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
 void EnterSetPage::clearAllEntries() {
     std::cout << "Clearing all entries" << std::endl;
     qaListWidget->clear();
+    updateSetSize();
 }
 
 void EnterSetPage::setupBackButton() {
@@ -349,6 +348,8 @@ void EnterSetPage::deleteSet(const QString &setName) {
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::deleteKeyValuePair(const QString &setName, const QString &key) {
@@ -377,6 +378,8 @@ void EnterSetPage::deleteKeyValuePair(const QString &setName, const QString &key
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue) {
@@ -407,6 +410,8 @@ void EnterSetPage::adjustKeyValuePair(const QString &setName, const QString &key
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::showAddQuestionPage() {
@@ -491,19 +496,51 @@ void EnterSetPage::showAddQuestionPage() {
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
-
-
-
 void EnterSetPage::setupStudyMethodButtons() {
-    connect(mcButton, &QPushButton::clicked, this, [this] {
-        emit openMCPageClicked(currentSetName);
+    auto mcSignal = [this] { emit openMCPageClicked(currentSetName); };
+    auto inverseMcSignal = [this] { emit openInverseMCPageClicked(currentSetName); };
+    auto flashcardsSignal = [this] { emit openFlashcardsPageClicked(currentSetName); };
+
+    connect(mcButton, &QPushButton::clicked, this, [this, mcSignal] {
+        checkSetSizeAndEmitSignal(mcSignal);
     });
-    connect(inverseMCButton, &QPushButton::clicked, this, [this] {
-        emit openInverseMCPageClicked(currentSetName);
+    connect(inverseMCButton, &QPushButton::clicked, this, [this, inverseMcSignal] {
+        checkSetSizeAndEmitSignal(inverseMcSignal);
     });
-    connect(flashcardsButton, &QPushButton::clicked, this, [this] {
-        emit openFlashcardsPageClicked(currentSetName);
+    connect(flashcardsButton, &QPushButton::clicked, this, [this, flashcardsSignal] {
+        checkSetSizeAndEmitSignal(flashcardsSignal);
     });
+}
+
+void EnterSetPage::updateSetSize() {
+    UserSession *session = UserSession::getUserSession();
+    setSize = session->getStudySetSize(currentSetName.toStdString());
+}
+
+void EnterSetPage::checkSetSizeAndEmitSignal(const std::function<void()>& emitSignal) {
+    if (setSize == 0) {
+        QMessageBox msgBox;
+        msgBox.setStyleSheet(
+                "QMessageBox {"
+                "background-color: #2b2b2b;"
+                "color: #ffffff;"
+                "font-size: 16px;"
+                "}"
+                "QPushButton {"
+                "font-size: 14px;"
+                "padding: 5px;"
+                "border-radius: 5px;"
+                "}"
+        );
+        msgBox.setText("The set is empty. Please add elements to the set before proceeding.");
+        msgBox.setWindowTitle("Empty Set");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    } else {
+        emitSignal();
+    }
 }
