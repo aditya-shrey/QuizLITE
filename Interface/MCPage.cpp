@@ -79,6 +79,9 @@ void MCPage::setupUI() {
     setupBackToSetButton();
     ui->addWidget(backToSetButton, 0, Qt::AlignLeft);
 
+    QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    ui->addItem(spacer); // Add a spacer to push the elements down
+
     questionLabel = new QLabel(this);
     questionLabel->setStyleSheet("font-size: 20px; color: #FFFFFF;");
     questionLabel->setAlignment(Qt::AlignCenter);
@@ -86,6 +89,7 @@ void MCPage::setupUI() {
 
     answerGroup = new QButtonGroup(this);
 
+    QVBoxLayout* answerLayout = new QVBoxLayout(); // New layout for answer buttons
     for (int i = 0; i < 4; ++i) {
         auto answerButton = new QRadioButton(this);
         answerButton->setStyleSheet(
@@ -99,10 +103,16 @@ void MCPage::setupUI() {
                 "}"
         );
         answerButtons.append(answerButton);
-        ui->addWidget(answerButton);
+        answerLayout->addWidget(answerButton, 0, Qt::AlignBottom);
         answerGroup->addButton(answerButton, i);
     }
 
+    spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    ui->addItem(spacer); // Add a spacer to push the elements down
+
+    ui->addLayout(answerLayout); // Add the answerLayout to the main layout
+
+    QVBoxLayout* bottomLayout = new QVBoxLayout(); // New layout for the bottom buttons
     submitButton = new QPushButton("Submit", this);
     submitButton->setStyleSheet(
             "QPushButton {"
@@ -118,7 +128,7 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
-    ui->addWidget(submitButton, 0, Qt::AlignBottom);
+    bottomLayout->addWidget(submitButton, 0, Qt::AlignBottom);
 
     nextButton = new QPushButton("Next", this);
     nextButton->setStyleSheet(
@@ -135,7 +145,7 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
-    ui->addWidget(nextButton, 0, Qt::AlignBottom);
+    bottomLayout->addWidget(nextButton, 0, Qt::AlignBottom);
 
     finishButton = new QPushButton("Finish", this);
     finishButton->setStyleSheet(
@@ -152,7 +162,9 @@ void MCPage::setupUI() {
             "border: 2px solid #32CD32;"
             "}"
     );
-    ui->addWidget(finishButton, 0, Qt::AlignBottom);
+    bottomLayout->addWidget(finishButton, 0, Qt::AlignBottom);
+
+    ui->addLayout(bottomLayout); // Add the bottomLayout to the main layout
 
     connect(submitButton, &QPushButton::clicked, this, &MCPage::checkAnswer);
     connect(nextButton, &QPushButton::clicked, this, &MCPage::showNextQuestion);
