@@ -137,3 +137,21 @@ TEST_F(UserSessionTest, GetTable)
     EXPECT_EQ(std::get<1>(tableData[0]), "Key1");
     EXPECT_EQ(std::get<2>(tableData[0]), "Value1");
 }
+
+TEST_F(UserSessionTest, GetStudySetSize_EmptySet)
+{
+    userSession->createStudySet("EmptySet");
+    int size = userSession->getStudySetSize("EmptySet");
+    EXPECT_EQ(size, 0);
+}
+
+TEST_F(UserSessionTest, GetStudySetSize_NonEmptySet)
+{
+    userSession->createStudySet("NonEmptySet");
+    userSession->addToStudySet("NonEmptySet", "Key1", "Value1");
+    userSession->addToStudySet("NonEmptySet", "Key2", "Value2");
+
+    int size = userSession->getStudySetSize("NonEmptySet");
+    EXPECT_EQ(size, 2);
+}
+
