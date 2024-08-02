@@ -1,5 +1,5 @@
-#include "MCPage.h"
 #include <QMessageBox>
+#include "MCPage.h"
 
 MCPage::MCPage(QWidget *parent) : QWidget(parent), mc(nullptr), currentScore(0), totalQuestions(0), setSize(0) {
     setupUI();

@@ -1,6 +1,4 @@
 #include "FlashcardPage.h"
-#include <QMessageBox>
-#include "../User/UserSession.h"
 
 FlashcardPage::FlashcardPage(QWidget *parent) : QWidget(parent), fc(nullptr), currentIndex(0), totalFlashcards(0), isAnswerShown(false) {
     setupUI();

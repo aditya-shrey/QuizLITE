@@ -1,6 +1,4 @@
 #include "InverseMCPage.h"
-#include "../User/UserSession.h"
-#include <QMessageBox>
 
 InverseMCPage::InverseMCPage(QWidget *parent) : QWidget(parent), imc(nullptr), currentScore(0), totalQuestions(0), setSize(0) {
     setupUI();
