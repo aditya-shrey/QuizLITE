@@ -1,20 +1,54 @@
 #include "MultipleChoice.h"
+#include <algorithm>
+#include <iostream>
+#include <random>
+#include <unordered_set>
+
+// Hash function for std::pair to be used in std::unordered_set
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator()(const std::pair<T1, T2>& pair) const
+    {
+        return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+    }
+};
 
 MultipleChoice::MultipleChoice(const std::string& setName, int numLowestAccuracies, int numRandomEntries)
     : currentIndex(0)
     , setName(setName)
+    , setSize(0)
 {
     auto userSession = UserSession::getUserSession();
 
+    setSize = userSession->getStudySetSize(setName);
+
+    std::unordered_set<std::pair<std::string, std::string>, pair_hash> uniqueEntries;
+
+    if (setSize <= 4) {
+        numLowestAccuracies = setSize;
+        numRandomEntries = 0;
+    }
+
     auto lowestAccuracies = userSession->getLowestAccuracies(setName, numLowestAccuracies);
     for (const auto& entry : lowestAccuracies) {
-        keyValues.emplace_back(std::get<0>(entry), std::get<1>(entry));
+        uniqueEntries.insert(std::make_pair(std::get<0>(entry), std::get<1>(entry)));
     }
 
     auto randomEntries = userSession->getRandomEntries(setName, numRandomEntries);
-    keyValues.insert(keyValues.end(), randomEntries.begin(), randomEntries.end());
+    for (const auto& entry : randomEntries) {
+        uniqueEntries.insert(entry);
+    }
 
+    keyValues.assign(uniqueEntries.begin(), uniqueEntries.end());
     std::shuffle(keyValues.begin(), keyValues.end(), std::mt19937 { std::random_device {}() });
+
+    // Collect all possible answers
+    allAnswers.reserve(setSize);
+    std::vector<std::pair<std::string, std::string>> tableValues;
+    tableValues = UserSession::getUserSession()->getTableKeyValues(setName);
+    for (const auto& entry : tableValues) {
+        allAnswers.push_back(entry.second);
+    }
 }
 
 std::string MultipleChoice::getQuestion()
@@ -44,15 +78,40 @@ bool MultipleChoice::goToNextQuestion()
 
 std::tuple<std::string, std::string, std::string, std::string> MultipleChoice::generateOptions()
 {
-    std::vector<std::pair<std::string, std::string>> options;
-    std::sample(keyValues.begin(), keyValues.end(), std::back_inserter(options),
-        4, std::mt19937 { std::random_device {}() });
-    if (std::find(options.begin(), options.end(), keyValues[currentIndex]) == options.end()) {
-        options[0] = keyValues[currentIndex]; // Ensure the correct answer is one of the options
-    }
-    std::shuffle(options.begin(), options.end(), std::mt19937 { std::random_device {}() });
+    std::vector<std::string> options;
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    return std::make_tuple(options[0].second, options[1].second, options[2].second, options[3].second);
+    if (setSize <= 4) {
+        std::unordered_set<std::string> uniqueOptions(allAnswers.begin(), allAnswers.end());
+
+        for (int i = uniqueOptions.size(); i < 4; ++i) {
+            uniqueOptions.emplace("");
+        }
+
+        options.assign(uniqueOptions.begin(), uniqueOptions.end());
+    } else {
+        std::unordered_set<std::string> optionSet;
+
+        while (optionSet.size() < 3) {
+            std::uniform_int_distribution<> dis(0, allAnswers.size() - 1);
+            auto sampled = allAnswers[dis(gen)];
+            if (sampled != keyValues[currentIndex].second) {
+                optionSet.insert(sampled);
+            }
+        }
+
+        optionSet.insert(keyValues[currentIndex].second);
+        options.assign(optionSet.begin(), optionSet.end());
+    }
+
+    std::shuffle(options.begin(), options.end(), gen);
+
+    while (options.size() < 4) {
+        options.emplace_back("");
+    }
+
+    return std::make_tuple(options[0], options[1], options[2], options[3]);
 }
 
 void MultipleChoice::updateScoresInTable(bool isCorrect)

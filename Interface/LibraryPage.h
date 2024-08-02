@@ -1,3 +1,7 @@
+//
+// Created by Fardeen Bablu on 7/26/24.
+//
+
 #ifndef LIBRARYPAGE_H
 #define LIBRARYPAGE_H
 
@@ -22,7 +26,7 @@ Q_OBJECT
 
 public:
     /**
-     * @brief Constructor for LibraryPage.
+     * @brief Constructor for LibraryPage.Œ
      * @param parent The parent widget.
      */
     explicit LibraryPage(QWidget *parent = nullptr);

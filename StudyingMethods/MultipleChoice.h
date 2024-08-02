@@ -1,7 +1,3 @@
-//
-// Created by Aditya Shrey on 7/4/24.
-//
-
 #ifndef QUIZLITE_MULTIPLECHOICE_H
 #define QUIZLITE_MULTIPLECHOICE_H
 
@@ -9,6 +5,7 @@
 #include "StudyMethods.h"
 #include <algorithm>
 #include <random>
+#include <unordered_set>
 #include <vector>
 
 /**
@@ -68,6 +65,11 @@ private:
     std::vector<std::pair<std::string, std::string>> keyValues;
 
     /**
+     * @brief Stores all possible answers.
+     */
+    std::vector<std::string> allAnswers;
+
+    /**
      * @brief The current index of the flashcard being displayed.
      */
     uint32_t currentIndex;
@@ -76,6 +78,11 @@ private:
      * @brief The name of the flashcard set.
      */
     std::string setName;
+
+    /*
+     * @brief The size of the flashcard set.
+     */
+    int setSize;
 
     friend class TestableMultipleChoice;
 };

@@ -7,7 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
         libraryPage(new LibraryPage(this)),
         createSetPage(new CreateSetPage(this)),
         addQuestionsPage(new AddQuestionsPage(this)),
-        enterSetPage(new EnterSetPage(this)) {
+        enterSetPage(new EnterSetPage(this)),
+        mcPage(new MCPage(this)),
+        inverseMCPage(new InverseMCPage(this)),
+        flashcardPage(new FlashcardPage(this)) {
 
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
@@ -17,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pageStack->addWidget(createSetPage);
     pageStack->addWidget(addQuestionsPage);
     pageStack->addWidget(enterSetPage);
+    pageStack->addWidget(mcPage);
+    pageStack->addWidget(inverseMCPage);
+    pageStack->addWidget(flashcardPage);
     setCentralWidget(pageStack);
 
     // Connect pages and buttons that have been clicked, then set current page to library
@@ -31,6 +37,43 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(addQuestionsPage, &AddQuestionsPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
 
     connect(enterSetPage, &EnterSetPage::confirmDeleteSet, this, &MainWindow::handleDeleteSet);
+
+    // Connect Multiple choice
+    connect(enterSetPage, &EnterSetPage::openMCPageClicked, this, [this](const QString &setName) {
+        mcPage->resetQuiz();
+        mcPage->startMCQuiz(setName);
+        pageStack->setCurrentWidget(mcPage);
+    });
+    connect(mcPage, &MCPage::backToSetClicked, this, [this] {
+        pageStack->setCurrentWidget(enterSetPage);
+        enterSetPage->setQAList(enterSetPage->getCurrentSetName());
+    });
+
+
+
+    //Connect Inverse Multiple Choice
+    connect(enterSetPage, &EnterSetPage::openInverseMCPageClicked, this, [this](const QString &setName) {
+        inverseMCPage->resetQuiz();
+        inverseMCPage->startInverseMCQuiz(setName);
+        pageStack->setCurrentWidget(inverseMCPage);
+    });
+    connect(inverseMCPage, &InverseMCPage::backToSetClicked, this, [this] {
+        pageStack->setCurrentWidget(enterSetPage);
+        enterSetPage->setQAList(enterSetPage->getCurrentSetName());
+    });
+
+    //Connect Flashcards
+    connect(enterSetPage, &EnterSetPage::openFlashcardsPageClicked, this, [this](const QString &setName) {
+//        flashcardPage->resetQuiz();
+        flashcardPage->startFlashcardQuiz(setName);
+        pageStack->setCurrentWidget(flashcardPage);
+    });
+    connect(flashcardPage, &FlashcardPage::backToSetClicked, this, [this] {
+        pageStack->setCurrentWidget(enterSetPage);
+        enterSetPage->setQAList(enterSetPage->getCurrentSetName());
+    });
+
+
 
     pageStack->setCurrentWidget(libraryPage);
     libraryPage->populateLibrary(); // Populate library initially

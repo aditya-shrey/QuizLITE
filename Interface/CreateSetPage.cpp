@@ -3,6 +3,7 @@
 //
 
 #include "CreateSetPage.h"
+#include "../User/UserSession.h"
 
 CreateSetPage::CreateSetPage(QWidget *parent) :
         QWidget(parent),

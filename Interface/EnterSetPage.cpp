@@ -6,8 +6,14 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         setNameLabel(new QLabel(this)),
         pageLabel(new QLabel("Set Content", this)),
         qaListWidget(new QListWidget(this)),
-        scrollArea(new QScrollArea(this)) { // Initialize scrollArea
-
+        scrollArea(new QScrollArea(this)),
+        studyMethodsPageStack(new QStackedWidget(this)),
+        mcButton(new QPushButton("Multiple Choice", this)),
+        inverseMCButton(new QPushButton("Inverse Multiple Choice", this)),
+        flashcardsButton(new QPushButton("Flashcards")),
+        studyMethodsLabel(new QLabel("Studying Methods", this)),
+        setSize(0)
+{
     // Set stylesheets for the widgets
     this->setStyleSheet("background-color: #000000;");
     setNameLabel->setStyleSheet("color: #32CD32; font-size: 30px; font-weight: bold;");
@@ -26,6 +32,60 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
             "border: 2px solid #90EE90;"
             "}"
     );
+
+    QHBoxLayout *topRowLayout = new QHBoxLayout();
+    topRowLayout->addStretch(1);
+    topRowLayout->addWidget(studyMethodsLabel, 0, Qt::AlignLeft);
+    topRowLayout->addWidget(mcButton, 0, Qt::AlignRight);
+    topRowLayout->addWidget(inverseMCButton, 0, Qt::AlignRight);
+    topRowLayout->addWidget(flashcardsButton, 0, Qt::AlignRight);
+    mcButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #00A7E1;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #00A7E1;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #6BCDEE;"
+            "border: 2px solid #6BCDEE;"
+            "}"
+    );
+
+    inverseMCButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #C55ADD;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #C55ADD;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #D88BE9;"
+            "border: 2px solid #D88BE9;"
+            "}"
+    );
+
+    flashcardsButton->setStyleSheet(
+            "QPushButton {"
+            "background-color: #E9A003;"
+            "color: #000000;"
+            "font-size: 18px;"
+            "padding: 5px;"
+            "border-radius: 15px;"
+            "border: 2px solid #E9A003;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #E9AE30;"
+            "border: 2px solid #E9AE30;"
+            "}"
+    );
+
+    studyMethodsLabel->setStyleSheet("color: #FFFFFF; font-size: 18px; font-weight: normal; padding: 10px");
+
 
     QPushButton *addQuestionButton = new QPushButton("Add to Set", this);
     addQuestionButton->setStyleSheet(
@@ -64,6 +124,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     mainLayout->setSpacing(10);
     mainLayout->addWidget(setNameLabel, 0, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(pageLabel, 0, Qt::AlignTop | Qt::AlignHCenter);
+    mainLayout->addLayout(topRowLayout);
 
     // Create a scroll area for the QA list
     scrollArea->setWidgetResizable(true);
@@ -73,14 +134,14 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
     scrollAreaContent->setLayout(scrollAreaLayout);
     scrollArea->setWidget(scrollAreaContent);
 
-    mainLayout->addWidget(scrollArea); // Add the scroll area
-    mainLayout->addStretch(1); // Add a stretch to push the button down
-    mainLayout->addWidget(addQuestionButton, 0, Qt::AlignBottom); // Ensure Add to Set button is at the bottom
+    mainLayout->addWidget(scrollArea);
+    mainLayout->addStretch(1);
+    mainLayout->addWidget(addQuestionButton, 0, Qt::AlignBottom);
 
     // Create a horizontal layout for the bottom buttons
     QHBoxLayout *bottomLayout = new QHBoxLayout();
     bottomLayout->addWidget(backToLibraryButton, 0, Qt::AlignLeft);
-    bottomLayout->addStretch(1); // Add stretch to push the delete button to the right
+    bottomLayout->addStretch(1);
     bottomLayout->addWidget(deleteSetButton, 0, Qt::AlignRight);
 
     mainLayout->addLayout(bottomLayout);
@@ -105,6 +166,8 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         emit confirmDeleteSet(currentSetName);
     });
 
+    mainLayout->addWidget(studyMethodsPageStack);
+    setupStudyMethodButtons();
     setupBackButton();
 }
 
@@ -224,6 +287,8 @@ void EnterSetPage::setQAList(const QString& setName) {
             qaListWidget->setItemWidget(item, qaWidget);
         }
     }
+
+    updateSetSize();
 }
 
 bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
@@ -241,6 +306,7 @@ bool EnterSetPage::eventFilter(QObject *watched, QEvent *event) {
 void EnterSetPage::clearAllEntries() {
     std::cout << "Clearing all entries" << std::endl;
     qaListWidget->clear();
+    updateSetSize();
 }
 
 void EnterSetPage::setupBackButton() {
@@ -282,6 +348,8 @@ void EnterSetPage::deleteSet(const QString &setName) {
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::deleteKeyValuePair(const QString &setName, const QString &key) {
@@ -310,6 +378,8 @@ void EnterSetPage::deleteKeyValuePair(const QString &setName, const QString &key
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue) {
@@ -340,6 +410,8 @@ void EnterSetPage::adjustKeyValuePair(const QString &setName, const QString &key
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
     }
+
+    updateSetSize();
 }
 
 void EnterSetPage::showAddQuestionPage() {
@@ -423,5 +495,52 @@ void EnterSetPage::showAddQuestionPage() {
         msgBox.setWindowTitle("Invalid Value");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
+    }
+
+    updateSetSize();
+}
+
+void EnterSetPage::setupStudyMethodButtons() {
+    auto mcSignal = [this] { emit openMCPageClicked(currentSetName); };
+    auto inverseMcSignal = [this] { emit openInverseMCPageClicked(currentSetName); };
+    auto flashcardsSignal = [this] { emit openFlashcardsPageClicked(currentSetName); };
+
+    connect(mcButton, &QPushButton::clicked, this, [this, mcSignal] {
+        checkSetSizeAndEmitSignal(mcSignal);
+    });
+    connect(inverseMCButton, &QPushButton::clicked, this, [this, inverseMcSignal] {
+        checkSetSizeAndEmitSignal(inverseMcSignal);
+    });
+    connect(flashcardsButton, &QPushButton::clicked, this, [this, flashcardsSignal] {
+        checkSetSizeAndEmitSignal(flashcardsSignal);
+    });
+}
+
+void EnterSetPage::updateSetSize() {
+    UserSession *session = UserSession::getUserSession();
+    setSize = session->getStudySetSize(currentSetName.toStdString());
+}
+
+void EnterSetPage::checkSetSizeAndEmitSignal(const std::function<void()>& emitSignal) {
+    if (setSize == 0) {
+        QMessageBox msgBox;
+        msgBox.setStyleSheet(
+                "QMessageBox {"
+                "background-color: #2b2b2b;"
+                "color: #ffffff;"
+                "font-size: 16px;"
+                "}"
+                "QPushButton {"
+                "font-size: 14px;"
+                "padding: 5px;"
+                "border-radius: 5px;"
+                "}"
+        );
+        msgBox.setText("The set is empty. Please add elements to the set before proceeding.");
+        msgBox.setWindowTitle("Empty Set");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    } else {
+        emitSignal();
     }
 }

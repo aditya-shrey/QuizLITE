@@ -62,6 +62,16 @@ public:
      */
     bool goToPrevQuestion();
 
+    /**
+     * @brief Resets the index back to the beginning of the set.
+     */
+    void resetIndex();
+
+    /**
+     * @brief Resets the index back to the end of the set.
+     */
+    void setToLastIndex();
+
 private:
     /**
      * @brief Stores the flashcards as pairs of questions and answers.

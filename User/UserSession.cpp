@@ -6,8 +6,8 @@
 UserSession* UserSession::instancePtr = nullptr;
 
 UserSession::UserSession()
+    : dbManager(DatabaseManager::getDatabaseManager("StudySets.db"))
 {
-    dbManager = DatabaseManager::getDatabaseManager("StudySets.db");
     if (dbManager->openDatabase()) {
         if (dbManager->executeQuery(
                 "CREATE TABLE IF NOT EXISTS set_names (id INTEGER "
@@ -39,6 +39,29 @@ void UserSession::printDatabaseTable(const std::string& tableName)
         std::cerr << "Failed to open database for printing table: " << tableName
                   << std::endl;
     }
+}
+
+int UserSession::getStudySetSize(const std::string& setName)
+{
+    if (!existsStudySet(setName)) {
+        return 0;
+    }
+
+    if (!dbManager->openDatabase()) {
+        std::cerr << "Failed to open database in getStudySetSize" << std::endl;
+        return 0;
+    }
+
+    std::string query = "SELECT COUNT(*) AS count FROM " + setName;
+    auto results = dbManager->executeQueryWithResults(query);
+
+    dbManager->closeDatabase();
+
+    if (results.empty() || results[0].find("count") == results[0].end()) {
+        return 0;
+    }
+
+    return std::stoi(results[0]["count"]);
 }
 
 bool UserSession::existsStudySet(const std::string& setName)

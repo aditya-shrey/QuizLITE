@@ -1,19 +1,9 @@
 #ifndef QUIZLITE_ENTERSETPAGE_H
 #define QUIZLITE_ENTERSETPAGE_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QListWidget>
-#include <QLabel>
-#include <QPair>
-#include <QMessageBox>
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QLineEdit>
-#include <QEvent>
-#include <QIcon>
-#include <QScrollArea>
+#include <QtWidgets>
+#include <QtCore>
+#include "MCPage.h"
 #include <map>
 #include <iostream>
 #include "../User/UserSession.h"
@@ -27,6 +17,7 @@ Q_OBJECT
     QPushButton *backToLibraryButton;
 
 public:
+
     /**
      * @brief Constructor for EnterSetPage.
      *
@@ -46,6 +37,27 @@ signals:
      * @brief Signal emitted when the back to library button is clicked.
      */
     void backToLibraryClicked();
+
+    /**
+     * @brief Signal emitted when the multiple choice button is clicked.
+     *
+     * @param setName The name of the set to start quiz.
+     */
+    void openMCPageClicked(const QString &setName);
+
+    /**
+     * @brief Signal emitted when the inverse multiple choice button is clicked.
+     *
+     * @param setName The name of the set to start quiz.
+     */
+    void openInverseMCPageClicked(const QString &setName);
+
+    /**
+     * @brief Signal emitted when the flashcards button is clicked.
+     *
+     * @param setname The name of the set to start quiz.
+     */
+    void openFlashcardsPageClicked(const QString &setname);
 
     /**
      * @brief Signal emitted when a set is deleted.
@@ -106,11 +118,6 @@ public slots:
     void clearAllEntries();
 
     /**
-     * @brief Sets up the back button functionality.
-     */
-    void setupBackButton();
-
-    /**
      * @brief Shows the add question page.
      */
     void showAddQuestionPage();
@@ -139,6 +146,12 @@ public slots:
      */
     void adjustKeyValuePair(const QString &setName, const QString &key, const QString &newValue);
 
+    /**
+     * @brief Gets the current set name.
+     * @return returns a QString of the current setName;
+     */
+    QString getCurrentSetName() const { return currentSetName; }
+
 protected:
     /**
      * @brief Event filter for handling custom events.
@@ -157,6 +170,18 @@ private:
     QString currentSetName;
     std::map<QString, QWidget*> setWidgets;
     QScrollArea *scrollArea;
+    QStackedWidget *studyMethodsPageStack;
+    QPushButton *mcButton;
+    QPushButton *inverseMCButton;
+    QPushButton *flashcardsButton;
+    QLabel *studyMethodsLabel;
+
+    void setupStudyMethodButtons();
+    void setupBackButton();
+    void updateSetSize();
+    void checkSetSizeAndEmitSignal(const std::function<void()>& emitSignal);
+
+    int setSize;
 };
 
 #endif // QUIZLITE_ENTERSETPAGE_H

@@ -57,6 +57,11 @@ add_executable(QuizLITE
         Interface/AddQuestionsPage.h
         Interface/EnterSetPage.cpp
         Interface/EnterSetPage.h
+        Interface/MCPage.cpp
+        Interface/InverseMCPage.cpp
+        Interface/InverseMCPage.h
+        Interface/FlashcardPage.cpp
+        Interface/FlashcardPage.h
 )
 
 target_link_libraries(QuizLITE

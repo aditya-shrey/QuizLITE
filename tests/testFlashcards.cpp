@@ -1,5 +1,4 @@
 #include "../StudyingMethods/Flashcards.h"
-#include "../User/UserSession.h"
 #include <gtest/gtest.h>
 
 class FlashcardsTest : public ::testing::Test {
