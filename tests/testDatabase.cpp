@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "../Database/DatabaseManager.h"
+#include <gtest/gtest.h>
 
 class DatabaseManagerTest : public ::testing::Test {
 protected:

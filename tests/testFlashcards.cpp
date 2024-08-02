@@ -1,6 +1,5 @@
-#include <gtest/gtest.h>
 #include "../StudyingMethods/Flashcards.h"
-
+#include <gtest/gtest.h>
 
 class FlashcardsTest : public ::testing::Test {
 protected:

@@ -1,7 +1,7 @@
+#include "../StudyingMethods/InverseMultipleChoice.h"
 #include <algorithm>
 #include <gtest/gtest.h>
 #include <string>
-#include "../StudyingMethods/InverseMultipleChoice.h"
 
 class InverseMultipleChoiceTest : public ::testing::Test {
 protected:

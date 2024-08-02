@@ -1,7 +1,7 @@
+#include "../User/UserSession.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
-#include "../User/UserSession.h"
 
 class CoutRedirect {
 public:
