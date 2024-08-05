@@ -12,6 +12,29 @@ class NewSet : public QObject {
 public:
     explicit NewSet(QObject *parent = nullptr);
 
+private slots:
+    void newSetCmd();
+    void mcCmd();
+    void imcCmd();
+    void flashCmd();
+    void searchCmd();
+
+private:
+    void createActions();
+    void createMenus();
+
+    QMenu *setMenu;           // Sets
+    QMenu *studyMethodsMenu;  // Study
+
+    QAction *newSetAct;
+    QAction *mcAct;
+    QAction *imcAct;
+    QAction *flashAct;
+    QAction *searchAct;
+
+
+
+
     /**
      * shortcuts to add
      *
