@@ -20,6 +20,7 @@
 #include "FlashcardPage.h"
 #include <iostream>
 #include "../User/UserSession.h"
+#include "../Menu/Shortcuts.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -40,7 +41,7 @@ class AddQuestionsPage;
 class EnterSetPage;
 class MCPage;
 class InverseMCPage;
-class FlashcardsPage;
+class FlashcardPage;
 
 /**
  * @class MainWindow
@@ -101,6 +102,11 @@ private slots:
      */
     void handleDeleteSet(const QString &setName);
 
+    /**
+     * @brief Creates menus for application main window.
+     */
+    void createMenus();
+
 private:
     QStackedWidget *pageStack;
     LibraryPage *libraryPage;
@@ -114,6 +120,7 @@ private:
     QString currentSetName;
     QMap<QString, QListWidget*> setWidgets;
     QPushButton backToLibrary;
+    Shortcuts *shortcuts;
 };
 
 #endif // QUIZLITE_MAINWINDOW_H

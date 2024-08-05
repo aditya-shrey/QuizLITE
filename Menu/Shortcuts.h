@@ -2,15 +2,21 @@
 // Created by Fardeen Bablu on 8/4/24.
 //
 
-#ifndef QUIZLITE_NEWSET_H
-#define QUIZLITE_NEWSET_H
+#ifndef QUIZLITE_SHORTCUTS_H
+#define QUIZLITE_SHORTCUTS_H
 
 #include "../Interface/MainWindow.h"
-class NewSet : public QObject {
+
+
+class Shortcuts : public QWidget {
     Q_OBJECT
 
 public:
-    explicit NewSet(QObject *parent = nullptr);
+    explicit Shortcuts(QWidget *parent = nullptr);
+
+    void createActions();
+    void createMenus();
+    void addMenutoMainWindow(QMainWindow *mainWindow);
 
 private slots:
     void newSetCmd();
@@ -20,12 +26,8 @@ private slots:
     void searchCmd();
 
 private:
-    void createActions();
-    void createMenus();
-
-    QMenu *setMenu;           // Sets
-    QMenu *studyMethodsMenu;  // Study
-
+    QMenu *setMenu;
+    QMenu *studyMethodsMenu;
     QAction *newSetAct;
     QAction *mcAct;
     QAction *imcAct;
@@ -62,4 +64,4 @@ private:
 };
 
 
-#endif //QUIZLITE_NEWSET_H
+#endif //QUIZLITE_SHORTCUTS_H

@@ -46,8 +46,8 @@ TEST_F(UserSessionTest, SingletonTest)
 
 TEST_F(UserSessionTest, CreateAndCheckStudySet)
 {
-    EXPECT_TRUE(userSession->createStudySet("NewSet"));
-    EXPECT_TRUE(userSession->existsStudySet("NewSet"));
+    EXPECT_TRUE(userSession->createStudySet("Shortcuts"));
+    EXPECT_TRUE(userSession->existsStudySet("Shortcuts"));
 }
 
 TEST_F(UserSessionTest, DeleteStudySet)

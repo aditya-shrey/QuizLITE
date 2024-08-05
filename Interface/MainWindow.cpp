@@ -10,10 +10,13 @@ MainWindow::MainWindow(QWidget *parent) :
         enterSetPage(new EnterSetPage(this)),
         mcPage(new MCPage(this)),
         inverseMCPage(new InverseMCPage(this)),
-        flashcardPage(new FlashcardPage(this)) {
+        flashcardPage(new FlashcardPage(this)),
+        shortcuts(new Shortcuts(this)) {
+
+
 
     // Set stylesheets for the widgets
-    this->setStyleSheet("background-color: #000000;");
+    this->setStyleSheet("background-color: #0d1b2a;");
 
     // Add pages onto pageStack
     pageStack->addWidget(libraryPage);
@@ -77,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pageStack->setCurrentWidget(libraryPage);
     libraryPage->populateLibrary(); // Populate library initially
+    createMenus();
 }
 
 void MainWindow::showCreatePageSet() {
@@ -192,6 +196,12 @@ void MainWindow::handleDeleteSet(const QString &setName) {
         enterSetPage->deleteSet(setName);
         showLibraryPage();
     }
+}
+
+
+void MainWindow::createMenus() {
+    menuBar()->addMenu(shortcuts->setMenu);
+    menuBar()->addMenu(shortcuts->studyMethodsMenu);
 }
 
 
