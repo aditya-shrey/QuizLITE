@@ -1,74 +1,31 @@
-//
-// Created by Fardeen Bablu on 8/4/24.
-//
-
 #ifndef QUIZLITE_SHORTCUTS_H
 #define QUIZLITE_SHORTCUTS_H
 
-#include "../Interface/MainWindow.h"
-#include "../Interface/EnterSetPage.h"
+#include <QObject>
+#include <QShortcut>
+#include <QString>
 
+class MainWindow;
 
 class Shortcuts : public QObject {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    explicit Shortcuts(QObject *parent = nullptr);
+    explicit Shortcuts(MainWindow *mainWindow);
 
-    QMenu   *setMenu;
-    QAction *searchAct;
+    void setCurrentSetName(const QString &setName);
+    QString currentSetName() const;
 
-    QMenu   *studyMenu;
-    QAction *newSetAct;         //Cmd+N
-    QAction *mcAct;             //M
-    QAction *inverseMCAct;      //I
-    QAction *flashAct;          //F
+private:
+    MainWindow *m_mainWindow;
+    QString m_currentSetName;
 
+    QShortcut *m_newSetShortcut;
+    QShortcut *m_mcShortcut;
+    QShortcut *m_inverseMCShortcut;
+    QShortcut *m_flashcardShortcut;
 
-public slots:
-    void    createActions();
-    void    createMenus();
-//    QAction *searchAct;
-
-
-
-private slots:
-    void newSetCmd();
-    void mcCmd();
-    void inverseMCCmd();
-    void flashCmd();
-
-
-
-
-
-
-
-    /**
-     * shortcuts to add
-     *
-     *
-     * new set
-     * "m" for mc
-     * "i" for imc
-     * "f" for flashcards
-     * tabbing support?
-     * cmd+f for search
-     *
-     *
-     *
-     * cool small things
-     *
-     * different ways to view set in LibraryPage: in a row like Nintendo DSI
-     * upload header image to represent each set
-     *
-     *
-     */
-
-
-
-
+    void setupShortcuts();
 };
 
-
-#endif //QUIZLITE_SHORTCUTS_H
+#endif // QUIZLITE_SHORTCUTS_H

@@ -98,7 +98,7 @@ public slots:
 
     /**
      * @brief Handles the deletion of a set.
-     * s
+     *
      * @param setName The name of the set to delete.
      */
     void handleDeleteSet(const QString &setName);
@@ -110,14 +110,13 @@ public slots:
 
     void updateMenus();
 
-    void showMCPage();
+    void showMCPage(const QString &setName);
+    void showInverseMCPage(const QString &setName);
+    void showFlashcardPage(const QString &setName);
 
-    void showInverseMCPage();
+    void connectSignalsAndSlots();
 
-    void showFlashcardPage();
-
-
-//    void showSearch();
+    void showEnterSetPage();
 
 private:
     QStackedWidget *pageStack;
