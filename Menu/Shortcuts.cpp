@@ -1,38 +1,24 @@
 #include "Shortcuts.h"
-#include "../Interface/MainWindow.h"
 #include <QKeySequence>
 
-Shortcuts::Shortcuts(MainWindow *mainWindow)
-        : QObject(mainWindow), m_mainWindow(mainWindow)
-{
+Shortcuts::Shortcuts(MainWindow *mainWindow, EnterSetPage *enterSetPage)
+        : QObject(mainWindow), mainWindow(mainWindow), enterSetPage(enterSetPage) {
     setupShortcuts();
 }
 
 void Shortcuts::setupShortcuts()
 {
-    m_newSetShortcut = new QShortcut(QKeySequence::New, m_mainWindow);
-    connect(m_newSetShortcut, &QShortcut::activated, m_mainWindow, &MainWindow::showCreateSetPage);
+    newSetShortcut = new QShortcut(QKeySequence::New, mainWindow);
+    connect(newSetShortcut, &QShortcut::activated, mainWindow, &MainWindow::showCreateSetPage);
 
-    m_mcShortcut = new QShortcut(QKeySequence(Qt::Key_M), m_mainWindow);
-    connect(m_mcShortcut, &QShortcut::activated, this, [this]() {
-        if (!m_currentSetName.isEmpty()) {
-            m_mainWindow->showMCPage(m_currentSetName);
-        }
-    });
+    mcShortcut = new QShortcut(Qt::Key_M, enterSetPage);
+    connect(mcShortcut, &QShortcut::activated, enterSetPage, &EnterSetPage::openMCPage);
 
-    m_inverseMCShortcut = new QShortcut(QKeySequence(Qt::Key_I), m_mainWindow);
-    connect(m_inverseMCShortcut, &QShortcut::activated, this, [this]() {
-        if (!m_currentSetName.isEmpty()) {
-            m_mainWindow->showInverseMCPage(m_currentSetName);
-        }
-    });
+    inverseMCShortcut = new QShortcut(Qt::Key_I, enterSetPage);
+    connect(inverseMCShortcut, &QShortcut::activated, enterSetPage, &EnterSetPage::openInversePage);
 
-    m_flashcardShortcut = new QShortcut(QKeySequence(Qt::Key_F), m_mainWindow);
-    connect(m_flashcardShortcut, &QShortcut::activated, this, [this]() {
-        if (!m_currentSetName.isEmpty()) {
-            m_mainWindow->showFlashcardPage(m_currentSetName);
-        }
-    });
+    flashcardShortcut = new QShortcut(Qt::Key_F, enterSetPage);
+    connect(flashcardShortcut, &QShortcut::activated, enterSetPage, &EnterSetPage::openFlashcardsPage);
 }
 
 void Shortcuts::setCurrentSetName(const QString &setName)

@@ -7,6 +7,10 @@
 #include <map>
 #include <iostream>
 #include "../User/UserSession.h"
+#include "../Menu/Shortcuts.h"
+
+
+class Shortcuts;
 
 /**
  * @class EnterSetPage
@@ -169,6 +173,9 @@ public slots:
      */
     void openFlashcardsPage();
 
+
+    void setShortcuts(Shortcuts *shortcuts);
+
 protected:
     /**
      * @brief Event filter for handling custom events.
@@ -192,6 +199,7 @@ private:
     QPushButton *inverseMCButton;
     QPushButton *flashcardsButton;
     QLabel *studyMethodsLabel;
+    Shortcuts *m_shortcuts;
 
     void setupStudyMethodButtons();
     void setupBackButton();

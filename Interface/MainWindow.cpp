@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mcPage(new MCPage(this)),
         inverseMCPage(new InverseMCPage(this)),
         flashcardPage(new FlashcardPage(this)),
-        shortcuts(new Shortcuts(this)) {
+        shortcuts(new Shortcuts(this, enterSetPage)) {
 
     this->setStyleSheet("background-color: #222222;");
 
@@ -46,11 +46,13 @@ void MainWindow::connectSignalsAndSlots() {
     connect(addQuestionsPage, &AddQuestionsPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
     connect(enterSetPage, &EnterSetPage::confirmDeleteSet, this, &MainWindow::handleDeleteSet);
 
+
+    //
     connect(enterSetPage, &EnterSetPage::openSetClicked, shortcuts, &Shortcuts::setCurrentSetName);
 
     connect(enterSetPage, &EnterSetPage::openMCPageClicked, this, &MainWindow::showMCPage);
-//    connect(enterSetPage, &EnterSetPage::openInverseMCPageClicked, this, &MainWindow::showInverseMCPage);
-//    connect(enterSetPage, &EnterSetPage::openFlashcardsPageClicked, this, &MainWindow::showFlashcardPage);
+    connect(enterSetPage, &EnterSetPage::openInverseMCPageClicked, this, &MainWindow::showInverseMCPage);
+    connect(enterSetPage, &EnterSetPage::openFlashcardsPageClicked, this, &MainWindow::showFlashcardPage);
 
     connect(mcPage, &MCPage::backToSetClicked, this, &MainWindow::showEnterSetPage);
     connect(inverseMCPage, &InverseMCPage::backToSetClicked, this, &MainWindow::showEnterSetPage);
@@ -64,7 +66,7 @@ void MainWindow::createMenus() {
     setMenu->addAction(tr("&New Set"),QKeySequence::New, this, &MainWindow::showCreateSetPage);
 
     QMenu *studyMenu = menuBar()->addMenu(tr("&Study"));
-    studyMenu->addAction(tr("&Multiple Choice"), QKeySequence(Qt::Key_M),this, [this](){ showMCPage(shortcuts->currentSetName()); });
+//    studyMenu->addAction(tr("&Multiple Choice"),Qt::Key_M, this, &EnterSetPage::openMCPage);
     studyMenu->addAction(tr("&Inverse Multiple Choice"), QKeySequence(Qt::Key_I), this, [this](){ showInverseMCPage(shortcuts->currentSetName());});
     studyMenu->addAction(tr("&Flashcards"), QKeySequence(Qt::Key_F),this, [this](){ showFlashcardPage(shortcuts->currentSetName()); });
 }

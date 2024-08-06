@@ -1,5 +1,7 @@
 #include "EnterSetPage.h"
 
+
+
 EnterSetPage::EnterSetPage(QWidget *parent) :
         QWidget(parent),
         backToLibraryButton(new QPushButton("Back to Library", this)),
@@ -12,6 +14,7 @@ EnterSetPage::EnterSetPage(QWidget *parent) :
         inverseMCButton(new QPushButton("Inverse Multiple Choice", this)),
         flashcardsButton(new QPushButton("Flashcards")),
         studyMethodsLabel(new QLabel("Studying Methods", this)),
+        m_shortcuts(reinterpret_cast<Shortcuts *>(new QShortcut(this))),
         setSize(0)
 {
     // Set stylesheets for the widgets
@@ -557,3 +560,7 @@ void EnterSetPage::openFlashcardsPage() {
     emit openFlashcardsPageClicked(currentSetName);
 }
 
+
+void EnterSetPage::setShortcuts(Shortcuts *shortcuts) {
+    m_shortcuts = shortcuts;
+}
