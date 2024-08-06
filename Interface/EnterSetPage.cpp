@@ -544,3 +544,16 @@ void EnterSetPage::checkSetSizeAndEmitSignal(const std::function<void()>& emitSi
         emitSignal();
     }
 }
+
+void EnterSetPage::openMCPage() {
+    emit openMCPageClicked(currentSetName);
+}
+
+void EnterSetPage::openInversePage() {
+    emit openInverseMCPageClicked(currentSetName);
+}
+
+void EnterSetPage::openFlashcardsPage() {
+    emit openFlashcardsPageClicked(currentSetName);
+}
+

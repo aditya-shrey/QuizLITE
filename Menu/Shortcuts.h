@@ -6,33 +6,35 @@
 #define QUIZLITE_SHORTCUTS_H
 
 #include "../Interface/MainWindow.h"
+#include "../Interface/EnterSetPage.h"
 
 
-class Shortcuts : public QWidget {
+class Shortcuts : public QObject {
     Q_OBJECT
 
 public:
-    explicit Shortcuts(QWidget *parent = nullptr);
+    explicit Shortcuts(QObject *parent = nullptr);
 
+public slots:
     void createActions();
     void createMenus();
     void addMenutoMainWindow(QMainWindow *mainWindow);
+    QMenu *setMenu;
+    QMenu *studyMethodsMenu;
 
 private slots:
     void newSetCmd();
     void mcCmd();
-    void imcCmd();
+    void inverseMCCmd();
     void flashCmd();
     void searchCmd();
 
 private:
-    QMenu *setMenu;
-    QMenu *studyMethodsMenu;
-    QAction *newSetAct;
-    QAction *mcAct;
-    QAction *imcAct;
-    QAction *flashAct;
-    QAction *searchAct;
+    QAction *newSetAct;         //Cmd+N
+    QAction *mcAct;             //M
+    QAction *inverseMCAct;      //I
+    QAction *flashAct;          //F
+    QAction *searchAct;         //Cmd+F
 
 
 

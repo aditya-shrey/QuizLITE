@@ -90,6 +90,8 @@ signals:
      */
     void confirmDeleteSet(const QString &setName);
 
+
+
 public slots:
     /**
      * @brief Adds a new set to the page.
@@ -151,6 +153,21 @@ public slots:
      * @return returns a QString of the current setName;
      */
     QString getCurrentSetName() const { return currentSetName; }
+
+    /**
+     * @brief Parameter-less public slot so that shortcut can open MC page
+     */
+    void openMCPage();
+
+    /**
+     * @brief Parameter-less public slot so that shortcut can open MC page
+     */
+    void openInversePage();
+
+    /**
+     * @brief Parameter-less public slot so that shortcut can open MC page
+     */
+    void openFlashcardsPage();
 
 protected:
     /**

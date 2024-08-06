@@ -42,6 +42,7 @@ class EnterSetPage;
 class MCPage;
 class InverseMCPage;
 class FlashcardPage;
+class Shortcuts;
 
 /**
  * @class MainWindow
@@ -57,11 +58,11 @@ public:
      */
     explicit MainWindow(QWidget *parent = nullptr);
 
-private slots:
+public slots:
     /**
      * @brief Shows the CreateSetPage.
      */
-    void showCreatePageSet();
+    void showCreateSetPage();
 
     /**
      * @brief Shows the AddQuestionsPage for the specified set.
@@ -106,6 +107,14 @@ private slots:
      * @brief Creates menus for application main window.
      */
     void createMenus();
+
+    void showMCPage();
+
+    void showInverseMCPage();
+
+    void showFlashcardPage();
+
+    void showSearchPopup();
 
 private:
     QStackedWidget *pageStack;

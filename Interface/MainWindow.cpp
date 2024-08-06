@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(pageStack);
 
     // Connect pages and buttons that have been clicked, then set current page to library
-    connect(libraryPage, &LibraryPage::createSetClicked, this, &MainWindow::showCreatePageSet);
+    connect(libraryPage, &LibraryPage::createSetClicked, this, &MainWindow::showCreateSetPage);
     connect(createSetPage, &CreateSetPage::setNameConfirmed, this, &MainWindow::showAddQuestionsPage);
     connect(addQuestionsPage, &AddQuestionsPage::addToSetClicked, this, &MainWindow::addToSet);
     connect(addQuestionsPage, &AddQuestionsPage::finishedClicked, this, &MainWindow::finishSet);
@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
 }
 
-void MainWindow::showCreatePageSet() {
+void MainWindow::showCreateSetPage() {
     std::cout << "Showing create set page" << std::endl;
     pageStack->setCurrentWidget(createSetPage);
 }
