@@ -108,13 +108,16 @@ public slots:
      */
     void createMenus();
 
+    void updateMenus();
+
     void showMCPage();
 
     void showInverseMCPage();
 
     void showFlashcardPage();
 
-    void showSearchPopup();
+
+//    void showSearch();
 
 private:
     QStackedWidget *pageStack;
@@ -130,6 +133,7 @@ private:
     QMap<QString, QListWidget*> setWidgets;
     QPushButton backToLibrary;
     Shortcuts *shortcuts;
+
 };
 
 #endif // QUIZLITE_MAINWINDOW_H

@@ -26,26 +26,33 @@ Shortcuts::Shortcuts(QObject *parent) :  QObject(parent) {
 
 void Shortcuts::createActions() {
     newSetAct = new QAction(tr("&New Set"), this);
-//    connect(newSetAct, &QAction::triggered, this, &Shortcuts::newSetCmd);
-    mcAct = new QAction(tr("&Multiple Choice"), this);
-//    connect(mcAct,  &QAction::triggered, this, &Shortcuts::mcCmd);
-    inverseMCAct = new QAction(tr("&Inverse Multiple Choice"), this);
-//    connect(inverseMCAct, &QAction::triggered, this, &Shortcuts::inverseMCCmd);
-    flashAct = new QAction(tr("&Flashcards"), this);
-//    connect(flashAct, &QAction::triggered, this, &Shortcuts::flashCmd);
+    newSetAct->setShortcut(QKeySequence::New);
+
     searchAct = new QAction(tr("&Search"), this);
-//    connect(searchAct, &QAction::triggered, this, &Shortcuts::searchCmd);
+    searchAct->setShortcut(QKeySequence::Find);
+
+    mcAct = new QAction(tr("&Multiple Choice"), this);
+    mcAct->setShortcut(QKeySequence(Qt::Key_M));
+
+    inverseMCAct = new QAction(tr("&Inverse Multiple Choice"), this);
+    inverseMCAct->setShortcut(QKeySequence(Qt::Key_I));
+
+    flashAct = new QAction(tr("&Flashcards"), this);
+    flashAct->setShortcut(QKeySequence(Qt::Key_F));
 }
+
+
 
 void Shortcuts::createMenus() {
     setMenu = new QMenu(tr("&Sets"));
     setMenu->addAction(newSetAct);
+    setMenu->addAction(searchAct);
 
-    studyMethodsMenu = new QMenu(tr("&Study"));
-    studyMethodsMenu->addAction(mcAct);
-    studyMethodsMenu->addAction(inverseMCAct);
-    studyMethodsMenu->addAction(flashAct);
-    studyMethodsMenu->addAction(searchAct);
+
+    studyMenu = new QMenu(tr("&Study"));
+    studyMenu->addAction(mcAct);
+    studyMenu->addAction(inverseMCAct);
+    studyMenu->addAction(flashAct);
 }
 
 
@@ -67,9 +74,6 @@ void Shortcuts::flashCmd() {
     emit flashAct->trigger();
 }
 
-void Shortcuts::searchCmd() {
-    emit searchAct->trigger();
-}
 
 
 

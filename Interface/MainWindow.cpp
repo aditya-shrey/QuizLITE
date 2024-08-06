@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(createSetPage, &CreateSetPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
     connect(addQuestionsPage, &AddQuestionsPage::backToLibraryClicked, this, &MainWindow::showLibraryPage);
 
+    // Delete a set
     connect(enterSetPage, &EnterSetPage::confirmDeleteSet, this, &MainWindow::handleDeleteSet);
 
     // Connect Multiple choice
@@ -51,8 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
         pageStack->setCurrentWidget(enterSetPage);
         enterSetPage->setQAList(enterSetPage->getCurrentSetName());
     });
-
-
 
     //Connect Inverse Multiple Choice
     connect(enterSetPage, &EnterSetPage::openInverseMCPageClicked, this, [this](const QString &setName) {
@@ -75,6 +74,16 @@ MainWindow::MainWindow(QWidget *parent) :
         pageStack->setCurrentWidget(enterSetPage);
         enterSetPage->setQAList(enterSetPage->getCurrentSetName());
     });
+
+    //Connect set shortcuts
+    connect(shortcuts->newSetAct, &QAction::triggered, this, &MainWindow::showCreateSetPage);
+//    connect(shortcuts->searchAct, &QAction::triggered, this, &MainWindow::showSearch);
+
+    //connect study shortcuts
+    connect(shortcuts->mcAct, &QAction::triggered, this, &MainWindow::showMCPage);
+    connect(shortcuts->inverseMCAct, &QAction::triggered, this, &MainWindow::showInverseMCPage);
+    connect(shortcuts->flashAct, &QAction::triggered, this, &MainWindow::showFlashcardPage);
+
 
 
 
@@ -103,11 +112,11 @@ void MainWindow::addToSet(const QString &question, const QString &answer) {
 void MainWindow::openSet(const QString &setName) {
     std::cout << "Opening set: " << setName.toStdString() << std::endl;
     UserSession *session = UserSession::getUserSession();
-
     if (session->existsStudySet(setName.toStdString())) {
         enterSetPage->setSetName(setName);
         enterSetPage->setQAList(setName);
         pageStack->setCurrentWidget(enterSetPage);
+        updateMenus();
     } else {
         QMessageBox::warning(this, "Set Not Found", "The selected study set does not exist.");
     }
@@ -138,6 +147,7 @@ void MainWindow::showLibraryPage() {
     std::cout << "Showing library page" << std::endl;
     libraryPage->populateLibrary(); // Refresh the library page each time it's shown
     pageStack->setCurrentWidget(libraryPage);
+    updateMenus();
 }
 
 void MainWindow::handleDeleteSet(const QString &setName) {
@@ -198,10 +208,45 @@ void MainWindow::handleDeleteSet(const QString &setName) {
     }
 }
 
-
 void MainWindow::createMenus() {
     menuBar()->addMenu(shortcuts->setMenu);
-    menuBar()->addMenu(shortcuts->studyMethodsMenu);
+    menuBar()->addMenu(shortcuts->studyMenu);
+}
+
+void MainWindow::updateMenus() {
+    bool isLibraryPage = (pageStack->currentWidget() == libraryPage);
+    bool isEnterSetPage = (pageStack->currentWidget() == enterSetPage);
+
+    shortcuts->newSetAct->setEnabled(isLibraryPage);
+    shortcuts->searchAct->setEnabled(true);
+
+    shortcuts->mcAct->setEnabled(isEnterSetPage);
+    shortcuts->inverseMCAct->setEnabled(isEnterSetPage);
+    shortcuts->flashAct->setEnabled(isEnterSetPage);
+}
+
+//void MainWindow::showSearchO() {
+//
+//}
+
+
+
+void MainWindow::showMCPage() {
+    if (pageStack->currentWidget() == enterSetPage) {
+        pageStack->setCurrentWidget(mcPage);
+    }
+}
+
+void MainWindow::showInverseMCPage() {
+    if (pageStack->currentWidget() == enterSetPage) {
+        pageStack->setCurrentWidget(inverseMCPage);
+    }
+}
+
+void MainWindow::showFlashcardPage() {
+    if (pageStack->currentWidget() == enterSetPage) {
+        pageStack->setCurrentWidget(flashcardPage);
+    }
 }
 
 

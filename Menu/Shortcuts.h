@@ -15,26 +15,31 @@ class Shortcuts : public QObject {
 public:
     explicit Shortcuts(QObject *parent = nullptr);
 
+    QMenu   *setMenu;
+    QAction *searchAct;
+
+    QMenu   *studyMenu;
+    QAction *newSetAct;         //Cmd+N
+    QAction *mcAct;             //M
+    QAction *inverseMCAct;      //I
+    QAction *flashAct;          //F
+
+
 public slots:
-    void createActions();
-    void createMenus();
-    void addMenutoMainWindow(QMainWindow *mainWindow);
-    QMenu *setMenu;
-    QMenu *studyMethodsMenu;
+    void    createActions();
+    void    createMenus();
+//    QAction *searchAct;
+
+
 
 private slots:
     void newSetCmd();
     void mcCmd();
     void inverseMCCmd();
     void flashCmd();
-    void searchCmd();
 
-private:
-    QAction *newSetAct;         //Cmd+N
-    QAction *mcAct;             //M
-    QAction *inverseMCAct;      //I
-    QAction *flashAct;          //F
-    QAction *searchAct;         //Cmd+F
+
+
 
 
 

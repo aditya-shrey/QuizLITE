@@ -68,7 +68,6 @@ add_executable(QuizLITE
         Syncing/Github.h
         Syncing/Google.cpp
         Syncing/Google.h
-        build/QuizLITE_autogen/RIEJA2QBKY/moc_MainWindow.cpp
 )
 
 target_link_libraries(QuizLITE
