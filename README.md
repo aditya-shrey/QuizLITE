@@ -8,10 +8,12 @@
   <a target="_blank" href='https://isocpp.org/'><img src='https://img.shields.io/badge/C++-blue?style=for-the-badge&logo=cplusplus&color=00599C&labelColor=C++&logoColor=white' alt="C++"></a>
   <a target="_blank" href='https://cmake.org/'><img src='https://img.shields.io/badge/CMake-blue?style=for-the-badge&logo=cmake&color=064F8C&labelColor=CMake&logoColor=white' alt="CMake"></a>
   <a target="_blank" href='https://www.sqlite.org/'><img src='https://img.shields.io/badge/SQLite-blue?style=for-the-badge&logo=sqlite&color=003B57&labelColor=SQLite&logoColor=white' alt="SQLite"></a>
-  <a target="_blank" href='https://www.qt.io/'><img src='https://img.shields.io/badge/Qt-blue?style=for-the-badge&logo=qt&color=41CD52&labelColor=Qt&logoColor=white' alt="Qt"></a>
+  <a target="_blank" hπref='https://www.qt.io/'><img src='https://img.shields.io/badge/Qt-blue?style=for-the-badge&logo=qt&color=41CD52&labelColor=Qt&logoColor=white' alt="Qt"></a>
   <a target="_blank" href='https://github.com/google/googletest'><img src='https://img.shields.io/badge/GTest-blue?style=for-the-badge&logo=google&color=4285F4&labelColor=GTest&logoColor=white' alt="GTest"></a>
   <a target="_blank" href='https://github.com/features/actions'><img src='https://img.shields.io/badge/GitHub%20Actions-blue?style=for-the-badge&logo=githubactions&color=2088FF&labelColor=GitHub%20Actions&logoColor=white' alt="GitHub Actions"></a>
 </p>
+
+
 
 
 A modern flashcard application designed for efficient learning and content management with adaptive study sessions.
