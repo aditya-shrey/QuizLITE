@@ -7,6 +7,7 @@
 
 #include "../User/UserSession.h"
 #include "StudyMethods.h"
+#include <cstdint>
 
 /**
  * @class Flashcards
