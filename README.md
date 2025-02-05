@@ -9,6 +9,12 @@
   <a target="_blank" href='https://github.com/features/actions'><img src='https://img.shields.io/badge/GitHub%20Actions-blue?style=for-the-badge&logo=githubactions&color=2088FF&labelColor=GitHub%20Actions&logoColor=white' alt="GitHub Actions"></a>
 </p>
 
+<h1 align="center">
+  <img src="./icons/quizlite.png" alt="Icon" width="100"/>
+  <br>
+  QuizLITE
+</h1>
+
 A modern flashcard application designed for efficient learning and content management with adaptive study sessions.
 
 ## Features
