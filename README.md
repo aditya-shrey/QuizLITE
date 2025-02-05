@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./icons/quizlite.png" alt="Icon" width="100"/>
+  <img src="/icons/quizlite.png" alt="Icon" width="100"/>
   <br>
   QuizLITE
 </h1>
